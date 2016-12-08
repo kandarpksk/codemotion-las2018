@@ -11,7 +11,9 @@ LINK   = -lm
 all: segment
 
 segment: segment.cpp segment-image.h segment-graph.h disjoint-set.h
-	$(CPP) $(CFLAGS) -o segment segment.cpp $(LINK)
+	@printf "compiling... "
+	@$(CPP) $(CFLAGS) -w -o segment segment.cpp $(LINK)
+	@echo "done!"
 
 clean:
 	/bin/rm -f segment *.o
