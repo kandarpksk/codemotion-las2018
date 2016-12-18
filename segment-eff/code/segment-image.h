@@ -56,10 +56,12 @@ static inline float diff(image<float> *r, image<float> *g, image<float> *b,
  * min_size: minimum component size (enforced by post-processing stage).
  * num_ccs: number of connected components in the segmentation.
  */
-image<rgb> *segment_image(image<rgb> *im, float sigma, float c, int min_size,
+image<rgb> **segment_image(image<rgb> *im, float sigma, float c, int min_size,
 			  int *num_ccs) {
   int width = im->width();
   int height = im->height();
+
+  printf("reached here");
 
   image<float> *r = new image<float>(width, height);
   image<float> *g = new image<float>(width, height);
@@ -131,19 +133,32 @@ image<rgb> *segment_image(image<rgb> *im, float sigma, float c, int min_size,
   delete [] edges;
   *num_ccs = u->num_sets();
 
-  image<rgb> *output = new image<rgb>(width, height);
+  image<rgb> **output = new image<rgb>*[*num_ccs];
+  for (int i = 0; i < *num_ccs; i++)
+    output[i] = new image<rgb>(width, height);
 
   // pick random colors for each component
   rgb *colors = new rgb[width*height];
   for (int i = 0; i < width*height; i++)
     colors[i] = random_rgb();
   
+  // int previous = -1;
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       int comp = u->find(y * width + x);
-      imRef(output, x, y) = colors[comp];
+      // printf("%d ", u->elts[y * width + x]);
+      // if(previous != comp) {
+      //   printf("%d ", comp);
+      //   previous = comp;
+      // }
+      rgb zero; zero.r = 0; zero.g = 0; zero.b = 0;
+      for (int i = 0; i < *num_ccs; i++) {
+        if (i == comp) imRef(output[comp], x, y) = colors[comp];
+        else imRef(output[i], x, y) = zero; // check
+      }
     }
-  }  
+    // printf("\n");
+  }
 
   delete [] colors;  
   delete u;
