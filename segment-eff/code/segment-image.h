@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #include <misc.h>
 #include <filter.h>
 #include "segment-graph.h"
+#include <list>
 
 // random color
 rgb random_rgb(){ 
@@ -60,8 +61,6 @@ image<rgb> **segment_image(image<rgb> *im, float sigma, float c, int min_size,
 			  int *num_ccs) {
   int width = im->width();
   int height = im->height();
-
-  printf("reached here");
 
   image<float> *r = new image<float>(width, height);
   image<float> *g = new image<float>(width, height);
@@ -142,6 +141,17 @@ image<rgb> **segment_image(image<rgb> *im, float sigma, float c, int min_size,
   for (int i = 0; i < width*height; i++)
     colors[i] = random_rgb();
   
+  std::list<int> components;
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      components.push_back(u->find(y * width + x));
+      components.sort();
+      components.unique();
+      if (components.size() == *num_ccs) break;
+    }
+    if (components.size() == *num_ccs) break;
+  }
+
   // int previous = -1;
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
@@ -152,9 +162,14 @@ image<rgb> **segment_image(image<rgb> *im, float sigma, float c, int min_size,
       //   previous = comp;
       // }
       rgb zero; zero.r = 0; zero.g = 0; zero.b = 0;
+      std::list<int>::iterator itr = components.begin();
       for (int i = 0; i < *num_ccs; i++) {
-        if (i == comp) imRef(output[comp], x, y) = colors[comp];
+        if (itr != components.end()) {
+          if (*itr == comp)
+            imRef(output[i], x, y) = colors[comp];
+        }
         else imRef(output[i], x, y) = zero; // check
+        ++itr;
       }
     }
     // printf("\n");

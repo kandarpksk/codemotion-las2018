@@ -12,7 +12,7 @@ all: segment
 
 segment: segment.cpp segment-image.h segment-graph.h disjoint-set.h
 	@printf "compiling... "
-	@$(CPP) $(CFLAGS) -o segment segment.cpp $(LINK)
+	@$(CPP) $(CFLAGS) -w -o segment segment.cpp $(LINK)
 	@echo "done!"
 
 clean:
