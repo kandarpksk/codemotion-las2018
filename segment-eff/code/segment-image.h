@@ -166,7 +166,7 @@ image<rgb> **segment_image(image<rgb> *im, float sigma, float c, int min_size,
       for (int i = 0; i < *num_ccs; i++) {
         if (itr != components.end()) {
           if (*itr == comp)
-            imRef(output[i], x, y) = colors[comp];
+            imRef(output[i], x, y) = imRef(im, x, y);
         }
         else imRef(output[i], x, y) = zero; // check
         ++itr;

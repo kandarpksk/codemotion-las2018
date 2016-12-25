@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     char temp[100];
     // strcpy(temp, argv[5]);
     // strcat(temp, "_");
-    sprintf(temp, "%s_%d.ppm", argv[5], i);
+    sprintf(temp, "%s_segment%d.ppm", argv[5], i);
     savePPM(seg[i], temp);
   }
 
