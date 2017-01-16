@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Codemotion v0</title>
+</head>
+<body>
+	<!-- lots of options -->
+	<!-- http://stackoverflow.com/questions/10004723/html5-input-type-range-show-range-value -->
+	<!-- this is cool -->
+	<!-- http://thecodeplayer.com/walkthrough/spicing-up-the-html5-range-slider-input -->
+	<div id="slider">
+		<input id="slide" type="range" min="0" max="100" value="25" onchange="updateSlider(this.value)" style="width:462px; "/>
+		<span id="time" style="vertical-align:15%; font-family:sans-serif; ">1:25</span>
+		<br/>
+		<img id="frame" src="../outputs/v2_frame62481_segment1.jpg" alt="frame" width="500px"/>
+	</div>
+	
+	<script>
+		function updateSlider(val) {
+			var display = document.getElementById('time');
+			display.innerHTML = val;
+
+			var pic = document.getElementById('frame');
+			// pic.src = '../outputs/v2_frame'+val+'_segment1.jpg';
+			var f = 62481+'_segment1';
+			if (val > 50) f = 65352;
+			pic.src = '../outputs/v2_frame'+f+'.jpg';
+			pic.alt = '../outputs/v2_frame'+val+'_segment1.jpg';
+		}
+	</script>
+</body>
+</html>

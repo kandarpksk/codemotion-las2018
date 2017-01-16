@@ -1,28 +1,32 @@
-video_file_path = 'segment/images/rJeP65u84ec_1_1080p.mp4'
+video_file_path = 'segment/images/5aP9Bl9hcqI_2_1080.mp4'
 TAB = "   " # macros?
 
-fps, debug, times = 24, False, [135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
+fps, debug, times = 23.976150, False, [2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
 
 import cv2, os, re, subprocess, sys
 import HTMLParser, operator, codecs
 parser = HTMLParser.HTMLParser()
 
+time = 43*60+26
 vidcap = cv2.VideoCapture(video_file_path)
+vidcap.set(1, int(time*fps))
 success,image = vidcap.read()
-count = -1
-while success:
+count = int(time*fps)-1
+if success:
 	count += 1
-	success,image = vidcap.read()
+	# success,image = vidcap.read()
 	minute = int((count/fps)/60)
 	second = int(round((count/float(fps))%60))
-	print '\rprocessing frame #'+str(count)+' at', '%d:%02d' % (minute, second),
+	print '\rframe #'+str(count)+' at', '%d:%02d' % (minute, second),
 	
-	if count/24 in times or (count % 24 == 0 and not debug): # first frame each second
+	if count/24. in times or (count % 24 == 0 or not debug): # first frame each second # fix
+		os.system("rm outputs/v2_frame%d* 2>/dev/null" % count);
+
 		# extract image frame
-		cv2.imwrite("./outputs/2_frame%d.ppm" % count, image)
+		cv2.imwrite("./outputs/v2_frame%d.ppm" % count, image)
 		
 		# get segment images
-		arguments = "0.33 500 40000 outputs/2_frame" + str(count) + ".ppm" + " outputs/2_frame" + str(count)
+		arguments = "0.33 500 40000 outputs/v2_frame" + str(count) + ".ppm" + " outputs/v2_frame" + str(count)
 		seg_cmd = "./segment/code/segment " + arguments
 		c = int(re.search(r'\d+', subprocess.check_output([seg_cmd], shell=True)).group())
 		
@@ -31,14 +35,14 @@ while success:
 		
 		# run ocr and fix spacing
 		for i in range(c):
-			image = "outputs/2_frame%d_segment%d.ppm " % (count, i)
-			output = "outputs/2_frame%d_segment%d" % (count, i)
+			image = "outputs/v2_frame%d_segment%d.ppm " % (count, i)
+			output = "outputs/v2_frame%d_segment%d" % (count, i)
 			ocr_command = "tesseract " + image+output + " config.txt hocr 2>/dev/null"
 			os.system(ocr_command)
 
 			# hocr output conversion
 			res = [] # distance, code
-			with open("outputs/2_frame%d_segment%d.hocr" % (count, i)) as hocr_output:
+			with open("outputs/v2_frame%d_segment%d.hocr" % (count, i)) as hocr_output:
 				for line in hocr_output:
 					# find x-coordinate of upper left corner
 					location = re.search(r'(?<=bbox ).+?(?=\s)', line)
@@ -60,13 +64,13 @@ while success:
 			# spacing adjustment
 
 			if len(res) == 0:
-				os.system("rm outputs/2_frame%d_segment%d.*" % (count, i))
+				os.system("rm outputs/v2_frame%d_segment%d.*" % (count, i))
 				if i == c-1:
-					if subprocess.call("ls outputs/2_frame%d_segment*.ppm 1>/dev/null 2>/dev/null" % count, shell=True) != 0:
-						os.system("mv outputs/2_frame%d.ppm outputs/2_frame%d_del.ppm" % (count, count))
+					if subprocess.call("ls outputs/v2_frame%d_segment*.ppm 1>/dev/null 2>/dev/null" % count, shell=True) != 0:
+						os.system("mv outputs/v2_frame%d.ppm outputs/v2_frame%d_del.ppm" % (count, count))
 
 			else:
-				os.system("rm outputs/2_frame%d_segment%d.hocr" % (count, i))
+				os.system("rm outputs/v2_frame%d_segment%d.hocr" % (count, i))
 				base = min(res, key=operator.itemgetter(0))[0]
 
 				# yet to address case when 30,33,62 happens
@@ -76,7 +80,7 @@ while success:
 					for r in res:
 						lines += r[1] + "\n"
 
-					f = codecs.open("outputs/2_frame%d_segment%d_dis.txt" % (count, i), 'w', 'utf-8')
+					f = codecs.open("outputs/v2_frame%d_segment%d_dis.txt" % (count, i), 'w', 'utf-8')
 					f.write(lines)
 
 				else:
@@ -91,7 +95,7 @@ while success:
 						indented += r[1]
 						indented_lines += indented + "\n"
 
-					f = codecs.open("outputs/2_frame%d_segment%d_ind.txt" % (count, i), 'w', 'utf-8')
+					f = codecs.open("outputs/v2_frame%d_segment%d_ind.txt" % (count, i), 'w', 'utf-8')
 					f.write(indented_lines)
 
 		print "done\n"
