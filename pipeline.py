@@ -1,17 +1,19 @@
-video_file_path = 'segment/images/5aP9Bl9hcqI_2_1080.mp4'
+video_file_path = "segment/images/5aP9Bl9hcqI_2_1080.mp4"
+op = "preview/resources" # 62481
 TAB = "   " # macros?
 
 fps, debug, times = 23.976150, False, [2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
 
-import cv2, os, re, subprocess, sys
+import cv, cv2, os, re, subprocess, sys
 import HTMLParser, operator, codecs
 parser = HTMLParser.HTMLParser()
 
 time = 43*60+26
 vidcap = cv2.VideoCapture(video_file_path)
-vidcap.set(1, int(time*fps))
+# print vidcap.get(cv.CV_CAP_PROP_FPS)
+vidcap.set(1, 65352) # int(time*fps)
 success,image = vidcap.read()
-count = int(time*fps)-1
+count = 65352-1 # 120
 if success:
 	count += 1
 	# success,image = vidcap.read()
@@ -20,13 +22,14 @@ if success:
 	print '\rframe #'+str(count)+' at', '%d:%02d' % (minute, second),
 	
 	if count/24. in times or (count % 24 == 0 or not debug): # first frame each second # fix
-		os.system("rm outputs/v2_frame%d* 2>/dev/null" % count);
+		os.system("rm "+op+"/v2_frame%d* 2>/dev/null" % count);
 
 		# extract image frame
-		cv2.imwrite("./outputs/v2_frame%d.ppm" % count, image)
+		cv2.imwrite(op+"/v2_frame%d.ppm" % count, image)
+		cv2.imwrite(op+"/v2_frame%d.jpg" % count, image)
 		
 		# get segment images
-		arguments = "0.33 500 40000 outputs/v2_frame" + str(count) + ".ppm" + " outputs/v2_frame" + str(count)
+		arguments = "0.33 500 40000 "+op+"/v2_frame" + str(count) + ".ppm" + " "+op+"/v2_frame" + str(count)
 		seg_cmd = "./segment/code/segment " + arguments
 		c = int(re.search(r'\d+', subprocess.check_output([seg_cmd], shell=True)).group())
 		
@@ -35,14 +38,14 @@ if success:
 		
 		# run ocr and fix spacing
 		for i in range(c):
-			image = "outputs/v2_frame%d_segment%d.ppm " % (count, i)
-			output = "outputs/v2_frame%d_segment%d" % (count, i)
-			ocr_command = "tesseract " + image+output + " config.txt hocr 2>/dev/null"
+			image = op+"/v2_frame%d_segment%d.ppm " % (count, i)
+			output = op+"/v2_frame%d_segment%d" % (count, i)
+			ocr_command = "tesseract " + image+output + " ~/large/codemotion/git/config.txt 2>/dev/null"
 			os.system(ocr_command)
 
 			# hocr output conversion
 			res = [] # distance, code
-			with open("outputs/v2_frame%d_segment%d.hocr" % (count, i)) as hocr_output:
+			with open(op+"/v2_frame%d_segment%d.hocr" % (count, i)) as hocr_output:
 				for line in hocr_output:
 					# find x-coordinate of upper left corner
 					location = re.search(r'(?<=bbox ).+?(?=\s)', line)
@@ -64,23 +67,27 @@ if success:
 			# spacing adjustment
 
 			if len(res) == 0:
-				os.system("rm outputs/v2_frame%d_segment%d.*" % (count, i))
+				os.system("rm "+op+"/v2_frame%d_segment%d.*" % (count, i))
 				if i == c-1:
-					if subprocess.call("ls outputs/v2_frame%d_segment*.ppm 1>/dev/null 2>/dev/null" % count, shell=True) != 0:
-						os.system("mv outputs/v2_frame%d.ppm outputs/v2_frame%d_del.ppm" % (count, count))
+					if subprocess.call("ls "+op+"/v2_frame%d_segment*.ppm 1>/dev/null 2>/dev/null" % count, shell=True) != 0:
+						os.system("echo 0 > "+op+"/v2_frame"+str(count)+".txt")
+						# os.system("mv "+op+"/v2_frame%d.ppm "+op+"/v2_frame%d_del.ppm" % (count, count))
 
 			else:
-				os.system("rm outputs/v2_frame%d_segment%d.hocr" % (count, i))
+				cv2.imwrite(op+"/v2_frame%d_segment%d.jpg" % (count, i), cv2.imread(op+"/v2_frame%d_segment%d.ppm" % (count, i)))
+
+				os.system("rm "+op+"/v2_frame%d_segment%d.hocr" % (count, i))
 				base = min(res, key=operator.itemgetter(0))[0]
 
 				# yet to address case when 30,33,62 happens
-				temp = [r for r in res if r[0] > base*1.09] # base = 0 case
+				temp = [r for r in res if r[0] > base*1.09] # when base = 0
 				if len(temp) == 0:
 					lines = ""
 					for r in res:
 						lines += r[1] + "\n"
 
-					f = codecs.open("outputs/v2_frame%d_segment%d_dis.txt" % (count, i), 'w', 'utf-8')
+					# _dis[placed]
+					f = codecs.open(op+"/v2_frame%d_segment%d.txt" % (count, i), 'w', 'utf-8') # _check.txt
 					f.write(lines)
 
 				else:
@@ -95,9 +102,12 @@ if success:
 						indented += r[1]
 						indented_lines += indented + "\n"
 
-					f = codecs.open("outputs/v2_frame%d_segment%d_ind.txt" % (count, i), 'w', 'utf-8')
+					# _ind[ented]
+					f = codecs.open(op+"/v2_frame%d_segment%d.txt" % (count, i), 'w', 'utf-8')
 					f.write(indented_lines)
 
+		write_max_segments = "echo "+str(i)+" > "+op+"/v2_frame"+str(count)+".txt"
+		os.system("rm "+op+"/*.ppm; if [ ! -f "+op+"/v2_frame"+str(count)+".txt ]; then "+write_max_segments+"; fi")
 		print "done\n"
 
 # find outputs -empty | sed 's/^/rm /g'
