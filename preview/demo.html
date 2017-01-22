@@ -10,33 +10,32 @@
 	<!-- this is cool -->
 	<!-- http://thecodeplayer.com/walkthrough/spicing-up-the-html5-range-slider-input -->
 	<div id="slider">
-		<input id="slide" type="range" min="0" max="100" value="25" onchange="updateSlider(this.value)" style="width:300px; "/>
-		<span id="time" style="vertical-align:2px; font-family:sans-serif; ">0:33</span>
+		<input id="slide" type="range" min="1" max="7980" value="1" onchange="updateSlider(this.value)" style="width:300px; "/>
+		<span id="time" style="vertical-align:2px; font-family:sans-serif; ">0:0:1 | frame #1</span>
 		<br/>
-		<div style="display:inline-block; "><img id="frame1" src="resources/v2_frame62481.jpg" alt="frame" width="483px"/></div>
-		<div style="display:inline-block; vertical-align:12%; "><textarea id="code1" rows="15" cols="50">{code here}</textarea></div>
+		<div style="display:inline-block; "><img id="frame1" src="resources/v2_frame217.jpg" alt="frame" width="483px"/></div>
+		<div style="display:inline-block; vertical-align:12%; "><textarea id="code1" rows="15" cols="50">This is CS50</textarea></div>
 		<br/>
 		<div id="outputs">...</div>
 	</div>
 	
 	<script>
-		showAllSegments(62481);
+		showAllSegments(1);
 
 		function updateSlider(val) {
 			var display = document.getElementById('time');
 			// display.innerHTML = (val*1913.3).toFixed(0);
-			var hour = Math.floor(val*79.8/3600);
-			var minute = (((val*79.8)%3600)/60).toFixed(0);
-			display.innerHTML = hour+':'+minute;
-
+			var hour = Math.floor(val/3600);
+			var minute = Math.floor((val%3600)/60);
+			var sec = val%60;
+			val = (val-1)*24 + 1; //
+			display.innerHTML = hour+':'+minute+':'+sec + ' | frame #' + val;
+			
 			var pic = document.getElementById('frame1');
-			// pic.src = '../outputs/v2_frame'+val+'.jpg';
-			var f = 62481;
-			if (val > 50) f = 65352;
-			pic.src = 'resources/v2_frame'+f+'.jpg';
+			pic.src = 'resources/v2_frame'+val+'.jpg';
 			pic.alt = 'resources/v2_frame'+val+'.jpg';
 
-			showAllSegments(f);
+			showAllSegments(val);
 		}
 
 		function read(file) {
@@ -58,13 +57,19 @@
 			var file = 'resources/v2_frame'+frame+'.txt';
 			var text = read(file);
 			var o = document.getElementById('outputs');
-			if (text == null) o.innerHTML = 'No segments found.';
+			if (text == null) {
+				o.innerHTML = 'No segments found.';
+				// document.getElementById('code1').innerHTML = '';
+			}
 			else {
 				o.innerHTML = '';
 				var updated = false;
-				for(var i = 0; i < text; i++) {
+				document.getElementById('code1').innerHTML = '';
+				for(var i = 0; i < text; i++) { //segment0...?
 					var path = 'resources/v2_frame'+frame+'_segment'+(i+1)+'.jpg';
-					if (read(path) != null) {
+					var img_exists;
+					try { img_exists = read(path); } catch(e) {}
+					if (img_exists) {
 						o.innerHTML += '<img src="'+path+'" width="'+225+'px" onclick="display('+frame+', '+(i+1)+')"> ';
 						if (!updated) { updated = true; display(frame, i+1); }
 					}

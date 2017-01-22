@@ -2,26 +2,23 @@ video_file_path = "segment/images/5aP9Bl9hcqI_2_1080.mp4"
 op = "preview/resources" # 62481
 TAB = "   " # macros?
 
-fps, debug, times = 23.976150, False, [2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
+fps, debug, times = 23.976150, True, [2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
 
 import cv, cv2, os, re, subprocess, sys
 import HTMLParser, operator, codecs
 parser = HTMLParser.HTMLParser()
 
-time = 43*60+26
 vidcap = cv2.VideoCapture(video_file_path)
-# print vidcap.get(cv.CV_CAP_PROP_FPS)
-vidcap.set(1, 65352) # int(time*fps)
 success,image = vidcap.read()
-count = 65352-1 # 120
-if success:
+count = -1
+while success:
 	count += 1
-	# success,image = vidcap.read()
+	success,image = vidcap.read()
 	minute = int((count/fps)/60)
 	second = int(round((count/float(fps))%60))
 	print '\rframe #'+str(count)+' at', '%d:%02d' % (minute, second),
 	
-	if count/24. in times or (count % 24 == 0 or not debug): # first frame each second # fix
+	if count/24. in times or ((count-1) % 24 == 0 or not debug): # first frame each second # fix
 		os.system("rm "+op+"/v2_frame%d* 2>/dev/null" % count);
 
 		# extract image frame
