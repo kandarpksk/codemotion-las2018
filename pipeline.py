@@ -1,4 +1,4 @@
-video_file_path = "segment/images/5aP9Bl9hcqI_2_1080.mp4"
+video_file = "videos/5aP9Bl9hcqI_2_1080.mp4"
 op = "preview/resources" # 62481
 TAB = "   " # macros?
 
@@ -8,7 +8,7 @@ import cv, cv2, os, re, subprocess, sys
 import HTMLParser, operator, codecs
 parser = HTMLParser.HTMLParser()
 
-vidcap = cv2.VideoCapture(video_file_path)
+vidcap = cv2.VideoCapture(video_file)
 success,image = vidcap.read()
 count = -1
 while success:

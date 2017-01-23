@@ -10,4 +10,6 @@ temp.sh
 *.pdf
 *.html
 *.hocr
+*.pyc
+ace-builds
 
