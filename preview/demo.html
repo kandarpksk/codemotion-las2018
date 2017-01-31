@@ -10,17 +10,57 @@
 	<!-- this is cool -->
 	<!-- http://thecodeplayer.com/walkthrough/spicing-up-the-html5-range-slider-input -->
 	<div id="slider">
-		<input id="slide" type="range" min="1" max="7980" value="1" onchange="updateSlider(this.value)" style="width:300px; "/>
+
+		<select id="vnum" onchange="changeVideo(this.value)">
+			<option value="2"> CS50 - Week 8 - Python </option>
+			<option value="3"> Angular 2 for Beginners - Tutorial 1 </option>
+			<option value="4"> Coding Challenge #52 - Random Walker </option>
+			<option value="5"> D3.js tutorial - 1 - Introduction </option>
+			<option value="6"> wat </option>
+		</select>
+		<br/><br/>
+
+		<input id="slide" type="range" min="1" value="1" onchange="updateSlider(this.value)" style="width:300px; "/>
 		<span id="time" style="vertical-align:2px; font-family:sans-serif; ">0:0:1 | frame #1</span>
 		<br/>
-		<div style="display:inline-block; "><img id="frame1" src="resources/v2_frame217.jpg" alt="frame" width="483px"/></div>
-		<div style="display:inline-block; vertical-align:12%; "><textarea id="code1" rows="15" cols="50">This is CS50</textarea></div>
+		<div style="display:inline-block; "><img id="frame" alt="pic" width="483px"/></div>
+		<div style="display:inline-block; vertical-align:12%; " id="diff"><textarea id="code" rows="15" cols="50">-diff-</textarea></div>
 		<br/>
-		<div id="outputs">...</div>
+		<div id="outputs">-outputs-</div>
 	</div>
 	
 	<script>
-		showAllSegments(1);
+		var vnum = 2;
+		var fps = 23.976150;
+
+		function changeVideo(val) {
+			vnum = val;
+			switch (vnum) {
+				case 2: fps = 23.976150; break;
+				case 3: fps = 30.002146; break;
+				case 4: fps = 30.001050; break;
+				case 5: fps = 1; break;
+				case 6: fps = 1; break;
+			}
+			var dur = 7980;
+			switch (vnum) {
+				case 2: dur = 133*60 + 0; break;
+				case 3: dur = 7*60 + 47; break;
+				case 4: dur = 15*60 + 54; break;
+				case 5: dur = 5*60 + 42; break;
+				case 6: dur = 4*60 + 17; break;
+			}
+			console.log(dur);
+			document.getElementById('slide').max = dur;
+
+			document.getElementById('frame').src = 'resources'+vnum+'/frame1.jpg';
+			showAllSegments(1, true);
+		}
+
+		function cleanPath(fnum, s, ext=-1) {
+			if (ext == -1) return 'resources'+vnum + '/frame'+fnum + '.'+s;
+			else return 'resources'+vnum + '/frame'+fnum + '_segment'+s + '.'+ext;
+		}
 
 		function updateSlider(val) {
 			var display = document.getElementById('time');
@@ -28,14 +68,14 @@
 			var hour = Math.floor(val/3600);
 			var minute = Math.floor((val%3600)/60);
 			var sec = val%60;
-			val = (val-1)*24 + 1; //
+			val = Math.round((val-1)*24) + 1; //
 			display.innerHTML = hour+':'+minute+':'+sec + ' | frame #' + val;
 			
-			var pic = document.getElementById('frame1');
-			pic.src = 'resources/v2_frame'+val+'.jpg';
-			pic.alt = 'resources/v2_frame'+val+'.jpg';
+			var pic = document.getElementById('frame');
+			pic.src = cleanPath(val, 'jpg');
+			pic.alt = 'vid'+vnum+', frame'+val;
 
-			showAllSegments(val);
+			showAllSegments(val, true);
 		}
 
 		function read(file) {
@@ -46,34 +86,45 @@
 			else return null;
 		}
 
-		function display(f, s) { //frame, segment
-			file = 'resources/v2_frame'+f+'_segment'+s+'.txt';
+		function display(f, s, auto=false) { //frame, segment
+			// file = cleanPath(f, s, 'txt');
+			file = cleanPath(f, 'html');
 			var code = read(file);
-			if (code != null)
-				document.getElementById('code1').innerHTML = code;
+			if (code != null) document.getElementById('diff').innerHTML = code;
+			else document.getElementById('code').innerHTML = 'error: extracted code not found';
+			
+			if (!auto) {
+				var pic = document.getElementById('frame');
+				pic.src = cleanPath(f, s, 'jpg');
+				pic.alt = 'vid'+vnum + ', frame'+f + ', segment'+s;
+			}
 		}
 
-		function showAllSegments(frame) {
-			var file = 'resources/v2_frame'+frame+'.txt';
+		function showAllSegments(frame, auto=false) {
+			var file = cleanPath(frame, 'txt');
 			var text = read(file);
 			var o = document.getElementById('outputs');
 			if (text == null) {
 				o.innerHTML = 'No segments found.';
-				// document.getElementById('code1').innerHTML = '';
+				// document.getElementById('code').innerHTML = '';
 			}
 			else {
 				o.innerHTML = '';
 				var updated = false;
-				document.getElementById('code1').innerHTML = '';
-				for(var i = 0; i < text; i++) { //segment0...?
-					var path = 'resources/v2_frame'+frame+'_segment'+(i+1)+'.jpg';
+				document.getElementById('diff').innerHTML = '';
+				var i = 0;
+				do { //segment0...?
+					var path = cleanPath(frame, i, 'jpg');
 					var img_exists;
 					try { img_exists = read(path); } catch(e) {}
 					if (img_exists) {
-						o.innerHTML += '<img src="'+path+'" width="'+225+'px" onclick="display('+frame+', '+(i+1)+')"> ';
-						if (!updated) { updated = true; display(frame, i+1); }
+						o.innerHTML += '<img src="'+path+'" width="'+225+'px" onclick="display('+frame+', '+i+')"> ';
+						if (!updated) { updated = true; display(frame, i, auto); }
 					}
-				}
+					i = i+1;
+				} while(i < text);
+				if (Number(text) == '0' && o.innerHTML != '')
+					o.innerHTML += '<br/>0th segment';
 			}
 		}
 	</script>

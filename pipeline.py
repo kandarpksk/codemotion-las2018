@@ -1,48 +1,55 @@
-video_file = "videos/5aP9Bl9hcqI_2_1080.mp4"
-op = "preview/resources" # 62481
-TAB = "   " # macros?
+debug = True
+times = [] #[2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
 
-fps, debug, times = 23.976150, True, [2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
+#video_file = <video>; # fps = 23.976150; # output_path = "preview/resources2"
+video_file = "videos/Angular 2 for Beginners - Tutorial 1.mp4"; fps = 30.002146; output_path = "preview/resources3"
+#video_file = "videos/Coding Challenge #52 - Random Walker.mp4"; # fps = 30.001050; # output_path = "preview/resources4"
+#video_file = "videos/D3.js tutorial - 1 - Introduction.mp4"; # fps = ; # output_path = "preview/resources5"
+#video_file = "videos/wat.mov"; # fps = ; # output_path = "preview/resources6"
 
-import cv, cv2, os, re, subprocess, sys
+unit_indent = "   "
+
+import cv2, os, re, subprocess, sys
 import HTMLParser, operator, codecs
+import math
 parser = HTMLParser.HTMLParser()
 
-vidcap = cv2.VideoCapture(video_file)
-success,image = vidcap.read()
-count = -1
+video = cv2.VideoCapture(video_file)
+
+frame = 0
+success,image = video.read()
 while success:
-	count += 1
-	success,image = vidcap.read()
-	minute = int((count/fps)/60)
-	second = int(round((count/float(fps))%60))
-	print '\rframe #'+str(count)+' at', '%d:%02d' % (minute, second),
+	frame += 1
+
+	minute = int((frame/fps)/60)
+	second = int(math.floor((frame/float(fps))%60))
+	print '\rframe #'+str(frame)+' at', '%d:%02d:' % (minute, second),
 	
-	if count/24. in times or ((count-1) % 24 == 0 or not debug): # first frame each second # fix
-		os.system("rm "+op+"/v2_frame%d* 2>/dev/null" % count);
+	if round((frame-1) % fps) in [0, 30] or not debug: #or frame/24. in times # first frame each second
+		os.system("rm "+output_path+"/frame%d* 2>/dev/null" % frame);
 
 		# extract image frame
-		cv2.imwrite(op+"/v2_frame%d.ppm" % count, image)
-		cv2.imwrite(op+"/v2_frame%d.jpg" % count, image)
+		cv2.imwrite(output_path+"/frame%d.ppm" % frame, image)
+		cv2.imwrite(output_path+"/frame%d.jpg" % frame, image)
 		
 		# get segment images
-		arguments = "0.33 500 40000 "+op+"/v2_frame" + str(count) + ".ppm" + " "+op+"/v2_frame" + str(count)
+		arguments = "0.33 500 40000 "+output_path+"/frame" + str(frame) + ".ppm" + " "+output_path+"/frame" + str(frame)
 		seg_cmd = "./segment/code/segment " + arguments
 		c = int(re.search(r'\d+', subprocess.check_output([seg_cmd], shell=True)).group())
 		
-		print "\ncrunching...",
+		print "crunching...",
 		sys.stdout.flush() # show incomplete line
 		
 		# run ocr and fix spacing
 		for i in range(c):
-			image = op+"/v2_frame%d_segment%d.ppm " % (count, i)
-			output = op+"/v2_frame%d_segment%d" % (count, i)
-			ocr_command = "tesseract " + image+output + " ~/large/codemotion/git/config.txt 2>/dev/null"
+			image = output_path+"/frame%d_segment%d.ppm " % (frame, i)
+			output = output_path+"/frame%d_segment%d" % (frame, i)
+			ocr_command = "tesseract " + image+output + " config.txt 2>/dev/null"
 			os.system(ocr_command)
 
 			# hocr output conversion
 			res = [] # distance, code
-			with open(op+"/v2_frame%d_segment%d.hocr" % (count, i)) as hocr_output:
+			with open(output_path+"/frame%d_segment%d.hocr" % (frame, i)) as hocr_output:
 				for line in hocr_output:
 					# find x-coordinate of upper left corner
 					location = re.search(r'(?<=bbox ).+?(?=\s)', line)
@@ -64,16 +71,16 @@ while success:
 			# spacing adjustment
 
 			if len(res) == 0:
-				os.system("rm "+op+"/v2_frame%d_segment%d.*" % (count, i))
+				os.system("rm "+output_path+"/frame%d_segment%d.*" % (frame, i))
 				if i == c-1:
-					if subprocess.call("ls "+op+"/v2_frame%d_segment*.ppm 1>/dev/null 2>/dev/null" % count, shell=True) != 0:
-						os.system("echo 0 > "+op+"/v2_frame"+str(count)+".txt")
-						# os.system("mv "+op+"/v2_frame%d.ppm "+op+"/v2_frame%d_del.ppm" % (count, count))
+					if subprocess.call("ls "+output_path+"/frame%d_segment*.ppm 1>/dev/null 2>/dev/null" % frame, shell=True) != 0:
+						os.system("echo 0 > "+output_path+"/frame"+str(frame)+".txt")
+						# os.system("mv "+output_path+"/frame%d.ppm "+output_path+"/frame%d_del.ppm" % (frame, frame))
 
 			else:
-				cv2.imwrite(op+"/v2_frame%d_segment%d.jpg" % (count, i), cv2.imread(op+"/v2_frame%d_segment%d.ppm" % (count, i)))
+				cv2.imwrite(output_path+"/frame%d_segment%d.jpg" % (frame, i), cv2.imread(output_path+"/frame%d_segment%d.ppm" % (frame, i)))
 
-				os.system("rm "+op+"/v2_frame%d_segment%d.hocr" % (count, i))
+				os.system("rm "+output_path+"/frame%d_segment%d.hocr" % (frame, i))
 				base = min(res, key=operator.itemgetter(0))[0]
 
 				# yet to address case when 30,33,62 happens
@@ -84,7 +91,7 @@ while success:
 						lines += r[1] + "\n"
 
 					# _dis[placed]
-					f = codecs.open(op+"/v2_frame%d_segment%d.txt" % (count, i), 'w', 'utf-8') # _check.txt
+					f = codecs.open(output_path+"/frame%d_segment%d.txt" % (frame, i), 'w', 'utf-8') # _check.txt
 					f.write(lines)
 
 				else:
@@ -95,17 +102,20 @@ while success:
 					for r in res:
 						indented = ""
 						for x in range(r[0]):
-							indented += TAB
+							indented += unit_indent
 						indented += r[1]
 						indented_lines += indented + "\n"
 
 					# _ind[ented]
-					f = codecs.open(op+"/v2_frame%d_segment%d.txt" % (count, i), 'w', 'utf-8')
+					f = codecs.open(output_path+"/frame%d_segment%d.txt" % (frame, i), 'w', 'utf-8')
 					f.write(indented_lines)
 
-		write_max_segments = "echo "+str(i)+" > "+op+"/v2_frame"+str(count)+".txt"
-		os.system("rm "+op+"/*.ppm; if [ ! -f "+op+"/v2_frame"+str(count)+".txt ]; then "+write_max_segments+"; fi")
-		print "done\n"
+		write_max_segments = "echo "+str(i)+" > "+output_path+"/frame"+str(frame)+".txt"
+		os.system("rm "+output_path+"/*.ppm; if [ ! -f "+output_path+"/frame"+str(frame)+".txt ]; then "+write_max_segments+"; fi")
+		print "done"
+
+	success,image = video.read()
+# end of while
 
 # find outputs -empty | sed 's/^/rm /g'
 # find outputs -empty | sed 's/.txt/.ppm/g' | sed 's/^/rm /g'
