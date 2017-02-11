@@ -2,7 +2,7 @@ import diff_match_patch as d
 import arrow_keys as kb
 import ocr, unidecode, re
 
-vnum, fnum = 4, 1#94009#47401
+vnum, fnum, fps = 4, 1, 30.001050 # fnum: 94009#47401
 print 'starting with frame', fnum, '\n'
 
 code, prev = ['', '', '', '', ''], 'lo'
@@ -30,6 +30,12 @@ while True:
 				print 'check:', len(keywords)
 				# print keywords
 				new_text += txt
+			else:
+				keywords = ocr.check_for_keywords(txt)
+				if(len(keywords) > 0):
+					new_text += '\n[maybe]\n' + txt
+				else:
+					new_text += '\n[unlikely]\n' + txt
 			file.close()
 		
 		# show any text extracted
@@ -80,6 +86,6 @@ while True:
 			prev = 'bl'
 		
 		# go to next frame
-		fnum += 24
+		fnum += fps
 	
 	#else: print 'break'; break

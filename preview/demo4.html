@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
 	 <meta charset="utf-8"> 
@@ -12,9 +11,9 @@
 	<div id="slider">
 
 		<select id="vnum" onchange="changeVideo(this.value)">
-			<option value="2"> CS50 - Week 8 - Python </option>
-			<option value="3"> Angular 2 for Beginners - Tutorial 1 </option>
 			<option value="4"> Coding Challenge #52 - Random Walker </option>
+			<option value="3"> Angular 2 for Beginners - Tutorial 1 </option>
+			<option value="2"> CS50 - Week 8 - Python </option>
 			<option value="5"> D3.js tutorial - 1 - Introduction </option>
 			<option value="6"> wat </option>
 		</select>
@@ -30,10 +29,10 @@
 	</div>
 	
 	<script>
-		var vnum = 2;
-		var fps = 23.976150;
+		var vnum = 4;
+		var fps = 30.001050;
 		
-		var dur = 7980;
+		var dur = 15*60 + 54;
 		document.getElementById('slide').max = dur;
 
 		document.getElementById('frame').src = 'resources'+vnum+'/frame1.jpg';
@@ -54,7 +53,7 @@
 			var hour = Math.floor(val/3600);
 			var minute = Math.floor((val%3600)/60);
 			var sec = val%60;
-			val = Math.round((val-1)*24) + 1; //
+			val = Math.round((val-1)*fps) + 1; //
 			display.innerHTML = hour+':'+minute+':'+sec + ' | frame #' + val;
 			
 			var pic = document.getElementById('frame');
