@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-	 <meta charset="utf-8"> 
-	<title>Codemotion v0</title>
+<meta charset="utf-8"> 
+<title>Codemotion v0</title>
+<style type="text/css" media="screen">
+	#editor { 
+		position: absolute;
+		width: 300px;
+		height: 204px;
+	}
+</style>
 </head>
 <body>
 	<!-- lots of options -->
@@ -24,15 +31,19 @@
 		<span id="time" style="vertical-align:2px; font-family:sans-serif; ">0:0:1 | frame #1</span>
 		<br/>
 		<div style="display:inline-block; "><img id="frame" alt="pic" width="483px"/></div>
-		<div style="display:inline-block; vertical-align:12%; " id="diff"><textarea id="code" rows="15" cols="50">-diff-</textarea></div>
+		<!-- <div style="display:inline-block; vertical-align:12%; " id="editor"><textarea id="code" rows="15" cols="50">-diff-</textarea></div> -->
+		<div id="editor" style="display:inline-block; "># comment</div>
 		<br/>
 		<div id="outputs">-outputs-</div>
 	</div>
 	
+	<script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		var editor = ace.edit("editor");
+		editor.getSession().setMode("ace/mode/python");
+
 		var vnum = 2;
 		var fps = 23.976150;
-		
 		var dur = 7980;
 		document.getElementById('slide').max = dur;
 
@@ -73,11 +84,12 @@
 		}
 
 		function display(f, s, auto=false) { //frame, segment
-			// file = cleanPath(f, s, 'txt');
-			file = cleanPath(f, 'html');
+			file = cleanPath(f, s, 'txt');
+			// file = cleanPath(f, 'html');
 			var code = read(file);
-			if (code != null) document.getElementById('diff').innerHTML = code;
-			else document.getElementById('code').innerHTML = 'error: extracted code not found';
+			// if (code != null) document.getElementById('editor').innerHTML = code;
+			if (code != null) editor.setValue(code);
+			else editor.setValue('# extracted code not found');
 			
 			if (!auto) {
 				var pic = document.getElementById('frame');
@@ -92,12 +104,12 @@
 			var o = document.getElementById('outputs');
 			if (text == null) {
 				o.innerHTML = 'No segments found.';
-				// document.getElementById('code').innerHTML = '';
+				// editor.setValue('');
 			}
 			else {
 				o.innerHTML = '';
 				var updated = false;
-				document.getElementById('diff').innerHTML = '';
+				editor.setValue('');
 				var i = 0;
 				do { //segment0...?
 					var path = cleanPath(frame, i, 'jpg');

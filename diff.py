@@ -33,9 +33,9 @@ while True:
 			else:
 				keywords = ocr.check_for_keywords(txt)
 				if(len(keywords) > 0):
-					new_text += '\n[maybe]\n' + txt
+					new_text += '\n# maybe\n' + txt
 				else:
-					new_text += '\n[unlikely]\n' + txt
+					new_text += '\n# unlikely\n' + txt
 			file.close()
 		
 		# show any text extracted

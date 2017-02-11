@@ -2,10 +2,14 @@ debug = True
 times = [] #[2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
 
 #video_file = <video>; # fps = 23.976150; # output_path = "preview/resources2"
-video_file = "videos/Angular 2 for Beginners - Tutorial 1.mp4"; fps = 30.002146; output_path = "preview/resources3"
+# video_file = "videos/Angular 2 for Beginners - Tutorial 1.mp4"; fps = 30.002146; output_path = "preview/resources3"
 #video_file = "videos/Coding Challenge #52 - Random Walker.mp4"; # fps = 30.001050; # output_path = "preview/resources4"
-#video_file = "videos/D3.js tutorial - 1 - Introduction.mp4"; # fps = ; # output_path = "preview/resources5"
-#video_file = "videos/wat.mov"; # fps = ; # output_path = "preview/resources6"
+#video_file = "videos/D3.js tutorial - 1 - Introduction.mp4"; # fps = 1; # output_path = "preview/resources"
+#video_file = "videos/wat.mov"; # fps = 1; # output_path = "preview/resources_"
+# video_file = "videos/Python Beginner Tutorial 1 (For Absolute Beginners).mp4"; fps = 30.001826; output_path = "preview/resources5"
+video_file = "videos/Python Web Scraping Tutorial 2 (Getting Page Source).mp4"; fps = 30.001816; output_path = "preview/resources6"
+#video_file = "videos/_"; # fps = 1; # output_path = "preview/resources7"
+#video_file = "videos/_"; # fps = 1; # output_path = "preview/resources8"
 
 unit_indent = "   "
 
