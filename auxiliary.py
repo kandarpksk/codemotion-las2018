@@ -4,6 +4,7 @@ def minima(lol, f=operator.itemgetter(1)):
 	return list(next(itertools.groupby(sorted(lol, key=f), key=f))[1])
 
 white = (255,255,255)
+gray = (50,50,50)
 
 import random as r
 def randomColor():
@@ -11,6 +12,9 @@ def randomColor():
 
 def d2(p1, p2):
 	return ((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
+
+def flip(pair):
+	return (pair[1], pair[0])
 
 ''' 
 maybe: compare speed

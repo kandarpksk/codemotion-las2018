@@ -1,12 +1,12 @@
 import sys, os, re, cv2, operator, codecs
 import HTMLParser
 parser = HTMLParser.HTMLParser()
-i = int(sys.argv[1])
-output_path = './'
-frame = i
+frame = int(sys.argv[1])
+output_path = 'outputs'
+i = int(sys.argv[2])
 unit_indent = "   "
 
-image = output_path+"/houghlines%d.jpg " % (i)
+image = output_path+"/houghlines%d_%d.jpg " % (frame, i)
 output = output_path+"/frame%d_segment%d" % (frame, i)
 ocr_command = "tesseract " + image+output + " config.txt 2>/dev/null"
 os.system(ocr_command)

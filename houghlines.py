@@ -1,7 +1,7 @@
 debug = False
 
 import sys
-input = sys.argv[1]
+input = sys.argv[1]+'.jpg'
 output = sys.argv[2]
 fraction = 1./10 # distance (as fraction of smaller dimension) to cluster within
 
@@ -20,10 +20,10 @@ corners = [(0,0), (0,img.shape[0]), (img.shape[1],0), (img.shape[1],img.shape[0]
 edgy = cv2.Canny(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 50, 20, apertureSize = 3)
 minLineLength, maxLineGap = 100, 10
 lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength, maxLineGap)
-print 'lines'
-for line in lines[0]:
-	print line,
-print
+# print 'lines'
+# for line in lines[0]:
+# 	print line,
+# print
 
 def drawPoint((x,y), color=white, thickness=4, image=demo):
 	cv2.circle(image, (x,y), thickness, color, -1, 8)
@@ -53,12 +53,10 @@ for x1,y1,x2,y2 in lines[0]:
 # for p in corners:
 	# drawPoint(p, white, 5)
 # points.extend(corners) # todo | useful?
-print 'points'
-print points
 
 # step: heuristic clustering of points [o/p: clusters]
 ############################
-def put(p, g):
+def put(p, g, measure=d2):
 	global radius
 	if g != []:
 		added = False
@@ -66,7 +64,7 @@ def put(p, g):
 		for c in g: # cluster, group
 			index += 1
 			for point in c:
-				if d2(p, point) < radius**2:
+				if measure(p, point) < radius**2:
 					g[index].append(p)
 					added = True
 					break
@@ -102,8 +100,8 @@ for c in clusters:
 		print 'unhandled case: multiple corners close to cluster'
 	corner = closestCorners[0]
 	ends.append(rep[0])
-	if debug or True: # temporary
-		drawPoint(rep[0], white, 7)
+	##if debug or True: # temporary
+		##drawPoint(rep[0], white, 7)
 
 # convex hull (ignore)
 def showPolygon(poly, debug=False):
@@ -138,7 +136,9 @@ for e1 in ends:
 		ignoreList.append(e1)
 		if debug:
 			print 'ignored point:', e1
-		drawPoint(e1, (50,50,50), 7)
+		##drawPoint(e1, gray, 7)
+# remove edges to ignored points
+# and those that aren't the best
 for pairs in edges:
 	# print pairs[0][0], '...',
 	offset = 0
@@ -153,13 +153,13 @@ for pairs in edges:
 	for pair in pairs:
 		ignored = True
 		for pairs in edges:
-			if (pair[1], pair[0]) in pairs:
-				if debug:
-					cv2.line(demo, pair[0], pair[1], color, 3+t)
+			if flip(pair) in pairs:
+				# if debug:
+				#cv2.line(demo, pair[0], pair[1], color, 3+t)#
 				if count == 0:
 					crop.append(pair[0])
-					print pair[0], '...'
-				print '\t', pair[1]
+					#print pair[0], '...'
+				#print '\t', pair[1]
 				count += 1
 				ignored = False
 		# if ignored:
@@ -167,34 +167,35 @@ for pairs in edges:
 	if count == 0:
 		if debug:
 			print 'ignored point:', pairs[0][0]
-		drawPoint(pairs[0][0], (50,50,50), 7)
+		# drawPoint(pairs[0][0], gray, 7)
 
+# include corner points if reqd.
 if len(crop) < 3:
 	crop.extend(corners)
-	for p in corners:
-		drawPoint(p, white, 20)
+	# for p in corners:
+	# 	drawPoint(p, white, 20)
 
 from surrounding_box import *
 hull = cv2.convexHull(np.array(crop))
-print '\npolygon ...', '\n\t',
-showPolygon(hull, 'debug')
+#print '\npolygon ...', '\n\t',
+#showPolygon(hull, 'debug')
 lx_ly = (hull[0][0][0], hull[0][0][1])
 lx_hy, hx_ly, hx_hy = lx_ly, lx_ly, lx_ly
 for p in hull:
 	p = p[0] # issues??
-	if p[0] < lx_ly[0]:
-		lx_ly = (p[0], lx_ly[1])
-		lx_hy = (p[0], lx_hy[1])
-	if p[1] < lx_ly[1]:
-		lx_ly = (lx_ly[0], p[1])
-		hx_ly = (hx_ly[0], p[1])
+	if p[0]+1 < lx_ly[0]:
+		lx_ly = (p[0]+1, lx_ly[1])
+		lx_hy = (p[0]+1, lx_hy[1])
+	if p[1]+2 < lx_ly[1]:
+		lx_ly = (lx_ly[0], p[1]+2)
+		hx_ly = (hx_ly[0], p[1]+2)
 	if p[0] > hx_hy[0]:
 		hx_hy = (p[0], hx_hy[1])
 		hx_ly = (p[0], hx_ly[1])
 	if p[1] > hx_hy[1]:
 		hx_hy = (hx_hy[0], p[1])
 		lx_hy = (lx_hy[0], p[1])
-print '\nrectange ...', '\n\t',
+#print '\nrectangle ...', '\n\t',
 def show(poly, debug=False):
 	c = randomColor()
 	for i in range(len(poly)):
@@ -204,11 +205,45 @@ def show(poly, debug=False):
 			cv2.line(demo, p1, p2, c, 10)
 		print p2,
 	print
-show([[lx_ly], [lx_hy], [hx_hy], [hx_ly]])
-demo = img[lx_ly[1]:hx_hy[1], lx_ly[0]:hx_hy[0]]
+#show([[lx_ly], [lx_hy], [hx_hy], [hx_ly]])
+demo = demo[lx_ly[1]:hx_hy[1], lx_ly[0]:hx_hy[0]]
 
-# print minimum_bounding_rectangle(crop)
-# .astype(int)
+# find separator points
+rectangle = [lx_ly, lx_hy, hx_ly, hx_hy]
+pts, sep_x, sep_y = [], [], []
+for point in crop:
+	if minima([(point, d2(point, p)) for p in rectangle])[0][1] > 4 * radius**2:
+		pts.append(point)
+		##drawPoint(point, gray, 20)
+# find separating lines
+count = 0
+for e1 in pts:
+	along_x = [(e1, e2) for e2 in pts[count:] if smallSlope(e1, e2, 'x', 5)]
+	along_y = [(e1, e2) for e2 in pts[count:] if smallSlope(e1, e2, 'y', 4)]
+	for pair in along_x:
+		if pair[0][1] not in sep_y:
+			sep_y.append(pair[0][1])
+		if pair[1][1] not in sep_y:
+			sep_y.append(pair[1][1])
+	for pair in along_y:
+		if pair[0][0] not in sep_x:
+			sep_x.append(pair[0][0])
+		if pair[1][0] not in sep_x:
+			sep_x.append(pair[1][0])
+	count += 1
+# choose few separators
+def filter(l):
+	def dist(a, b):
+		return (a-b)**2 
+	clu = []
+	for p in l:
+		put(p, clu, dist)
+	fl = []
+	for c in clu:
+		fl.append(int(np.mean(c)))
+	return fl
+sep_x = [x-lx_ly[0] for x in filter(sep_x)]
+sep_y = [y-lx_ly[1] for y in filter(sep_y)]
 
 def addBorder(image, frac=0.02, type=cv2.BORDER_CONSTANT):
 	top = (int) (frac*demo.shape[0])
@@ -216,15 +251,44 @@ def addBorder(image, frac=0.02, type=cv2.BORDER_CONSTANT):
 	left = (int) (frac*demo.shape[1])
 	right = left
 	return cv2.copyMakeBorder(image, top, bottom, left, right, type);
-demo = addBorder(demo)
+# demo = addBorder(demo) # try fixed size
 
 def scale(image, multiplier):
 	# INTER_NEAREST
 	return cv2.resize(image, None, fx=multiplier, fy=multiplier)
-demo = scale(demo, 2)
+# demo = scale(demo, 2)
 
-import remove_border as rb
+# http://answers.opencv.org/question/30082/detect-and-remove-borders-from-framed-photographs
+#import remove_border as rb#
 # print rb.crop_border(demo)
 
-cv2.imwrite(output, demo)
-print
+# edgy = cv2.Canny(cv2.cvtColor(demo, cv2.COLOR_BGR2GRAY), 50, 20, apertureSize = 3)
+# minLineLength, maxLineGap = 100, 10
+# lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength, maxLineGap)
+# for x1,y1,x2,y2 in lines[0]:
+# 	p1, p2 = (x1,y1), (x2,y2)
+# 	if d2(p1, p2) > (0.4 * (img.shape[0] if smallSlope(p1, p2, 'y') else img.shape[1])) **2:
+# 		cv2.line(demo, p1, p2, randomColor(), 5)
+
+# floodfill corners ...
+def removeLines():
+	return
+
+# crop into <4 segments
+if sep_y:
+	# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
+	img1 = demo[sep_y[0]:, 0:]
+	cv2.imwrite(output+'_1.jpg', scale(addBorder(img1), 2))
+if sep_x:
+	# cv2.line(demo, (sep_x[0],0), (sep_x[0],sep_y[0] if sep_y else lx_hy[1]), randomColor(), 2)
+	img2 = demo[0:sep_y[0] if sep_y else hx_hy[1], 0:sep_x[0]]
+	cv2.imwrite(output + ('_2.jpg' if sep_y else '_1.jpg'), scale(addBorder(img2), 2))
+	img3 = demo[0:sep_y[0] if sep_y else hx_hy[1], sep_x[0]:]
+	cv2.imwrite(output + ('_3.jpg' if sep_y else '_2.jpg'), scale(addBorder(img3), 2))
+elif sep_y:
+	img2 = demo[0:sep_y[0], 0:]
+	cv2.imwrite(output+'_2.jpg', scale(addBorder(img2), 2))
+else:
+	cv2.imwrite(output+'_1.jpg', scale(addBorder(demo), 2))
+
+# cv2.imwrite(output+'.jpg', demo)
