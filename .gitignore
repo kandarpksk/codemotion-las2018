@@ -13,3 +13,4 @@ temp.sh
 *.pyc
 ace-builds
 temp
+node_modules
