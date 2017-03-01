@@ -1,3 +1,47 @@
 h1 {
 	color: teal;
 }
+
+.transcript {
+	margin-top:15px;
+	margin-bottom:30px;
+}
+
+video,
+.editor {
+	max-height: 200px;
+	width: 100%;
+	border: 1px solid lightgray;
+}
+
+.editor {
+	min-height: 100px;
+	height: 90%;
+}
+
+.pills {
+	z-index: 1;
+	position: absolute;
+	/*top: 5;*/
+	right: 0;
+	margin-top: 10px;
+	margin-right: 25px;
+}
+
+.nav-pills a {
+    background-color: #fedfed;
+}
+
+#scrubber {
+	position: relative;
+	width: 100%;
+	height: 15px;
+	background-color: black;
+	opacity: 0.2;
+}
+
+#progress {
+	width: 0;
+	height: 15px;
+	background-color: darkred;
+}
