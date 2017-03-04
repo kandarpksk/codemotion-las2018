@@ -8,7 +8,7 @@ var dcode = [
 	var x = \"All this is syntax highlighted\";\n\
 	return x;\n\
 }',
-				'# \n\
+'# this is a comment \n\
 def foo(items):\n\
 	x = \"All this is syntax highlighted\"\n\
 	return x'
@@ -27,10 +27,17 @@ var dummy_data = {
 			start: 0
 		},
 			{
-			voiceover: 'next segment voiceover',
+			voiceover: 'next segment voiceover', // •SRT
 			code: [
-				{ text: dcode[1], language: 'python', l: 'py' },
-				{ text: 'b2', language: 'php', l: 'php' },
+				{ text: dcode[1], language: 'python', l: 'py' }, // highlight, shortened
+				{ text: '&lt;?php\
+/* This Echo statement will print out my message to the\
+the place in which I reside on.  In other words, the World. */\
+echo "Hello World!"; \
+/* echo "My name is Humperdinkle!";\
+echo "No way! My name is Uber PHP Programmer!";\
+*/\
+?\>', language: 'php', l: 'php' },
 				{ text: 'b3', language: 'ruby', l: 'ruby' }
 			],
 			url: 'videos/5aP9Bl9hcqI_2_720p.mp4',
