@@ -3,16 +3,18 @@
  * GET home page.
  */
 
-var dcode = [
-				'function foo(items) {\n\
-	var x = \"All this is syntax highlighted\";\n\
-	return x;\n\
-}',
-'# this is a comment \n\
-def foo(items):\n\
-	x = \"All this is syntax highlighted\"\n\
-	return x'
-]
+// function readTextFile(filepath) {
+// 	var rawFile = new XMLHttpRequest()
+// 	rawFile.open("GET", filepath, false)
+// 	rawFile.onreadystatechange = function () {
+// 		if(rawFile.readyState === 4)
+// 			if(rawFile.status === 200 || rawFile.status == 0) {
+// 				var allText = rawFile.responseText
+// 				alert(allText)
+// 			}
+// 	}
+// 	rawFile.send(null)
+// }
 
 var dummy_data = {
 	name: 'CS50 2016 - Week 8 - Python', // tutorial name
@@ -20,8 +22,9 @@ var dummy_data = {
 		{
 			voiceover: 'first segment voiceover',
 			code: [
-				{ text: dcode[0], language: 'javascript', l: 'js' },
-				{ text: 'a2', language: 'c_cpp', l: 'c' }
+				{ text: '//show accumulated code', language: 'javascript', l: 'js' },
+				// { text: 'a2', language: 'c_cpp', l: 'c' }
+				// multiple snippets?
 			],
 			url: 'videos/5aP9Bl9hcqI_2_720p.mp4',
 			start: 0
@@ -29,16 +32,9 @@ var dummy_data = {
 			{
 			voiceover: 'next segment voiceover', // •SRT
 			code: [
-				{ text: dcode[1], language: 'python', l: 'py' }, // highlight, shortened
-				{ text: '&lt;?php\
-/* This Echo statement will print out my message to the\
-the place in which I reside on.  In other words, the World. */\
-echo "Hello World!"; \
-/* echo "My name is Humperdinkle!";\
-echo "No way! My name is Uber PHP Programmer!";\
-*/\
-?\>', language: 'php', l: 'php' },
-				{ text: 'b3', language: 'ruby', l: 'ruby' }
+				{ text: '# todo', language: 'python', l: 'py' }, // highlight, shortened
+				// { text: 'b2', language: 'php', l: 'php' },
+				// { text: 'b3', language: 'ruby', l: 'ruby' }
 			],
 			url: 'videos/5aP9Bl9hcqI_2_720p.mp4',
 			start: 410

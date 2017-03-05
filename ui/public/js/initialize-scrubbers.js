@@ -13,6 +13,15 @@ function initializeScrubbers() {
 function videoTimeUpdater(e) {
 	var percent = this.currentTime / this.duration
 	updateProgressWidth($(this.parentNode).find('#progress')[0], percent)
+
+	var fnum = Math.round(this.currentTime*10)/10
+	var editor_id = $(this.parentNode.parentNode).find('.editor')[0].id
+	$.get('extracts/video1-frame'+1+'-segment1.txt',
+		function(response) {
+			var editor = ace.edit(editor_id)
+			editor.session.setValue('refreshed at time '+fnum+'\n---\n'+response)
+			// editor.getSession().setMode('ace/mode/'+)
+	})
 }
 
 function scrubberMouseDown(e) {

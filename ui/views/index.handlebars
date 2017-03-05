@@ -100,7 +100,7 @@
 			var s_index = $(e).data('s-index')
 			var id = 's'+s_index + 'l'+$(e).data('l-index') + '-code'
 			var text = document.getElementById(id).innerHTML
-			console.log(text)
+			//console.log(text)
 			var editor = ace.edit('s'+s_index+'-editor')
 			editor.session.setValue(text)
 			editor.getSession().setMode('ace/mode/'+$('#'+id).data('language'))
@@ -133,8 +133,13 @@
 			{{/each}}
 
 			$('.video-container video').click(function() {
-				if (this.paused) this.play()
-				else this.pause()
+				if (this.paused) {
+					$($(this.parentNode.parentNode).find('.pills')[0]).hide()
+					this.play()
+				} else {
+					this.pause()
+					$('.pills').show() // todo?
+				}
 			})
 
 			setInterval(showScript, 100)
@@ -148,7 +153,10 @@
 		})
 
 		function showMarkers() {
-			$('.marker').each(function() { $(this).show() })
+			$('.marker').each(
+				function() {
+					$(this).show()
+			})
 		}
 	</script>
 </body>
