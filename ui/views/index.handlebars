@@ -92,6 +92,8 @@
 	<script src="js/initialize-ace.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/initialize-scrubbers.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		var refreshIntervalId
+
 		function showCode(event, e) {
 			event.preventDefault()
 			var pills = e.parentNode.parentNode
@@ -106,12 +108,19 @@
 			editor.getSession().setMode('ace/mode/'+$('#'+id).data('language'))
 		}
 
+		var last = -1
 		function showScript() {
+			// console.log('show-script')
 			{{#each segments}}
 			var video = $('#s'+{{start}}+'-video')[0]
-			var scriptDiv = $('#s'+{{start}}+'-vo')
-			var time = Math.round(video.currentTime*100)/100
-			scriptDiv.html('voiceover at '+time)
+			var time = Math.round(video.currentTime)
+			if (!video.paused && last != time) {
+				last = time
+				$.get('/transcript/'+time, function(result) {
+					if(result != '') // update scriptDiv
+						$('#s'+{{start}}+'-vo').html(result)
+				})
+			}
 			{{/each}}
 		}
 
@@ -135,14 +144,14 @@
 			$('.video-container video').click(function() {
 				if (this.paused) {
 					$($(this.parentNode.parentNode).find('.pills')[0]).hide()
+					refreshIntervalId = setInterval(showScript, 200)
 					this.play()
 				} else {
 					this.pause()
+					clearInterval(refreshIntervalId)
 					$('.pills').show() // todo?
 				}
 			})
-
-			setInterval(showScript, 100)
 		}
 
 		$(document).ready(function() {

@@ -1,23 +1,20 @@
 function initializeScrubbers() {
 	$('.video-container').each(function() {
-		var $video = $(this).find('video')
-		var $scrubber = $(this).find('#scrubber')
-		var $progress = $(this).find('#progress')
-		// show time
-
-		$video.bind('timeupdate', videoTimeUpdater)
-		$scrubber.bind('mousedown', scrubberMouseDown)
+		$(this).find('video').bind('timeupdate', videoTimeUpdater)
+		$(this).find('#scrubber').bind('mousedown', scrubberMouseDown)
 	})
 }
 
 function videoTimeUpdater(e) {
+	// console.log('video-time-updater')
 	var percent = this.currentTime / this.duration
-	updateProgressWidth($(this.parentNode).find('#progress')[0], percent)
+	updateProgressWidth($(this.parentNode).find('#progress'), percent, this.currentTime, this.duration)
 
 	var fnum = Math.round(this.currentTime*10)/10
 	var editor_id = $(this.parentNode.parentNode).find('.editor')[0].id
-	$.get('extracts/video1-frame'+1+'-segment1.txt',
+	$.get('extracts/video3-frame'+1+'-segment2.txt',
 		function(response) {
+			// console.log('get-code')
 			var editor = ace.edit(editor_id)
 			editor.session.setValue('refreshed at time '+fnum+'\n---\n'+response)
 			// editor.getSession().setMode('ace/mode/'+)
@@ -25,15 +22,34 @@ function videoTimeUpdater(e) {
 }
 
 function scrubberMouseDown(e) {
-	var $this = $(this)
-	var x = e.pageX - $this.offset().left
-	var percent = x / $this.width()
-	updateProgressWidth($(this).find('#progress')[0], percent)
-	updateVideoTime($(this.parentNode).find('video')[0], percent)
+	console.log('scrubber-mouse-down')
+	var percent = (e.pageX - $(this).offset().left) / $(this).width()
+	var video = $(this.parentNode).find('video')[0]
+	$('#'+video.id.split('-')[0]+'-vo').html('<span style="opacity: 0">...</span')
+	/* $.get('/closest/'+Math.round(video.currentTime),
+	// 	function(result) {
+	// 		console.log('get-closest-voiceover')
+	// 		$('#'+video.id.split('-')[0]+'-vo').html(result)
+	}) */
+	updateProgressWidth($(this).find('#progress'), percent, video.currentTime, video.duration)
+	updateVideoTime(video, percent)
 }
 
-function updateProgressWidth(progress, percent) {
-	$(progress).width((percent * 100) + '%')
+function lead(n) {
+    return (n < 10) ? ('0' + n) : n;
+}
+
+function updateProgressWidth($progress, percent, time, duration) {
+	$progress.width((percent * 100) + '%')
+	var t, limit = (duration < 3600) ? 0.13 : 0.10
+	if(duration > 3600)
+		t = Math.floor(time/3600) + ':' + lead(Math.floor((time%3600)/60)) + ':' + lead(Math.floor(time%60))
+	else // don't show hour
+		t = Math.floor((time%3600)/60) + ':' + lead(Math.floor(time%60))
+	if(percent < limit)
+		$progress.html('<span style="margin-left: 5px; color: black">' + t + '</span>')
+	else
+		$progress.html('<span style="margin-left: 5px; color: teal">' + t + '</span>')
 }
 
 function updateVideoTime(video, percent) {
