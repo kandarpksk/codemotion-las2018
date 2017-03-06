@@ -15,4 +15,4 @@ ace-builds
 temp
 node_modules
 videos
-
+*.zip
