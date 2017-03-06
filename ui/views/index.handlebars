@@ -31,8 +31,8 @@
 		<br>
 
 		{{#each segments}}
-		<div class="alert alert-info" role="alert" id="s{{start}}-vo">
-			{{voiceover}}
+		<div class="alert alert-info" role="alert" id="s{{ start }}-vo">
+			{{ voiceover }}
 		</div>
 
 		<div class="row transcript">
@@ -41,8 +41,8 @@
 				<span class="badge badge-pill badge-default">
 					<i class="material-icons fs">fullscreen</i>
 				</span>
-				<video preload="metadata" id="s{{start}}-video">
-					<source src="{{ url }}#t={{start}}" type="video/mp4" />
+				<video preload="metadata" id="s{{ start }}-video">
+					<source src="{{ ../url }}#t={{ start }}" type="video/mp4" />
 					Your browser does not support HTML5 video.
 				</video>
 
@@ -59,9 +59,9 @@
 			<div class="col code-container">
 				{{#each code}}
 				<textarea style="display: none;"
-						id="s{{../start}}l{{@index}}-code" data-language="{{ this.language }}">{{ this.text }}</textarea>
+						id="s{{ ../start }}l{{ @index }}-code" data-language="{{ this.language }}">{{ this.text }}</textarea>
 				{{/each}}
-				<div class="editor" id="s{{start}}-editor"
+				<div class="editor" id="s{{ start }}-editor"
 						data-language="{{ code.[0].language }}">{{ code.[0].text }}</div>
 			</div>
 			<div class="pills">
@@ -70,7 +70,7 @@
 					<li class="nav-item">
 						<a class="nav-link{{#if @first}} active{{/if}}"
 								href="#" onclick="showCode(event, this)"
-								data-s-index="{{../start}}" data-l-index="{{@index}}">
+								data-s-index="{{ ../start }}" data-l-index="{{ @index }}">
 							{{ this.l }}
 						</a>
 					</li>
@@ -92,8 +92,6 @@
 	<script src="js/initialize-ace.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/initialize-scrubbers.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		var refreshIntervalId
-
 		function showCode(event, e) {
 			event.preventDefault()
 			var pills = e.parentNode.parentNode
@@ -112,26 +110,27 @@
 		function showScript() {
 			// console.log('show-script')
 			{{#each segments}}
-			var video = $('#s'+{{start}}+'-video')[0]
+			var video = $('#s'+{{ start }}+'-video')[0]
 			var time = Math.round(video.currentTime)
 			if (!video.paused && last != time) {
 				last = time
 				$.get('/transcript/'+time, function(result) {
 					if(result != '') // update scriptDiv
-						$('#s'+{{start}}+'-vo').html(result)
+						$('#s'+{{ start }}+'-vo').html(result)
 				})
 			}
 			{{/each}}
 		}
 
+		var refreshIntervalId
 		function initializeVideo() {
 			var video, fs_button
 			{{#each segments}}
-			video = $('#s'+{{start}}+'-video')[0]
-			// video.currentTime = {{start}}
+			video = $('#s'+{{ start }}+'-video')[0]
+			// video.currentTime = {{start }}
 			fs_button = $(video.parentNode).find('.fs')[0]
 			fs_button.addEventListener("click", function() {
-				var video = $('#s'+{{start}}+'-video')[0]
+				var video = $('#s'+{{ start }}+'-video')[0]
 				if (video.requestFullscreen)
 					video.requestFullscreen()
 				else if (video.mozRequestFullScreen)
@@ -143,7 +142,7 @@
 
 			$('.video-container video').click(function() {
 				if (this.paused) {
-					$($(this.parentNode.parentNode).find('.pills')[0]).hide()
+					$($(this.parentNode.parentNode).find('.pills')[0]).fadeOut()
 					refreshIntervalId = setInterval(showScript, 200)
 					this.play()
 				} else {

@@ -41,6 +41,7 @@
 	<script>
 		var editor = ace.edit("editor");
 		editor.getSession().setMode("ace/mode/python");
+		editor.$blockScrolling = Infinity
 
 		var vnum = 2;
 		var fps = 23.976150;

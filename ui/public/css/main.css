@@ -17,6 +17,10 @@ video,
 	width: 100%;
 }
 
+video {
+	border-radius: 5px;
+}
+
 .editor {
 	border: 1px solid lightgray;
 	min-height: 100px;
@@ -45,6 +49,7 @@ video,
 	height: 15px;
 	background-color: #636c72;
 	/*opacity: 1.0;*/
+	border-radius: 5px;
 }
 
 .marker {
@@ -59,14 +64,22 @@ video,
 	height: 15px;
 	background-color: lightgray;
 	font-size: 10px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	/*fix*/
 }
 
 .badge {
-	z-index: 2;
+	/*/*z-index: 2;*/
 	position: absolute;
 	right: 20px;
-	bottom: 26px;
+	bottom: 21px;
 	font-size: 10px;
+	display: initial;
+}
+
+video:hover + .badge {
+	display: none;
 }
 
 .material-icons {
