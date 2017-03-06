@@ -74,13 +74,13 @@ video {
 }
 
 .badge {
-	/*/*z-index: 2;*/
+	z-index: 1;
 	position: absolute;
-	right: 20px;
-	bottom: 21px;
+	right: 10px;
+	bottom: 15px;
 	font-size: 10px;
 	display: initial;
-	/*background: none;*/ /* single-line comments? */
+	background: none; /*single-line comments?*/ 
 }
 
 video:hover + .badge {

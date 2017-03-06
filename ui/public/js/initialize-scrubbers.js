@@ -17,11 +17,11 @@ function videoTimeUpdater(e) {
 	$.get('/code/'+fnum,
 		function(response) {
 			// console.log('get-code')
-			if(!video.paused || forceUpdate) {
+			/*if(!video.paused || forceUpdate) {*/
 				var editor = ace.edit(editor_id)
 				editor.session.setValue(response)
 				forceUpdate = false
-			}
+			/*}*/
 			// editor.getSession().setMode('ace/mode/'+) // language doesn't change often
 	})
 }

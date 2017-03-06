@@ -163,10 +163,11 @@
 			if(term != '') { // possibilities?
 				$('.input-lg').val('dummy results shown below')
 				$.get('/search/'+term, function(r) {
+					// todo: multiple segments
 					var bar = $('#s'+r.vid+'-video').parent().find('#progress')
 					for (i in r.pos)
 						bar.append('<div class="marker" style="left:'+r.pos[i]+'%; display:none"></div>')
-						$('.marker').each(function() { $(this).fadeIn() })
+					$('.marker').each(function() { $(this).fadeIn() })
 				})
 			}
 		}

@@ -28,10 +28,11 @@ function closestSubtitle(t) {
 	return subtitles[t]
 }
 
-var codename = { 'py': 'python',
-			 'js': 'javascript',
-			 'c': 'c_cpp',
-			 'cpp': 'c_cpp' }
+var codename = { 'text': 'text',
+				 'py': 'python',
+				 'js': 'javascript',
+				 'c': 'c_cpp',
+				 'cpp': 'c_cpp' }
 function addSegment(start, text, l) {
 	data.segments.push({
 		start: start,
@@ -52,11 +53,11 @@ var data = {
 
 var vnum
 function initialize() {
-	var metadata = { name: 'Sample Video',
+	var metadata = { name: 'CS50 2016 - Week 8 - Python',
 			fps: 24,
-			start: [0, 410, 3600],
-			code: ['//show accumulated code', '#todo', ''],
-			l: ['js', 'py', 'c']
+			start: [1, 1606, 3600],
+			code: ['', '', ''],
+			l: ['text', 'py', 'py']
 		} // dummy
 	if (vnum != undefined)
 		metadata = require('../public/other/video'+vnum+'.json')
@@ -107,7 +108,7 @@ exports.code = function(req, res) {
 				/* do nothing */
 			}
 		if(count == 0) res.send('# no code segments')
-		else res.send('# '+count+' segment(s) at time '+req.params.time+'\n\n'+contents)
+		else res.send(/*'# '+count+' segment(s) at time '+req.params.time+'\n\n'+*/contents)
 	} catch(error) {
 		console.log('# no text segments found for frame', frame)
 		res.send('no code segments')
@@ -115,5 +116,5 @@ exports.code = function(req, res) {
 }
 
 exports.search = function(req, res) {
-	res.json({ vid: 410, pos: [30, 50, 90] })
+	res.json({ vid: 1606, pos: [30, 50, 90] })
 }
