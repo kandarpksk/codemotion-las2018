@@ -111,7 +111,7 @@
 			// console.log('show-script')
 			{{#each segments}}
 			var video = $('#s'+{{ start }}+'-video')[0]
-			var time = Math.round(video.currentTime)
+			var time = Math.floor(video.currentTime)
 			if (!video.paused && last != time) {
 				last = time
 				$.get('/transcript/'+time, function(result) {

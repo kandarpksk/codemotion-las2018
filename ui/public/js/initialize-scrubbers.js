@@ -10,13 +10,16 @@ function videoTimeUpdater(e) {
 	var percent = this.currentTime / this.duration
 	updateProgressWidth($(this.parentNode).find('#progress'), percent, this.currentTime, this.duration)
 
-	var fnum = Math.round(this.currentTime*10)/10
+	var fnum = Math.floor(this.currentTime)
 	var editor_id = $(this.parentNode.parentNode).find('.editor')[0].id
-	$.get('extracts/video3-frame'+1+'-segment2.txt',
+	var video = this
+	$.get('/code/'+fnum,
 		function(response) {
 			// console.log('get-code')
-			var editor = ace.edit(editor_id)
-			editor.session.setValue('refreshed at time '+fnum+'\n---\n'+response)
+			if(!video.paused) { // not fixed?
+				var editor = ace.edit(editor_id)
+				editor.session.setValue(response)
+			}
 			// editor.getSession().setMode('ace/mode/'+)
 	})
 }

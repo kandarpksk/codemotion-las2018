@@ -1,5 +1,6 @@
 {
 	"name": "CS50 2016 - Week 8 - Python",
+	"fps": 24,
 	"start": [0],
 	"code": ["# sample segment 1"],
 	"l": ["py"]
