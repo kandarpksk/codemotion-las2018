@@ -27,7 +27,7 @@ video {
 	height: 100%;
 }
 
-.pills {
+h5 {
 	z-index: 1;
 	position: absolute;
 	/*top: 5;*/
@@ -36,11 +36,11 @@ video {
 	margin-right: 25px;
 }
 
-.nav-pills a {
+/*.nav-pills a {
 	border: 1px solid white;
 	background-color: lightgray;
 	color: white;
-}
+}*/
 
 #scrubber {
 	margin-top: -5px;
@@ -73,7 +73,7 @@ video {
 	/*fix*/
 }
 
-.badge {
+.badge-pill {
 	z-index: 1;
 	position: absolute;
 	right: 10px;
@@ -83,7 +83,7 @@ video {
 	background: none; /*single-line comments?*/ 
 }
 
-video:hover + .badge {
+video:hover + .badge-pill {
 	display: none;
 }
 
