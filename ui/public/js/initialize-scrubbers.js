@@ -5,6 +5,7 @@ function initializeScrubbers() {
 	})
 }
 
+var forceUpdate = false
 function videoTimeUpdater(e) {
 	// console.log('video-time-updater')
 	var percent = this.currentTime / this.duration
@@ -16,9 +17,10 @@ function videoTimeUpdater(e) {
 	$.get('/code/'+fnum,
 		function(response) {
 			// console.log('get-code')
-			if(!video.paused) { // not fixed?
+			if(!video.paused || forceUpdate) {
 				var editor = ace.edit(editor_id)
 				editor.session.setValue(response)
+				forceUpdate = false
 			}
 			// editor.getSession().setMode('ace/mode/'+)
 	})
@@ -35,6 +37,7 @@ function scrubberMouseDown(e) {
 	// 		$('#'+video.id.split('-')[0]+'-vo').html(result)
 	}) */
 	updateProgressWidth($(this).find('#progress'), percent, video.currentTime, video.duration)
+	forceUpdate = true
 	updateVideoTime(video, percent)
 }
 
