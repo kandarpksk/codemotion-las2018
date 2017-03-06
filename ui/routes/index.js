@@ -113,3 +113,7 @@ exports.code = function(req, res) {
 		res.send('no code segments')
 	}
 }
+
+exports.search = function(req, res) {
+	res.json({ vid: 410, pos: [30, 50, 90] })
+}

@@ -52,6 +52,10 @@ video {
 	border-radius: 5px;
 }
 
+#time {
+	position: absolute;
+}
+
 .marker {
 	position: absolute;
 	width: 2px;
@@ -76,6 +80,7 @@ video {
 	bottom: 21px;
 	font-size: 10px;
 	display: initial;
+	/*background: none;*/ /* single-line comments? */
 }
 
 video:hover + .badge {
@@ -87,19 +92,19 @@ video:hover + .badge {
 	align: center;
 }
 
-#custom-search-input{
+#custom-search-input {
 	padding: 3px;
 	border: solid 1px #E4E4E4;
 	border-radius: 6px;
 	background-color: #fff;
 }
 
-#custom-search-input input{
+#custom-search-input input {
 	border: 0;
 	box-shadow: none;
 }
 
-#custom-search-input button{
+#custom-search-input button {
 	margin: 3px 0 0 0;
 	background: none;
 	box-shadow: none;
@@ -107,4 +112,12 @@ video:hover + .badge {
 	color: #666666;
 	padding: 0 8px 0 10px;
 	border-left: none/*solid 1px #ccc*/;
+}
+
+#custom-search-input:hover button {
+	color: red;
+}
+
+#custom-search-input ::-webkit-input-placeholder {
+	color: lightgray;
 }

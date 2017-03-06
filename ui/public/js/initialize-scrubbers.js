@@ -22,30 +22,30 @@ function videoTimeUpdater(e) {
 				editor.session.setValue(response)
 				forceUpdate = false
 			}
-			// editor.getSession().setMode('ace/mode/'+)
+			// editor.getSession().setMode('ace/mode/'+) // language doesn't change often
 	})
 }
 
 function scrubberMouseDown(e) {
-	console.log('scrubber-mouse-down')
+	//// console.log('scrubber-mouse-down')
 	var percent = (e.pageX - $(this).offset().left) / $(this).width()
 	var video = $(this.parentNode).find('video')[0]
 	$('#'+video.id.split('-')[0]+'-vo').html('<span style="opacity: 0">...</span')
-	/* $.get('/closest/'+Math.round(video.currentTime),
-	// 	function(result) {
-	// 		console.log('get-closest-voiceover')
-	// 		$('#'+video.id.split('-')[0]+'-vo').html(result)
-	}) */
+	$.get('/closest/'+Math.floor(video.currentTime),
+		function(result) {
+			// console.log('get-closest-voiceover')
+			$('#'+video.id.split('-')[0]+'-vo').html(result)
+	})
 	updateProgressWidth($(this).find('#progress'), percent, video.currentTime, video.duration)
 	forceUpdate = true
 	updateVideoTime(video, percent)
 }
 
-function lead(n) {
-    return (n < 10) ? ('0' + n) : n;
-}
-
 function updateProgressWidth($progress, percent, time, duration) {
+	function lead(n) {
+	    return (n < 10) ? ('0' + n) : n;
+	}
+
 	$progress.width((percent * 100) + '%')
 	var t, limit = (duration < 3600) ? 0.13 : 0.10
 	if(duration > 3600)
@@ -53,9 +53,9 @@ function updateProgressWidth($progress, percent, time, duration) {
 	else // don't show hour
 		t = Math.floor((time%3600)/60) + ':' + lead(Math.floor(time%60))
 	if(percent < limit)
-		$progress.html('<span style="margin-left: 5px; color: black">' + t + '</span>')
+		$progress.find('#time').html('<span style="margin-left: 5px; color: black">' + t + '</span>')
 	else
-		$progress.html('<span style="margin-left: 5px; color: teal">' + t + '</span>')
+		$progress.find('#time').html('<span style="margin-left: 5px; color: teal">' + t + '</span>')
 }
 
 function updateVideoTime(video, percent) {

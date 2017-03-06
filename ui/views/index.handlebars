@@ -48,11 +48,7 @@
 
 				<div id="scrubber">
 					<div id="progress">
-						{{#if @index}}
-						<div class="marker" id="m0" style="left:30%; display:none"></div>
-						<div class="marker" id="m1" style="left:50%; display:none"></div>
-						<div class="marker" id="m1" style="left:90%; display:none"></div>
-						{{/if}}
+						<div id="time"></div>
 					</div>
 				</div>
 			</div>
@@ -129,7 +125,7 @@
 			video = $('#s'+{{ start }}+'-video')[0]
 			// video.currentTime = {{start }}
 			fs_button = $(video.parentNode).find('.fs')[0]
-			fs_button.addEventListener("click", function() {
+			fs_button.addEventListener('click', function() {
 				var video = $('#s'+{{ start }}+'-video')[0]
 				if (video.requestFullscreen)
 					video.requestFullscreen()
@@ -142,7 +138,7 @@
 
 			$('.video-container video').click(function() {
 				if (this.paused) {
-					$($(this.parentNode.parentNode).find('.pills')[0]).fadeOut()
+					$(this.parentNode.parentNode).find('.pills').fadeOut()
 					refreshIntervalId = setInterval(showScript, 200)
 					this.play()
 				} else {
@@ -161,11 +157,24 @@
 		})
 
 		function showMarkers() {
-			$('.marker').each(
-				function() {
-					$(this).show()
-			})
+			$('.marker').each(function() { $(this).remove() })
+
+			var term = $('.input-lg').val()
+			if(term != '') { // possibilities?
+				$('.input-lg').val('dummy results shown below')
+				$.get('/search/'+term, function(r) {
+					var bar = $('#s'+r.vid+'-video').parent().find('#progress')
+					for (i in r.pos)
+						bar.append('<div class="marker" style="left:'+r.pos[i]+'%; display:none"></div>')
+						$('.marker').each(function() { $(this).fadeIn() })
+				})
+			}
 		}
+
+		$('input').keyup(function(event) {
+			if(event.keyCode == 13)
+				$('button').click()
+		})
 	</script>
 </body>
 </html>
