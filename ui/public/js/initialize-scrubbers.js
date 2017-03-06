@@ -15,14 +15,15 @@ function videoTimeUpdater(e) {
 	var editor_id = $(this.parentNode.parentNode).find('.editor')[0].id
 	var video = this
 	$.get('/code/'+fnum,
-		function(response) {
+		function(resp) {
 			// console.log('get-code')
-			/*if(!video.paused || forceUpdate) {*/
+			// if(!video.paused || forceUpdate) {
 				var editor = ace.edit(editor_id)
-				editor.session.setValue(response)
+				editor.session.setValue(resp.code)
+				editor.getSession().setMode('ace/mode/'+resp.language)
+				$('#'+editor_id).parent().parent().find('.active').html(resp.l)
 				forceUpdate = false
-			/*}*/
-			// editor.getSession().setMode('ace/mode/'+) // language doesn't change often
+			// }
 	})
 }
 
@@ -52,6 +53,10 @@ function updateProgressWidth($progress, percent, time, duration) {
 		t = Math.floor(time/3600) + ':' + lead(Math.floor((time%3600)/60)) + ':' + lead(Math.floor(time%60))
 	else // don't show hour
 		t = Math.floor((time%3600)/60) + ':' + lead(Math.floor(time%60))
+	
+	// var video = $progress.parent().parent().find('video')[0]
+	// console.log('loaded:', video.buffered.end(0) / duration * 100)
+
 	if(percent < limit)
 		$progress.find('#time').html('<span style="margin-left: 5px; color: black">' + t + '</span>')
 	else

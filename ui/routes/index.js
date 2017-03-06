@@ -28,11 +28,7 @@ function closestSubtitle(t) {
 	return subtitles[t]
 }
 
-var codename = { 'text': 'text',
-				 'py': 'python',
-				 'js': 'javascript',
-				 'c': 'c_cpp',
-				 'cpp': 'c_cpp' }
+var codename = require('../public/js/codename.json')
 function addSegment(start, text, l) {
 	data.segments.push({
 		start: start,
@@ -57,7 +53,7 @@ function initialize() {
 			fps: 24,
 			start: [1, 1606, 3600],
 			code: ['', '', ''],
-			l: ['text', 'py', 'py']
+			l: ['Text', 'Python', 'Python']
 		} // dummy
 	if (vnum != undefined)
 		metadata = require('../public/other/video'+vnum+'.json')
@@ -90,6 +86,7 @@ exports.closest = function(req, res) {
 	res.send(closestSubtitle(req.params.time))
 }
 
+var detect = require('language-detect')
 exports.code = function(req, res) {
 	if(data.fps == 1) initialize()
 
@@ -98,23 +95,27 @@ exports.code = function(req, res) {
 		var base = 'public/extracts/video3/frame'+frame
 		var segments = parseInt(fs.readFileSync(base+'.txt', 'utf8'))
 
-		var contents = '', count = 0
+		var cs = '', count = 0
 		for (var i = 0; i <= segments; i++) //ensure not zero
 			try {
 				var content = fs.readFileSync(base+'-segment'+i+'.txt', 'utf8')
 				count += 1
-				contents += content+'\n' //'-----------\n segment '+count+'\n-----------\n' + content
+				cs += content+'\n' //'-----------\n segment '+count+'\n-----------\n' + content
 			} catch(error) {
 				/* do nothing */
 			}
-		if(count == 0) res.send('# no code segments')
-		else res.send(/*'# '+count+' segment(s) at time '+req.params.time+'\n\n'+*/contents)
+		if(count == 0)
+			res.json( { code: '# no code segments', language: codename['Text'], l: 'Text' } )
+		else { /*'# '+count+' segment(s) at time '+req.params.time+'\n\n'+*/
+			var lang = detect.contents('abc', cs)
+			res.json( { code: cs, language: codename[lang], l: lang } )
+		}
 	} catch(error) {
 		console.log('# no text segments found for frame', frame)
-		res.send('no code segments')
+		res.json( { code: 'no code segments', language: codename['Text'], l: 'Text' } )
 	}
 }
 
 exports.search = function(req, res) {
-	res.json({ vid: 1606, pos: [30, 50, 90] })
+	res.json({ vid: data.segments[1].start, pos: [30, 50, 90] })
 }
