@@ -16,3 +16,4 @@ temp
 node_modules
 videos
 *.zip
+._.DS_Store
