@@ -17,13 +17,19 @@ function videoTimeUpdater(e) {
 	$.get('/code/'+fnum,
 		function(resp) {
 			// console.log('get-code')
-			// if(!video.paused || forceUpdate) {
-				var editor = ace.edit(editor_id)
-				editor.session.setValue(resp.code)
-				editor.getSession().setMode('ace/mode/'+resp.language)
-				$('#'+editor_id).parent().parent().find('.active').html(resp.l)
+			if(!video.paused || forceUpdate) {
+				var editor = ace.edit(editor_id), changed = false
+				if (resp.code != "# no code segments" && resp.code != "no code segments") {
+					editor.session.setValue(resp.code); changed = true
+					editor.getSession().setMode('ace/mode/'+(resp.language ? resp.language : 'text'))
+				} // not sure about previous line
+				var pill = $('#'+editor_id).parent().parent().find('.pills')
+				if (pill.html() != resp.l && changed)
+					pill.fadeOut(300, function() {
+						$(this).text(resp.l).fadeIn(300) // active
+					}) // do no animate if paused?
 				forceUpdate = false
-			// }
+			}
 	})
 }
 
