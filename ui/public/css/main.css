@@ -36,11 +36,9 @@ h5 {
 	margin-right: 25px;
 }
 
-/*.nav-pills a {
+.current {
 	border: 1px solid white;
-	background-color: lightgray;
-	color: white;
-}*/
+}
 
 #scrubber {
 	margin-top: -5px;

@@ -1,8 +1,4 @@
 
-/*
- * GET home page.
- */
-
 const fs = require('fs')
 
 var subtitles
@@ -22,22 +18,28 @@ function readSubtitle(filename) {
 }
 
 function closestSubtitle(t) {
-	// limit duration
 	while (subtitles[t] == undefined && t >= 0)
 		t = t - 1
 	return subtitles[t]
 }
 
+function nextSubtitle(t) {
+	// limit duration
+	while (subtitles[t] == undefined) t += 1
+	return subtitles[t]
+}
+
 var codename = require('../public/js/codename.json')
 function addSegment(start, text, l) {
-	data.segments.push({
+	var seg = {
 		start: start,
-		voiceover: (closestSubtitle(start)) ? closestSubtitle(start) : 'what to show for first segment?',
-		code: [
-			// loop
-			{ text: text, language: codename[l], l: l }
-		]
-	})
+		voiceover: (closestSubtitle(start)) ?
+				closestSubtitle(start) : nextSubtitle(start),
+		code: []
+	}
+	for (i in text)
+		seg.code.push({ text: text[i], language: codename[l[i]], l: l[i] })
+	data.segments.push(seg)
 }
 
 var data = {
@@ -52,11 +54,13 @@ function initialize() {
 	var metadata = { name: 'CS50 2016 - Week 8 - Python',
 			fps: 24,
 			start: [0, 1606, 3600],
-			code: ['', '', ''],
-			l: ['Text', 'Python', 'Python']
+			code: [['accumulated code', ''], [''], ['']], // \n
+			l: [['Text', 'Python'], ['Python'], ['Python']]
 		} // dummy
 	if (vnum != undefined)
 		metadata = require('../public/other/video'+vnum+'.json')
+		// probably just ask to refresh here
+		// (as number of segments may differ)
 	vnum = (vnum) ? vnum : 3
 	
 	readSubtitle('other/video'+vnum+'_sub.txt')
@@ -88,36 +92,52 @@ exports.closest = function(req, res) {
 
 var detect = require('language-detect')
 exports.code = function(req, res) {
-	if(data.fps == 1) initialize()
+	if(data.fps == 1)
+		initialize()
 
 	var frame = (req.params.time * data.fps) + 1
 	try {
-		var base = 'public/extracts/video3/frame'+frame
+		var base = 'public/extracts/video'+vnum+'/frame'+frame
 		var segments = parseInt(fs.readFileSync(base+'.txt', 'utf8'))
 
-		var cs = '', count = 0
+		var cs = [], count = 0
 		for (var i = 0; i <= segments; i++) //ensure not zero
 			try {
 				var content = fs.readFileSync(base+'-segment'+i+'.txt', 'utf8')
 				count += 1
-				cs += content+'\n' //'-----------\n segment '+count+'\n-----------\n' + content
+				cs.push(content) //'-----------\n segment '+count+'\n-----------\n' + content
 			} catch(error) {
 				/* do nothing */
 			}
 		if(count == 0)
 			// todo: check out stackoverflow.com/questions/15903191
 			// how-to-automatically-pick-a-mode-for-ace-editor-given-a-file-extension
-			res.json( { code: '# no code at this point', language: codename['Text'], l: 'Text' } )
+			res.json( { code: ['# no code at this point'], language: [codename['Text']], l: ['Text'] } )
 		else { /*'# '+count+' segment(s) at time '+req.params.time+'\n\n'+*/
-			var lang = detect.contents('abc', cs)
-			res.json( { code: cs, language: codename[lang], l: lang } )
+			var l = []
+			for (code_i in cs)
+				l.push(detect.contents('flnm', cs[code_i]))
+			var language = []
+			for (lang_i in l)
+				language.push(codename[l[lang_i]])
+			res.json( { code: cs, language: language, l: l } )
 		}
 	} catch(error) {
 		console.log('# no text segments found for frame', frame)
-		res.json( { code: '# no segments present', language: codename['Text'], l: 'Text' } )
+		res.json( { code: ['# no segments present'], language: [codename['Text']], l: ['Text'] } )
 	}
 }
 
 exports.search = function(req, res) {
-	res.json({ vid: data.segments[0].start, pos: [30, 50, 90] }) // randomize for now
+	if (vnum == undefined) // undefined
+		initialize()
+
+	var fi = require('findit')
+	var finder = fi('public/extracts/video'+vnum)
+	finder.on('file', function(file) {
+		if (file.search('segment') != -1)
+			console.log('about to read ' + file.substring(file.search('frame')))
+	})
+
+	res.json({ vid: data.segments[0].start, apos: [2394, 3990, 7182] }) // randomize for now
 }

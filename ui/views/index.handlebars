@@ -60,7 +60,7 @@
 				<div class="editor" id="s{{ start }}-editor"
 						data-language="{{ code.[0].language }}">{{ code.[0].text }}</div>
 			</div>
-			<h5> <!-- todo: confirm proper way to use css -->
+			<h5 id="lf"> <!-- todo: check proper way to use css -->
 				{{#each code}}
 				{{#if @index}} <br> {{/if}}
 				<span class="badge badge-default pills" onclick="showCode(event, this)"
@@ -147,19 +147,23 @@
 			})
 			{{/each}}
 
-			$('.video-container video').click(function() {
-				if (this.paused) {
-					$(this.parentNode.parentNode).find('.pills').animate({'opacity': 0.3})
-					refreshIntervalId = setInterval(showScript, 200)
-					this.play()
-				} else {
-					// setTimeout(function () {})
-					this.pause()
-					clearInterval(refreshIntervalId)
-					$(this.parentNode.parentNode).find('.pills').animate({'opacity': 0.7})
-					// $('.pills').show()
-				}
-			})
+			$('.video-container video').click(toggle)
+		}
+
+		function toggle(v = null) {
+			var th = $(this).is('video') ? this : v
+			if (th.paused) {
+				$(th.parentNode.parentNode).find('.pills').animate({'opacity': 0.3})
+				refreshIntervalId = setInterval(showScript, 200)
+				th.play()
+				lastVideo = th
+			} else {
+				th.pause()
+				clearInterval(refreshIntervalId)
+				$(th.parentNode.parentNode).find('.pills').animate({'opacity': 0.7})
+				lastVideo = th
+				// $('.pills').show()
+			}
 		}
 
 		$(document).ready(function() {
@@ -197,8 +201,10 @@
 				$.get('/search/'+term, function(r) {
 					// todo: multiple segments
 					var bar = $('#s'+r.vid+'-video').parent().find('#progress')
-					for (i in r.pos)
-						bar.append('<div class="marker" style="left:'+r.pos[i]+'%; display:none"></div>')
+					for (i in r.apos) {
+						var pos = r.apos[i]/$('video').first()[0].duration * 100
+						bar.append('<div class="marker" style="left:'+pos+'%; display:none"></div>')
+					}
 					$('.marker').each(function() { $(this).fadeIn() })
 				})
 			}
@@ -207,6 +213,12 @@
 		$('input').keyup(function(event) {
 			if(event.keyCode == 13)
 				$('button').click() // enter key
+		})
+
+		var lastVideo = -1
+		$(window).keypress(function(e) {
+			if (e.keyCode == 32 && lastVideo != -1)
+				toggle(lastVideo)
 		})
 	</script>
 </body>
