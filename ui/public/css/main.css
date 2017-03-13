@@ -63,6 +63,12 @@ h5 {
 	background-color: orange;
 }
 
+.marker:hover {
+	width: 4px;
+	margin-left: -1px;
+	background-color: yellow;
+}
+
 #progress {
 	width: 0;
 	height: 15px;

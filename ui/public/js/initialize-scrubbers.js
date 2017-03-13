@@ -30,6 +30,8 @@ function videoTimeUpdater(e) {
 					}) // do no animate if paused?
 				forceUpdate = false
 			}
+	}).fail(function() {
+		console.log('couldn\'t get code from server')
 	})
 }
 

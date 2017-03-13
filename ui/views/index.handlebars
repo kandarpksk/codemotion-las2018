@@ -132,6 +132,8 @@
 			var video, fs_button
 			{{#each segments}}
 			video = $('#s'+{{ start }}+'-video')[0]
+			video.addEventListener('error',
+				function() { alert('uh oh') })
 			// video.currentTime = {{start }}
 			fs_button = $(video.parentNode).find('.fs')[0]
 			fs_button.addEventListener('click', function() {

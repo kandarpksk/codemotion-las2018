@@ -59,7 +59,7 @@ function initialize() {
 		metadata = require('../public/other/video'+vnum+'.json')
 	vnum = (vnum) ? vnum : 3
 	
-	readSubtitle('other/video'+vnum+'.txt')
+	readSubtitle('other/video'+vnum+'_sub.txt')
 	data.name = metadata.name
 	data.fps = metadata.fps
 	data.url = 'videos/video'+vnum+'.mp4'
