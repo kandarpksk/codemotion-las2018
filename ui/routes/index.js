@@ -107,17 +107,17 @@ exports.code = function(req, res) {
 		if(count == 0)
 			// todo: check out stackoverflow.com/questions/15903191
 			// how-to-automatically-pick-a-mode-for-ace-editor-given-a-file-extension
-			res.json( { code: '# no code segments', language: codename['Text'], l: 'Text' } )
+			res.json( { code: '# no code at this point', language: codename['Text'], l: 'Text' } )
 		else { /*'# '+count+' segment(s) at time '+req.params.time+'\n\n'+*/
 			var lang = detect.contents('abc', cs)
 			res.json( { code: cs, language: codename[lang], l: lang } )
 		}
 	} catch(error) {
 		console.log('# no text segments found for frame', frame)
-		res.json( { code: 'no code segments', language: codename['Text'], l: 'Text' } )
+		res.json( { code: '# no segments present', language: codename['Text'], l: 'Text' } )
 	}
 }
 
 exports.search = function(req, res) {
-	res.json({ vid: data.segments[1].start, pos: [30, 50, 90] })
+	res.json({ vid: data.segments[0].start, pos: [30, 50, 90] }) // randomize for now
 }

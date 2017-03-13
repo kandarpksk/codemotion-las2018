@@ -21,7 +21,7 @@
 			<div class="input-group col-md-4" id="custom-search-input" style="margin-left: -15px">
 				<input type="text" class="form-control input-lg" placeholder="Look for code fragments" />
 				<span class="input-group-btn">
-					<button class="btn btn-info btn-lg" type="button" onclick="showMarkers()">
+					<button class="btn btn-info btn-lg" type="button" onclick="showResults()">
 						<i class="material-icons" data-toggle="tooltip" data-placement="left" title="results shown below">search</i>
 					</button>
 				</span>
@@ -171,12 +171,29 @@
 			$('[data-toggle="tooltip"]').tooltip()
 		})
 
+		function highlightWords() {
+			$('.editor').each(function() {
+				var editor = ace.edit(this)
+				editor.findAll(RegExp(terms, 'g'), { regExp: true })
+			})
+		}
+
+		var terms = /codemotion/g // shouldn't match anything
+		function showResults() {
+			showMarkers()
+			var search = $('.input-lg').val() ? $('.input-lg').val() : 'codemotion'
+			if (!$('.input-lg').val())
+				$('.input-lg').val('nothing to search') // improve later
+			// different regex syntax?!
+			terms = search.split(' ').join('|') // /sample|import/g
+			highlightWords()
+		}
+
 		function showMarkers() {
 			$('.marker').each(function() { $(this).remove() })
 
 			var term = $('.input-lg').val()
 			if(term != '') { // possibilities?
-				// $('.input-lg').val('dummy results shown below')
 				$.get('/search/'+term, function(r) {
 					// todo: multiple segments
 					var bar = $('#s'+r.vid+'-video').parent().find('#progress')
@@ -189,7 +206,7 @@
 
 		$('input').keyup(function(event) {
 			if(event.keyCode == 13)
-				$('button').click()
+				$('button').click() // enter key
 		})
 	</script>
 </body>

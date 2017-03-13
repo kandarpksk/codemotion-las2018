@@ -19,7 +19,8 @@ function videoTimeUpdater(e) {
 			// console.log('get-code')
 			if(!video.paused || forceUpdate) {
 				var editor = ace.edit(editor_id), changed = false
-				if (resp.code != "# no code segments" && resp.code != "no code segments") {
+				var notEmpty = resp.code != "# no code at this point" && resp.code != "# no segments present"
+				if (notEmpty || forceUpdate) {
 					editor.session.setValue(resp.code); changed = true
 					editor.getSession().setMode('ace/mode/'+(resp.language ? resp.language : 'text'))
 				} // not sure about previous line
@@ -29,6 +30,7 @@ function videoTimeUpdater(e) {
 						$(this).text(resp.l).fadeIn(300) // active
 					}) // do no animate if paused?
 				forceUpdate = false
+				highlightWords()
 			}
 	}).fail(function() {
 		console.log('couldn\'t get code from server')
