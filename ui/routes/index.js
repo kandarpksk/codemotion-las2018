@@ -32,7 +32,7 @@ var codename = require('../public/js/codename.json')
 function addSegment(start, text, l) {
 	data.segments.push({
 		start: start,
-		voiceover: (closestSubtitle(start)) ? closestSubtitle(start) : '<subtitles here>',
+		voiceover: (closestSubtitle(start)) ? closestSubtitle(start) : 'what to show for first segment?',
 		code: [
 			// loop
 			{ text: text, language: codename[l], l: l }
@@ -51,7 +51,7 @@ var vnum
 function initialize() {
 	var metadata = { name: 'CS50 2016 - Week 8 - Python',
 			fps: 24,
-			start: [1, 1606, 3600],
+			start: [0, 1606, 3600],
 			code: ['', '', ''],
 			l: ['Text', 'Python', 'Python']
 		} // dummy

@@ -20,8 +20,12 @@ function videoTimeUpdater(e) {
 			if(!video.paused || forceUpdate) {
 				var editor = ace.edit(editor_id), changed = false
 				var notEmpty = resp.code != "# no code at this point" && resp.code != "# no segments present"
-				if (notEmpty || forceUpdate) {
-					editor.session.setValue(resp.code); changed = true
+				var mod = (editor.session.getValue() != resp.code)
+				// console.log(mod ? 'modified' : 'consistent')
+				if ((notEmpty || forceUpdate) && mod) {
+					editor.session.setValue(resp.code)
+					console.log('updated code (frame: '+fnum+')')
+					changed = true
 					editor.getSession().setMode('ace/mode/'+(resp.language ? resp.language : 'text'))
 				} // not sure about previous line
 				var pill = $('#'+editor_id).parent().parent().find('.pills')

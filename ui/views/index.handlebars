@@ -95,7 +95,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
 	<script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/initialize-ace.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/initialize-scrubbers.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/init-scrubbers.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		function showCode(event, e) {
 			// event.preventDefault()
@@ -133,7 +133,7 @@
 			{{#each segments}}
 			video = $('#s'+{{ start }}+'-video')[0]
 			video.addEventListener('error',
-				function() { alert('uh oh') })
+				function() { alert('video: out of buffer') })
 			// video.currentTime = {{start }}
 			fs_button = $(video.parentNode).find('.fs')[0]
 			fs_button.addEventListener('click', function() {
