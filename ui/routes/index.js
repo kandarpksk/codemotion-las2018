@@ -49,8 +49,10 @@ var data = {
 	segments: []
 }
 
-var vnum
+var vnum, finder, done = false
 function initialize() {
+	console.log('initializing backend')
+
 	var metadata = { name: 'CS50 2016 - Week 8 - Python',
 			fps: 24,
 			start: [0, 1606, 3600],
@@ -70,6 +72,23 @@ function initialize() {
 	data.segments = []
 	for (var i = 0; i < metadata.start.length; i++)
 		addSegment(metadata.start[i], metadata.code[i], metadata.l[i])
+
+	var fi = require('findit')
+	finder = fi('public/extracts/video'+vnum)
+	finder.on('file', function(file) {
+		if (file.search('segment') != -1) {
+			fs.readFile(file, 'utf8', function(err, data) {
+				var fnum = (parseInt(file.substring(file.search('frame')+5, file.search('-')))-1)/24
+				var words = data.match(/\b(\w+)\b/g)
+				for(i in words)
+					if (table[words[i]]) {
+						if(!table[words[i]].includes(fnum))
+							table[words[i]].push(fnum)
+					} else table[words[i]] = [fnum]
+			})
+		}
+	})
+	finder.on('end', function() { done = true })
 }
 
 exports.view = function(req, res) {
@@ -128,16 +147,18 @@ exports.code = function(req, res) {
 	}
 }
 
+var table = {}
 exports.search = function(req, res) {
 	if (vnum == undefined) // undefined
 		initialize()
 
-	var fi = require('findit')
-	var finder = fi('public/extracts/video'+vnum)
-	finder.on('file', function(file) {
-		if (file.search('segment') != -1)
-			console.log('about to read ' + file.substring(file.search('frame')))
-	})
+	if (done) {
+		var terms = req.params.term.match(/\b(\w+)\b/g)
+		console.log(terms) // profile indexing
+		var apos = table[terms[0]] ? table[terms[0]] : [2394, 3990, 7182]
 
-	res.json({ vid: data.segments[0].start, apos: [2394, 3990, 7182] }) // randomize for now
+		// absolute position (i.e. time elapsed)
+		res.json({ vid: data.segments[0].start, apos: apos, error: 'none' })
+	} else
+		res.json({ vid: data.segments, apos: [], error: 'wait' })
 }

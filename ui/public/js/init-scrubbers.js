@@ -38,8 +38,7 @@ function videoTimeUpdater(e) {
 					pills.each(function() {
 						if ($(this).html().trim() == resp.l[cc])
 							$(this).addClass('badge-info')
-						else
-							$(this).removeClass('badge-info')
+						else $(this).removeClass('badge-info')
 					})
 					// pills.fadeOut(video.paused ? 50 : 300, function() {
 					// 	$(this).text(resp.l[cc]).fadeIn(video.paused ? 50 : 300)

@@ -199,11 +199,15 @@
 			var term = $('.input-lg').val()
 			if(term != '') { // possibilities?
 				$.get('/search/'+term, function(r) {
-					// todo: multiple segments
-					var bar = $('#s'+r.vid+'-video').parent().find('#progress')
-					for (i in r.apos) {
-						var pos = r.apos[i]/$('video').first()[0].duration * 100
-						bar.append('<div class="marker" style="left:'+pos+'%; display:none"></div>')
+					if (r.error == 'wait')
+						console.log('still indexing')
+					else {
+						// multiple segments here
+						var bar = $('#s'+r.vid+'-video').parent().find('#progress')
+						for (i in r.apos) {
+							var pos = r.apos[i]/$('video').first()[0].duration * 100
+							bar.append('<div class="marker" style="left:'+pos+'%; display:none"></div>')
+						}
 					}
 					$('.marker').each(function() { $(this).fadeIn() })
 				})
