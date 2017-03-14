@@ -41,7 +41,7 @@
 				<span class="badge badge-pill badge-default">
 					<i class="material-icons fs">fullscreen</i>
 				</span>
-				<video preload="metadata" id="s{{ start }}-video">
+				<video preload="auto" id="s{{ start }}-video"> <!-- poster="images/loading.gif" -->
 					<source src="{{ ../url }}#t={{ start }}" type="video/mp4" />
 					Your browser does not support HTML5 video.
 				</video>
@@ -206,12 +206,32 @@
 						var bar = $('#s'+r.vid+'-video').parent().find('#progress')
 						for (i in r.apos) {
 							var pos = r.apos[i]/$('video').first()[0].duration * 100
-							bar.append('<div class="marker" style="left:'+pos+'%; display:none"></div>')
+							bar.append('<div class="marker" style="left:'+pos+'%; display:none"\
+									onclick="preview('+r.apos[i]+', this)" onmouseover="set(this)"></div>')
 						}
 					}
 					$('.marker').each(function() { $(this).fadeIn() })
 				})
 			}
+		}
+
+		var back
+		function set(m_div) {
+			back = $(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime
+		}
+
+		function preview(p, m_div) {
+			var ct = $(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime
+			$(m_div).attr('onclick', 'preview2('+back+', this)')
+			back = p
+			$(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
+		}
+
+		function preview2(p, m_div) {
+			var ct = $(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime
+			$(m_div).attr('onclick', 'preview('+back+', this)')
+			back = p
+			$(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
 		}
 
 		$('input').keyup(function(event) {

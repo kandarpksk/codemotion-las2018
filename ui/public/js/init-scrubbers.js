@@ -58,14 +58,14 @@ function scrubberMouseDown(e) {
 	var percent = (e.pageX - $(this).offset().left) / $(this).width()
 	var video = $(this.parentNode).find('video')[0]
 	$('#'+video.id.split('-')[0]+'-vo').html('<span style="opacity: 0">...</span')
+	forceUpdate = true
+	updateVideoTime(video, percent)
 	$.get('/closest/'+Math.floor(video.currentTime),
 		function(result) {
 			// console.log('get-closest-voiceover')
 			$('#'+video.id.split('-')[0]+'-vo').html(result)
 	})
 	updateProgressWidth($(this).find('#progress'), percent, video.currentTime, video.duration)
-	forceUpdate = true
-	updateVideoTime(video, percent)
 }
 
 function updateProgressWidth($progress, percent, time, duration) {
@@ -74,15 +74,15 @@ function updateProgressWidth($progress, percent, time, duration) {
 	}
 
 	$progress.width((percent * 100) + '%')
-	var t, limit = (duration < 3600) ? 0.13 : 0.10
-	if(duration > 3600)
-		t = Math.floor(time/3600) + ':' + lead(Math.floor((time%3600)/60)) + ':' + lead(Math.floor(time%60))
-	else // not showing hour
-		t = Math.floor((time%3600)/60) + ':' + lead(Math.floor(time%60))
 	
+	// show time elapsed
+	var t, limit = (duration < 3600) ? 0.13 : 0.10
+	if (duration > 3600)
+		t = Math.floor(time/3600) + ':' + lead(Math.floor((time%3600)/60)) + ':' + lead(Math.floor(time%60))
+	else // hour not shown
+		t = Math.floor((time%3600)/60) + ':' + lead(Math.floor(time%60))
 	// var video = $progress.parent().parent().find('video')[0]
 	// console.log('loaded:', video.buffered.end(0) / duration * 100)
-
 	if(percent < limit)
 		$progress.find('#time').html('<span style="margin-left: 5px; color: black">' + t + '</span>')
 	else

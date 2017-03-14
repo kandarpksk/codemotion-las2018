@@ -23,7 +23,7 @@ video {
 
 .editor {
 	border: 1px solid lightgray;
-	min-height: 100px;
+	min-height: 150px; /*use js?*/
 	height: 100%;
 }
 
@@ -56,13 +56,13 @@ h5 {
 
 .marker {
 	position: absolute;
-	width: 2px;
+	width: 1px;
 	height: 15px;
 	background-color: orange;
 }
 
 .marker:hover {
-	width: 4px;
+	width: 3px;
 	margin-left: -1px;
 	background-color: yellow;
 }
