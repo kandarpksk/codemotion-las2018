@@ -30,9 +30,10 @@ function nextSubtitle(t) {
 }
 
 var codename = require('../public/js/codename.json')
-function addSegment(start, text, l) {
+function addSegment(start, text, l, duration) {
 	var seg = {
 		start: start,
+		begin: start/duration*100,
 		voiceover: (closestSubtitle(start)) ?
 				closestSubtitle(start) : nextSubtitle(start),
 		code: []
@@ -56,6 +57,7 @@ function initialize() {
 	var metadata = { name: 'CS50 2016 - Week 8 - Python',
 			fps: 24,
 			start: [0, 1606, 3600],
+			duration: 7980,
 			code: [['accumulated code', ''], [''], ['']], // \n
 			l: [['Text', 'Python'], ['Python'], ['Python']]
 		} // dummy
@@ -71,7 +73,7 @@ function initialize() {
 	data.url = 'videos/video'+vnum+'.mp4'
 	data.segments = []
 	for (var i = 0; i < metadata.start.length; i++)
-		addSegment(metadata.start[i], metadata.code[i], metadata.l[i])
+		addSegment(metadata.start[i], metadata.code[i], metadata.l[i], metadata.duration)
 
 	var fi = require('findit')
 	finder = fi('public/extracts/video'+vnum)

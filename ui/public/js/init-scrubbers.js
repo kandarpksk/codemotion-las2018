@@ -1,3 +1,4 @@
+
 function initializeScrubbers() {
 	$('.video-container').each(function() {
 		$(this).find('video').bind('timeupdate', videoTimeUpdater)
@@ -86,7 +87,7 @@ function updateProgressWidth($progress, percent, time, duration) {
 	if(percent < limit)
 		$progress.find('#time').html('<span style="margin-left: 5px; color: black">' + t + '</span>')
 	else
-		$progress.find('#time').html('<span style="margin-left: 5px; color: teal">' + t + '</span>')
+		$progress.find('#time').html('<span style="margin-left: 5px; color: lightyellow">' + t + '</span>')
 }
 
 function updateVideoTime(video, percent) {

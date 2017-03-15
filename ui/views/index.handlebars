@@ -18,7 +18,7 @@
 			<div class="col-md-8">
 				<h1>{{ name }}</h1>
 			</div>
-			<div class="input-group col-md-4" id="custom-search-input" style="margin-left: -15px">
+			<div class="input-group col-md-4" id="custom-search-input">
 				<input type="text" class="form-control input-lg" placeholder="Look for code fragments" />
 				<span class="input-group-btn">
 					<button class="btn btn-info btn-lg" type="button" onclick="showResults()">
@@ -46,7 +46,8 @@
 					Your browser does not support HTML5 video.
 				</video>
 
-				<div id="scrubber">
+				<!-- http://stackoverflow.com/questions/19081355/how-can-apply-multiple-background-color-to-one-div -->
+				<div id="scrubber" style="background: linear-gradient(to right, black 0%, black {{ begin }}%, #636c72 {{ begin }}%, #636c72 100%)">
 					<div id="progress">
 						<div id="time"></div>
 					</div>
@@ -54,11 +55,13 @@
 			</div>
 			<div class="col code-container">
 				{{#each code}}
-				<textarea style="display: none;"
-						id="s{{ ../start }}l{{ @index }}-code" data-language="{{ this.language }}">{{ this.text }}</textarea>
+				<textarea style="display:none"
+						id="s{{ ../start }}l{{ @index }}-code" 
+						data-language="{{ this.language }}">{{ this.text }}</textarea>
 				{{/each}}
 				<div class="editor" id="s{{ start }}-editor"
 						data-language="{{ code.[0].language }}">{{ code.[0].text }}</div>
+				<!-- convention; trim innerhtml -->
 			</div>
 			<h5 id="lf"> <!-- todo: check proper way to use css -->
 				{{#each code}}
