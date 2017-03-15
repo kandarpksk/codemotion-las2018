@@ -35,7 +35,7 @@ function videoTimeUpdater(e) {
 				if (pills.html() != resp.l[cc] && changed) {
 					// temporarily add (and then hide) other languages
 					if (resp.l[cc] != 'Shell')
-						console.log(resp.l[cc])
+						{}//console.log(resp.l[cc])
 					pills.each(function() {
 						if ($(this).html().trim() == resp.l[cc])
 							$(this).addClass('badge-info')
