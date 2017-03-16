@@ -67,6 +67,7 @@ h5 {
 }
 
 .marker:hover {
+	z-index: 1;
 	width: 3px;
 	margin-left: -1px;
 	background-color: yellow;

@@ -212,11 +212,12 @@
 						$('.input-lg').val('nothing found in code')
 					else {
 						var d = $('video').first()[0].duration
-						var max = 0, pbar = $('#s0-video').parent().find('#progress')
+						var pbar = $('#s0-video').parent().find('#progress')
+						var j = 0 // current segment
 						for (i in r.apos) {
-							if (r.apos[i] >= r.ie[max]) { // check inclusiveness
-								pbar = $('#s'+r.ie[max]+'-video').parent().find('#progress')
-								max += 1
+							if (r.apos[i] >= r.ie[j]) { // todo: check inclusiveness
+								pbar = $('#s'+r.ie[j]+'-video').parent().find('#progress')
+								j += 1
 							}
 							var pos = r.apos[i]/d * 100
 							pbar.append('<div class="marker" style="left:'+pos+'%; display:none"\
@@ -235,14 +236,13 @@
 
 		function preview(p, m_div) {
 			$(m_div).attr('onclick', 'rewind('+back+', this)')
-			back = p
-			$(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
+			//console.log('scrub to', p)
+			back = $(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
 		}
 
 		function rewind(p, m_div) {
 			$(m_div).attr('onclick', 'preview('+back+', this)')
-			back = p
-			$(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
+			back = $(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
 		}
 
 		$('input').keyup(function(event) {
