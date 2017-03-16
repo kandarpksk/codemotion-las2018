@@ -47,7 +47,10 @@
 				</video>
 
 				<!-- http://stackoverflow.com/questions/19081355/how-can-apply-multiple-background-color-to-one-div -->
-				<div id="scrubber" style="background: linear-gradient(to right, #10222e 0%, #10222e {{ begin }}%, #636c72 {{ begin }}%, #636c72 100%)">
+				<div id="scrubber" style="background: linear-gradient(to right,
+						#10222e 0%, #10222e {{ begin }}%,
+						#636c72 {{ begin }}%, #636c72 {{ end }}%,
+						#10222e {{ end }}%, #10222e 100%)">
 					<div id="progress">
 						<div id="time"></div>
 					</div>
@@ -191,7 +194,7 @@
 			showMarkers()
 			var search = $('.input-lg').val() ? $('.input-lg').val() : 'codemotion'
 			if (!$('.input-lg').val())
-				$('.input-lg').val('nothing to search') // improve later
+				$('.input-lg').val('nothing to search')
 			// different regex syntax?!
 			terms = search.split(' ').join('|') // /sample|import/g
 			highlightWords()
@@ -204,13 +207,19 @@
 			if(term != '') { // possibilities?
 				$.get('/search/'+term, function(r) {
 					if (r.error == 'wait')
-						console.log('still indexing')
+						$('.input-lg').val('indexing in progress')
+					else if (r.apos.length == 0)
+						$('.input-lg').val('nothing found in code')
 					else {
-						// multiple segments here
-						var bar = $('#s'+r.vid+'-video').parent().find('#progress')
+						var d = $('video').first()[0].duration
+						var max = 0, pbar = $('#s0-video').parent().find('#progress')
 						for (i in r.apos) {
-							var pos = r.apos[i]/$('video').first()[0].duration * 100
-							bar.append('<div class="marker" style="left:'+pos+'%; display:none"\
+							if (r.apos[i] >= r.ie[max]) { // check inclusiveness
+								pbar = $('#s'+r.ie[max]+'-video').parent().find('#progress')
+								max += 1
+							}
+							var pos = r.apos[i]/d * 100
+							pbar.append('<div class="marker" style="left:'+pos+'%; display:none"\
 									onclick="preview('+r.apos[i]+', this)" onmouseover="set(this)"></div>')
 						}
 					}
@@ -225,14 +234,12 @@
 		}
 
 		function preview(p, m_div) {
-			var ct = $(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime
-			$(m_div).attr('onclick', 'preview2('+back+', this)')
+			$(m_div).attr('onclick', 'rewind('+back+', this)')
 			back = p
 			$(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
 		}
 
-		function preview2(p, m_div) {
-			var ct = $(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime
+		function rewind(p, m_div) {
 			$(m_div).attr('onclick', 'preview('+back+', this)')
 			back = p
 			$(m_div.parentNode.parentNode.parentNode).find('video')[0].currentTime = p
@@ -246,7 +253,7 @@
 		var lastVideo = -1
 		$(window).keypress(function(e) {
 			if (e.keyCode == 32 && lastVideo != -1)
-				toggle(lastVideo)
+				toggle(lastVideo) // spacebar
 		})
 	</script>
 </body>

@@ -84,10 +84,14 @@ function updateProgressWidth($progress, percent, time, duration) {
 		t = Math.floor((time%3600)/60) + ':' + lead(Math.floor(time%60))
 	// var video = $progress.parent().parent().find('video')[0]
 	// console.log('loaded:', video.buffered.end(0) / duration * 100)
-	if(percent < limit)
-		$progress.find('#time').html('<span style="margin-left: 5px; color: black">' + t + '</span>')
-	else
-		$progress.find('#time').html('<span style="margin-left: 5px; color: lightyellow">' + t + '</span>')
+	if(percent < 0.5) {
+		$progress.find('#time').html('<span style="margin-right: 5px; color: lightyellow">' + t + '</span>')
+		$progress.find('#time').css('right', 0)
+	}
+	else {
+		$progress.find('#time').html('<span style="margin-left: 5px; color: white">' + t + '</span>')
+		$progress.find('#time').css('right', '')
+	}
 }
 
 function updateVideoTime(video, percent) {

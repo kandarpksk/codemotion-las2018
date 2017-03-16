@@ -30,10 +30,13 @@ function nextSubtitle(t) {
 }
 
 var codename = require('../public/js/codename.json')
-function addSegment(start, text, l, duration) {
+var interval_ends
+function addSegment(start, end, text, l, duration) {
+	interval_ends.push(end)
 	var seg = {
 		start: start,
-		begin: start/duration*100,
+		begin: Math.round(start/duration*100),
+		end: Math.round(end/duration*100),
 		voiceover: (closestSubtitle(start)) ?
 				closestSubtitle(start) : nextSubtitle(start),
 		code: []
@@ -72,8 +75,10 @@ function initialize() {
 	data.fps = metadata.fps
 	data.url = 'videos/video'+vnum+'.mp4'
 	data.segments = []
+	interval_ends = []
 	for (var i = 0; i < metadata.start.length; i++)
-		addSegment(metadata.start[i], metadata.code[i], metadata.l[i], metadata.duration)
+		addSegment(metadata.start[i], (i+1 < metadata.start.length) ? metadata.start[i+1] : metadata.duration,
+				metadata.code[i], metadata.l[i], metadata.duration)
 
 	var fi = require('findit')
 	finder = fi('public/extracts/video'+vnum)
@@ -156,11 +161,11 @@ exports.search = function(req, res) {
 
 	if (done) {
 		var terms = req.params.term.match(/\b(\w+)\b/g)
-		console.log(terms) // profile indexing
-		var apos = table[terms[0]] ? table[terms[0]] : [2394, 3990, 7182]
+		//console.log(terms) // profile indexing
+		var apos = table[terms[0]] ? table[terms[0]] : [] //[2394, 3990, 7182]
 
 		// absolute position (i.e. time elapsed)
-		res.json({ vid: data.segments[0].start, apos: apos, error: 'none' })
-	} else
-		res.json({ vid: data.segments, apos: [], error: 'wait' })
+		res.json({ ie: interval_ends, apos: apos, error: 'none' })
+	} else /*vid: data.segments, apos: [],*/
+		res.json({ error: 'wait' })
 }
