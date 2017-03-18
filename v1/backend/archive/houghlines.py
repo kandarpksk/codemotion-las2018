@@ -274,7 +274,7 @@ def scale(image, multiplier):
 def removeLines():
 	return
 
-# crop into <4 segments
+# crop into 3 or fewer segments
 if sep_y:
 	# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
 	img1 = demo[sep_y[0]:, 0:]

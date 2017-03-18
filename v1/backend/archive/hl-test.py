@@ -22,7 +22,7 @@ with open(output_path+"/frame%d_segment%d.hocr" % (frame, i)) as hocr_output:
 		text = re.sub(r'<[^>]*>', '', line)
 		# fix special characters
 		text = text.strip().decode("utf8")
-		# dumb down smark quotes
+		# dumb down smart quotes
 		text = text.replace(u'\u201c', '"').replace(u'\u201d', '"')
 		# decode HTML-safe sequences
 		text = parser.unescape(text)

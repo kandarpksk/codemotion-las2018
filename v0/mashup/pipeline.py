@@ -8,8 +8,7 @@ times = [] #[2724.] #[135, 150, 625, 630, 645, 650, 655, 710, 730, 735]
 #video_file = "videos/wat.mov"; # fps = 1; # output_path = "preview/resources_"
 # video_file = "videos/Python Beginner Tutorial 1 (For Absolute Beginners).mp4"; fps = 30.001826; output_path = "preview/resources5"
 video_file = "videos/Python Web Scraping Tutorial 2 (Getting Page Source).mp4"; fps = 30.001816; output_path = "preview/resources6"
-#video_file = "videos/_"; # fps = 1; # output_path = "preview/resources7"
-#video_file = "videos/_"; # fps = 1; # output_path = "preview/resources8"
+#video_file = "videos/_"; # fps = 1; # output_path = "preview/resourcesX"
 
 unit_indent = "   "
 

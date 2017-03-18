@@ -81,7 +81,7 @@ function initialize() {
 				metadata.code[i], metadata.l[i], metadata.duration)
 
 	var fi = require('findit')
-	finder = fi('public/extracts/video'+vnum)
+	finder = fi('public/extracts/video'+vnum+(vnum == 3 ? 'a' : '')) // temp
 	finder.on('file', function(file) {
 		if (file.search('segment') != -1) {
 			fs.readFile(file, 'utf8', function(err, data) {
