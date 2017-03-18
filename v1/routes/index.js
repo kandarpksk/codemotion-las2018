@@ -58,6 +58,7 @@ function initialize() {
 	console.log('initializing backend')
 
 	var metadata = { name: 'CS50 2016 - Week 8 - Python',
+			width: 5,
 			fps: 24,
 			start: [0, 1606, 3600],
 			duration: 7980,
@@ -72,6 +73,7 @@ function initialize() {
 	
 	readSubtitle('other/video'+vnum+'_sub.txt')
 	data.name = metadata.name
+	data.width = metadata.width
 	data.fps = metadata.fps
 	data.url = 'videos/video'+vnum+'.mp4'
 	data.segments = []
