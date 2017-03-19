@@ -1,4 +1,5 @@
 import sys, cv2, math, numpy
+import phase1
 
 if len(sys.argv) < 2:
 	print 'err: need argument mentioning video number'
@@ -20,17 +21,17 @@ while success:
 		imgray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
 		ndiff = cv2.countNonZero(imgray)
 
-		print '\rprocessing %d:%02d now (%d differences)' % (t_min, t_sec, ndiff),
+		print '\rprocessing %d:%02d now' % (t_min, t_sec), # (<ndiff> differences)
 		sys.stdout.flush()
 		path = '../public/extracts/video'+str(vnum)
-		# cv2.imwrite(path+'/'+'frame'+str(fnum)+'.jpg', image)
+		phase1.process(image, path+'/'+'frame'+str(fnum)+'-segment')
 
 		if ndiff > 7500: # show significant changes #improve
 			marked = image.copy()
 			ret, thresh = cv2.threshold(imgray, 60, 255, 0)
 			contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 			cv2.drawContours(marked, contours, -1, (0,255,0), 1)
-			cv2.imwrite(path+'/marked/'+'change'+str(fnum)+'.jpg', marked)
+			cv2.imwrite(path+'/diffs/'+'frame'+str(fnum)+'.jpg', marked)
 
 		prev = image
 		# end of if stmt
