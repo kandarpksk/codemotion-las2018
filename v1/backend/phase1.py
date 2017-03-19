@@ -175,7 +175,6 @@ if len(crop) < 3:
 	# for p in corners:
 	# 	drawPoint(p, white, 20)
 
-from surrounding_box import *
 hull = cv2.convexHull(np.array(crop))
 #print '\npolygon ...', '\n\t',
 #showPolygon(hull, 'debug')
