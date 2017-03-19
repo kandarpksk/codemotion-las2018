@@ -1,20 +1,18 @@
-def process(frame, segments, path):
-	i = 0
-	for segment in segments:
+def process(frame, s, path):
+	for i in range(1, s+1):
 		import os, re, cv2, operator, codecs
 		import HTMLParser
 		parser = HTMLParser.HTMLParser()
-		i += 1
 		unit_indent = "   "
 
-		image = segment
+		image = path+"/frame%d-segment%d.jpg" % (frame, i)
 		output = path+"/frame%d-segment%d" % (frame, i)
-		ocr_command = "tesseract " + image+output + " config.txt 2>/dev/null"
+		ocr_command = "tesseract " + image+' '+output + " config.txt 2>/dev/null"
 		os.system(ocr_command)
 
 		# hocr output conversion
 		res = [] # distance, code
-		with open(output_path+"/frame%d-segment%d.hocr" % (frame, i)) as hocr_output:
+		with open(path+"/frame%d-segment%d.hocr" % (frame, i)) as hocr_output:
 			for line in hocr_output:
 				# find x-coordinate of upper left corner
 				location = re.search(r'(?<=bbox ).+?(?=\s)', line)
@@ -36,10 +34,10 @@ def process(frame, segments, path):
 		# spacing adjustment
 
 		if len(res) == 0:
-			os.system("rm "+output_path+"/frame%d-segment%d.*" % (frame, i))
+			os.system("rm "+path+"/frame%d-segment%d.*" % (frame, i))
 
 		else:
-			os.system("rm "+output_path+"/frame%d-segment%d.hocr" % (frame, i))
+			os.system("rm "+path+"/frame%d-segment%d.hocr" % (frame, i))
 			base = min(res, key=operator.itemgetter(0))[0]
 
 			# yet to address case when 30,33,62 happens
@@ -50,7 +48,7 @@ def process(frame, segments, path):
 					lines += r[1] + "\n"
 
 				# _dis[placed]
-				f = codecs.open(output_path+"/frame%d-segment%d.txt" % (frame, i), 'w', 'utf-8') # _check.txt
+				f = codecs.open(path+"/frame%d-segment%d.txt" % (frame, i), 'w', 'utf-8') # _check.txt
 				f.write(lines)
 
 			else:
@@ -66,5 +64,5 @@ def process(frame, segments, path):
 					indented_lines += indented + "\n"
 
 				# _ind[ented]
-				f = codecs.open(output_path+"/frame%d-segment%d.txt" % (frame, i), 'w', 'utf-8')
+				f = codecs.open(path+"/frame%d-segment%d.txt" % (frame, i), 'w', 'utf-8')
 				f.write(indented_lines)

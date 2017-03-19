@@ -325,13 +325,13 @@ def process(image, output):
 		cv2.imwrite(output + ('2.jpg' if sep_y else '1.jpg'), img2)
 		img3 = scale(addBorder(demo[0:sep_y[0] if sep_y else hx_hy[1], sep_x[0]:]), 2)
 		cv2.imwrite(output + ('3.jpg' if sep_y else '2.jpg'), img3)
-		return [img1, img2, img3] if sep_y else [img2, img3]
+		return 3 if sep_y else 2
 	elif sep_y:
 		img2 = scale(addBorder(demo[0:sep_y[0], 0:]), 2)
 		cv2.imwrite(output+'2.jpg', img2)
-		return [img1, img2]
+		return 2#[img1, img2]
 	else:
 		cv2.imwrite(output+'1.jpg', scale(addBorder(demo), 2))
-		return [scaled(addBorder(demo), 2)]
+		return 1#[scale(addBorder(demo), 2)]
 
 	# cv2.imwrite(output+'.jpg', demo)
