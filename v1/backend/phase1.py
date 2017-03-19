@@ -1,8 +1,11 @@
+red = (0,0,255) #p!
+lightgray = (150,150,150) #p!
+
 debug = False
 
 import sys
 input = sys.argv[1]+'.jpg'
-output = sys.argv[2]
+output = sys.argv[1]+'-segment'
 fraction = 1./10 # distance (as fraction of smaller dimension) to cluster within
 
 import cv2
@@ -18,6 +21,7 @@ corners = [(0,0), (0,img.shape[0]), (img.shape[1],0), (img.shape[1],img.shape[0]
 # step: detect lines in frame [o/p: lines] | third parameter (of canny) 150
 #############################
 edgy = cv2.Canny(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 50, 20, apertureSize = 3)
+# cv2.imwrite('step1.jpg', edgy) #p!
 minLineLength, maxLineGap = 100, 10
 lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength, maxLineGap)
 # print 'lines'
@@ -47,12 +51,14 @@ for x1,y1,x2,y2 in lines[0]:
 	if along_x or along_y:
 		points.extend([(x1,y1), (x2,y2)])
 		# cv2.line(demo, (x1,y1), (x2,y2), white, 5) # draw an outline for clarity
+		# cv2.line(demo, (x1,y1), (x2,y2), red, 2) #p!
 		if debug:
 			cv2.line(demo, (x1,y1), (x2,y2), randomColor(), 2)
 # also include corners of entire image
 # for p in corners:
 	# drawPoint(p, white, 5)
 # points.extend(corners) # todo | useful?
+# cv2.imwrite('step2.jpg', demo) #p!
 
 # step: heuristic clustering of points [o/p: clusters]
 ############################
@@ -90,6 +96,10 @@ for c in clusters:
 	rep = ()
 	for p in c:
 		# drawPoint(p, color)
+		# cv2.circle(demo, p, 9, red, -1, 8) #p!
+		# cv2.circle(demo, p, 7, lightgray, -1, 8) #p!
+		# cv2.circle(demo, p, 6, red, -1, 8) #p!
+		# cv2.circle(demo, p, 5, lightgray, -1, 8) #p!
 		co = closestCorner(p)
 		if co[0] not in closestCorners:
 			closestCorners.append(co[0])
@@ -102,6 +112,10 @@ for c in clusters:
 	ends.append(rep[0])
 	##if debug or True: # temporary
 		##drawPoint(rep[0], white, 7)
+	# drawPoint(rep[0], red, 16) #p! added for paper
+	# drawPoint(rep[0], red, 10) #p!
+# cv2.imwrite('step3_whole.jpg', demo) #p!
+# cv2.imwrite('step3_crop.jpg', demo) #p!
 
 # convex hull (ignore)
 def showPolygon(poly, debug=False):
@@ -109,12 +123,16 @@ def showPolygon(poly, debug=False):
 		p1 = (poly[i-1][0][0],poly[i-1][0][1])
 		p2 = (poly[i][0][0],poly[i][0][1])
 		if not debug:
-			cv2.line(demo, p1, p2, randomColor(), 5)
-		print p2,
-	print
+			# cv2.line(demo, p1, p2, red, 3) #p!
+			cv2.line(demo, p1, p2, randomColor(), 5) #p modified for paper
+		print p2, #p
+	print #p
 if debug:
 	hull = cv2.convexHull(np.array(ends))
 	showPolygon(hull)
+# hull = cv2.convexHull(np.array(ends)) #p!
+# showPolygon(hull) #p!
+# cv2.imwrite('step3b.jpg', demo) #p!
 
 # idea: lines between clusters
 
@@ -155,7 +173,7 @@ for pairs in edges:
 		for pairs in edges:
 			if flip(pair) in pairs:
 				# if debug:
-				#cv2.line(demo, pair[0], pair[1], color, 3+t)#
+				# cv2.line(demo, pair[0], pair[1], red, 3+t)# #p #3
 				if count == 0:
 					crop.append(pair[0])
 					#print pair[0], '...'
@@ -168,6 +186,7 @@ for pairs in edges:
 		if debug:
 			print 'ignored point:', pairs[0][0]
 		# drawPoint(pairs[0][0], gray, 7)
+# cv2.imwrite('step4.jpg', demo) #p!
 
 # include corner points if reqd.
 if len(crop) < 3:
@@ -177,7 +196,8 @@ if len(crop) < 3:
 
 hull = cv2.convexHull(np.array(crop))
 #print '\npolygon ...', '\n\t',
-#showPolygon(hull, 'debug')
+# showPolygon(hull) #p
+# cv2.imwrite('step5a.jpg', demo) #p!
 lx_ly = (hull[0][0][0], hull[0][0][1])
 lx_hy, hx_ly, hx_hy = lx_ly, lx_ly, lx_ly
 for p in hull:
@@ -201,10 +221,11 @@ def show(poly, debug=False):
 		p1 = (poly[i-1][0][0],poly[i-1][0][1])
 		p2 = (poly[i][0][0],poly[i][0][1])
 		if not debug:
-			cv2.line(demo, p1, p2, c, 10)
+			cv2.line(demo, p1, p2, red, 3) #p
 		print p2,
 	print
-#show([[lx_ly], [lx_hy], [hx_hy], [hx_ly]])
+# show([[lx_ly], [lx_hy], [hx_hy], [hx_ly]]) #p
+# cv2.imwrite('step5b.jpg', demo) #p!
 demo = demo[lx_ly[1]:hx_hy[1], lx_ly[0]:hx_hy[0]]
 
 # find separator points
@@ -244,6 +265,12 @@ def filter(l):
 sep_x = [x-lx_ly[0] for x in filter(sep_x)]
 sep_y = [y-lx_ly[1] for y in filter(sep_y)]
 
+# for x in sep_x: #p!
+# 	cv2.line(demo, (x, 0), (x, sep_y[0]), red, 3) #p!
+# for y in sep_y: #p!
+# 	cv2.line(demo, (0, y), (1184, y), red, 3) #p!
+# cv2.imwrite('step6.jpg', demo) #p!
+
 def addBorder(image, frac=0.02, type=cv2.BORDER_CONSTANT):
 	top = (int) (frac*demo.shape[0])
 	bottom = top
@@ -274,20 +301,20 @@ def removeLines():
 	return
 
 # crop into 3 or fewer segments
-if sep_y:
-	# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
-	img1 = demo[sep_y[0]:, 0:]
-	cv2.imwrite(output+'_1.jpg', scale(addBorder(img1), 2))
-if sep_x:
-	# cv2.line(demo, (sep_x[0],0), (sep_x[0],sep_y[0] if sep_y else lx_hy[1]), randomColor(), 2)
-	img2 = demo[0:sep_y[0] if sep_y else hx_hy[1], 0:sep_x[0]]
-	cv2.imwrite(output + ('_2.jpg' if sep_y else '_1.jpg'), scale(addBorder(img2), 2))
-	img3 = demo[0:sep_y[0] if sep_y else hx_hy[1], sep_x[0]:]
-	cv2.imwrite(output + ('_3.jpg' if sep_y else '_2.jpg'), scale(addBorder(img3), 2))
-elif sep_y:
-	img2 = demo[0:sep_y[0], 0:]
-	cv2.imwrite(output+'_2.jpg', scale(addBorder(img2), 2))
-else:
-	cv2.imwrite(output+'_1.jpg', scale(addBorder(demo), 2))
+# if sep_y:
+# 	# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
+# 	img1 = demo[sep_y[0]:, 0:]
+# 	cv2.imwrite(output+'1.jpg', scale(addBorder(img1), 2))
+# if sep_x:
+# 	# cv2.line(demo, (sep_x[0],0), (sep_x[0],sep_y[0] if sep_y else lx_hy[1]), randomColor(), 2)
+# 	img2 = demo[0:sep_y[0] if sep_y else hx_hy[1], 0:sep_x[0]]
+# 	cv2.imwrite(output + ('2.jpg' if sep_y else '1.jpg'), scale(addBorder(img2), 2))
+# 	img3 = demo[0:sep_y[0] if sep_y else hx_hy[1], sep_x[0]:]
+# 	cv2.imwrite(output + ('3.jpg' if sep_y else '2.jpg'), scale(addBorder(img3), 2))
+# elif sep_y:
+# 	img2 = demo[0:sep_y[0], 0:]
+# 	cv2.imwrite(output+'2.jpg', scale(addBorder(img2), 2))
+# else:
+# 	cv2.imwrite(output+'1.jpg', scale(addBorder(demo), 2))
 
 # cv2.imwrite(output+'.jpg', demo)

@@ -23,7 +23,7 @@ while success:
 		print '\rprocessing %d:%02d now (%d differences)' % (t_min, t_sec, ndiff),
 		sys.stdout.flush()
 		path = '../public/extracts/video'+str(vnum)
-		cv2.imwrite(path+'/'+'frame'+str(fnum)+'.jpg', image)
+		# cv2.imwrite(path+'/'+'frame'+str(fnum)+'.jpg', image)
 
 		if ndiff > 7500: # show significant changes #improve
 			marked = image.copy()
