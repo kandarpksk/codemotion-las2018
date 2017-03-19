@@ -58,16 +58,17 @@ def process(image, output):
 	def smallSlope(p1, p2, axis, theta=15): # tilted less than theta
 		not_perpendicular = (p1[0]-p2[0] if axis == 'x' else p1[1]-p2[1])
 		return not_perpendicular and abs(slope(p1, p2, axis)) < np.sin(theta*np.pi/180)
-	for x1,y1,x2,y2 in lines[0]:
-		# later: slightly more relaxed angle acceptable?
-		along_y = abs(y1-y2) > 0.2*img.shape[0] and smallSlope((x1,y1), (x2,y2), 'y', 11)
-		along_x = abs(x1-x2) > 0.2*img.shape[1] and smallSlope((x1,y1), (x2,y2), 'x')
-		if along_x or along_y:
-			points.extend([(x1,y1), (x2,y2)])
-			# cv2.line(demo, (x1,y1), (x2,y2), white, 5) # draw an outline for clarity
-			# cv2.line(demo, (x1,y1), (x2,y2), red, 2) #p!
-			if debug:
-				cv2.line(demo, (x1,y1), (x2,y2), randomColor(), 2)
+	if lines is not None:
+		for x1,y1,x2,y2 in lines[0]:
+			# later: slightly more relaxed angle acceptable?
+			along_y = abs(y1-y2) > 0.2*img.shape[0] and smallSlope((x1,y1), (x2,y2), 'y', 11)
+			along_x = abs(x1-x2) > 0.2*img.shape[1] and smallSlope((x1,y1), (x2,y2), 'x')
+			if along_x or along_y:
+				points.extend([(x1,y1), (x2,y2)])
+				# cv2.line(demo, (x1,y1), (x2,y2), white, 5) # draw an outline for clarity
+				# cv2.line(demo, (x1,y1), (x2,y2), red, 2) #p!
+				if debug:
+					cv2.line(demo, (x1,y1), (x2,y2), randomColor(), 2)
 	# also include corners of entire image
 	# for p in corners:
 		# drawPoint(p, white, 5)
@@ -316,18 +317,21 @@ def process(image, output):
 	# crop into 3 or fewer segments
 	if sep_y:
 		# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
-		img1 = demo[sep_y[0]:, 0:]
-		cv2.imwrite(output+'1.jpg', scale(addBorder(img1), 2))
+		img1 = scale(addBorder(demo[sep_y[0]:, 0:]), 2)
+		cv2.imwrite(output+'1.jpg', img1)
 	if sep_x:
 		# cv2.line(demo, (sep_x[0],0), (sep_x[0],sep_y[0] if sep_y else lx_hy[1]), randomColor(), 2)
-		img2 = demo[0:sep_y[0] if sep_y else hx_hy[1], 0:sep_x[0]]
-		cv2.imwrite(output + ('2.jpg' if sep_y else '1.jpg'), scale(addBorder(img2), 2))
-		img3 = demo[0:sep_y[0] if sep_y else hx_hy[1], sep_x[0]:]
-		cv2.imwrite(output + ('3.jpg' if sep_y else '2.jpg'), scale(addBorder(img3), 2))
+		img2 = scale(addBorder(demo[0:sep_y[0] if sep_y else hx_hy[1], 0:sep_x[0]]), 2)
+		cv2.imwrite(output + ('2.jpg' if sep_y else '1.jpg'), img2)
+		img3 = scale(addBorder(demo[0:sep_y[0] if sep_y else hx_hy[1], sep_x[0]:]), 2)
+		cv2.imwrite(output + ('3.jpg' if sep_y else '2.jpg'), img3)
+		return [img1, img2, img3] if sep_y else [img2, img3]
 	elif sep_y:
-		img2 = demo[0:sep_y[0], 0:]
-		cv2.imwrite(output+'2.jpg', scale(addBorder(img2), 2))
+		img2 = scale(addBorder(demo[0:sep_y[0], 0:]), 2)
+		cv2.imwrite(output+'2.jpg', img2)
+		return [img1, img2]
 	else:
 		cv2.imwrite(output+'1.jpg', scale(addBorder(demo), 2))
+		return [scaled(addBorder(demo), 2)]
 
 	# cv2.imwrite(output+'.jpg', demo)

@@ -1,11 +1,11 @@
 import sys, cv2, math, numpy
-import phase1
+import phase1, phase2
 
 if len(sys.argv) < 2:
 	print 'err: need argument mentioning video number'
 	sys.exit()
 vnum = int(sys.argv[1])
-fps = 30. if vnum == 1 else 60 #list
+fps = 30. if vnum == 1 else 24 #60 #list
 video = cv2.VideoCapture('../public/videos/video'+str(vnum)+'.mp4')
 
 fnum = 0
@@ -24,7 +24,10 @@ while success:
 		print '\rprocessing %d:%02d now' % (t_min, t_sec), # (<ndiff> differences)
 		sys.stdout.flush()
 		path = '../public/extracts/video'+str(vnum)
-		phase1.process(image, path+'/'+'frame'+str(fnum)+'-segment')
+
+		segments = phase1.process(image, path+'/'+'frame'+str(fnum)+'-segment')
+
+		phase2.process(fnum, segments, path)
 
 		if ndiff > 7500: # show significant changes #improve
 			marked = image.copy()
