@@ -1,6 +1,9 @@
 import sys, cv2, math, numpy
 import phase1, phase2_
 
+if len(sys.argv) > 2:
+	print 'skipping to frame', sys.argv[2]
+
 if len(sys.argv) < 2:
 	print 'err: need argument mentioning video number'
 	sys.exit()

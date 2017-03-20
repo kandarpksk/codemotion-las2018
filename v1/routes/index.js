@@ -70,7 +70,7 @@ function initialize() {
 		// probably just ask to refresh here
 		// (as number of segments may differ)
 	vnum = (vnum) ? vnum : 3
-	
+
 	readSubtitle('other/video'+vnum+'_sub.txt')
 	data.name = metadata.name
 	data.width = metadata.width
@@ -107,7 +107,7 @@ exports.view = function(req, res) {
 }
 
 exports.transcript = function(req, res) {
-	try { 
+	try {
 		res.send(subtitles[req.params.time])
 	} catch(error) {
 		console.log('couldn\'t read subtitles')
@@ -126,7 +126,7 @@ exports.code = function(req, res) {
 	var frame = (req.params.time * data.fps) + 1
 	try {
 		var base = 'public/extracts/video'+vnum+'/frame'+frame
-		var segments = parseInt(fs.readFileSync(base+'.txt', 'utf8'))
+		var segments = 3//parseInt(fs.readFileSync(base+'.txt', 'utf8'))
 
 		var cs = [], count = 0
 		for (var i = 0; i <= segments; i++) //ensure not zero
