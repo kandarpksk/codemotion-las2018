@@ -60,10 +60,10 @@ function initialize() {
 	var metadata = { name: 'CS50 2016 - Week 8 - Python',
 			width: 5,
 			fps: 24,
-			start: [0, 1606, 3600],
+			start: [0, 1606, 3600, 5400],
 			duration: 7980,
 			code: [['accumulated code', ''], [''], ['']], // \n
-			l: [['Text', 'Python'], ['Python'], ['Python']]
+			l: [['Text', 'Python'], ['Python'], ['C']]
 		} // dummy
 	if (vnum != undefined)
 		metadata = require('../public/other/video'+vnum+'.json')
@@ -125,7 +125,7 @@ exports.code = function(req, res) {
 
 	var frame = (req.params.time * data.fps) + 1
 	try {
-		var base = 'public/extracts/video'+vnum+'/frame'+frame
+		var base = 'public/extracts/video'+vnum+(vnum == 3 ? 'a' : '')+'/frame'+frame
 		var segments = 3//parseInt(fs.readFileSync(base+'.txt', 'utf8'))
 
 		var cs = [], count = 0

@@ -17,12 +17,16 @@ def process(frame, s, path):
 				# find x-coordinate of upper left corner
 				location = re.search(r'(?<=bbox ).+?(?=\s)', line)
 
+				# if location: print location.group(0)
+
 				# ignore tags and extract code
 				text = re.sub(r'<[^>]*>', '', line)
 				# fix special characters
+				# todo2: http://stackoverflow.com/questions/816285/where-is-pythons-best-ascii-for-this-unicode-database
 				text = text.strip().decode("utf8")
 				# dumb down smart quotes
 				text = text.replace(u'\u201c', '"').replace(u'\u201d', '"')
+				text = text.replace(u'\u2018', '\'').replace(u'\u2019', '\'')
 				# decode HTML-safe sequences
 				text = parser.unescape(text)
 
@@ -30,6 +34,8 @@ def process(frame, s, path):
 				is_text_empty = (text == re.search(r'\w*', line).group(0))
 				if location != None and not is_text_empty:
 					res.append([int(location.group(0)), text])
+
+			print
 
 		# spacing adjustment
 

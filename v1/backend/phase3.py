@@ -10,10 +10,10 @@ while True:
 	#if prev == '': next = kb.get()
 	#if next == 'right' or next == 'down' or prev != '':
 		# read number of segments
-		# try: file = open('../public/extracts/video%d/frame%d.txt' % (vnum, fnum))
-		# except IOError: print 'no more files'; break
+		try: file = open('../public/extracts/video%d/frame%d-segment1.txt' % (vnum, fnum))
+		except IOError: print 'no more files'; break
 		s = 3#int(file.read())
-		# file.close()
+		file.close()
 
 		# read text from all segments
 		new_text = ''

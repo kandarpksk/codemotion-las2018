@@ -23,6 +23,9 @@ while success:
 	t_min = int((fnum/fps)/60)
 	t_sec = int(math.floor((fnum/fps)%60)) #check
 
+	if fnum < int(sys.argv[2]) and fnum%7200 == 0:
+		print 'crossed frame', fnum # at time
+
 	if fnum%fps == 1 and (len(sys.argv) < 3 or fnum >= int(sys.argv[2])): # process one frame each second
 		diff = cv2.subtract(image, prev)
 		imgray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
