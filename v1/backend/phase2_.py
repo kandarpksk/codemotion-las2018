@@ -16,14 +16,18 @@ def process(frame, s, path):
 			for line in hocr_output:
 				# find x-coordinate of upper left corner
 				location = re.search(r'(?<=bbox ).+?(?=\s)', line)
-
-				# if location: print location.group(0)
+				spans = re.findall(r'<span[^>]*>.*?</span>', line)
+				if len(spans) > 1:
+					val = re.sub(r'<[^>]*>', '', spans[0])
+					if val.isdigit(): # inside first inner span
+						location = re.search(r'(?<=bbox ).+?(?=\s)', spans[1])
 
 				# ignore tags and extract code
-				text = re.sub(r'<[^>]*>', '', line)
+				text = re.sub(r'<[^>]*>', '', line.strip())
+				text = re.sub(r'^\d+\s*', '', text)
 				# fix special characters
-				# todo2: http://stackoverflow.com/questions/816285/where-is-pythons-best-ascii-for-this-unicode-database
-				text = text.strip().decode("utf8")
+				# todo: http://stackoverflow.com/questions/816285 # best-ascii-for-this-unicode
+				text = text.decode("utf8")
 				# dumb down smart quotes
 				text = text.replace(u'\u201c', '"').replace(u'\u201d', '"')
 				text = text.replace(u'\u2018', '\'').replace(u'\u2019', '\'')
@@ -34,8 +38,6 @@ def process(frame, s, path):
 				is_text_empty = (text == re.search(r'\w*', line).group(0))
 				if location != None and not is_text_empty:
 					res.append([int(location.group(0)), text])
-
-			print
 
 		# spacing adjustment
 
