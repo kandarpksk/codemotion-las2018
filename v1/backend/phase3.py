@@ -1,6 +1,6 @@
 dbug = False # new
 
-import diff_match_patch as d
+import diff_match_patch as dmp
 import arrow_keys as kb
 import ocr, unidecode, re, sys
 
@@ -16,14 +16,14 @@ while True:
 	try:
 		file = open(path+'/frame%d-segment1.txt' % fnum)
 		# if not read: print
-		print '\rframe%d, segment1' % fnum,
+		print '\r%d: frame%d, segment1' % (len(code)-1, fnum),
 		sys.stdout.flush()
 		read = True
 	except IOError:
 		if read and fnum > th:
 			print
 			th += 5000
-		print '\rno more files...     ',
+		print '\r%d: no more files...     ' % (len(code)-1),
 		sys.stdout.flush()
 		read = False
 	s = 3 # int(file.read())
@@ -52,30 +52,34 @@ while True:
 
 		# show any text extracted
 		if txt != '':
-			if txt == code[-1]:
+			if txt == code[-1] or txt in code:
 				if dbug: print fnum, 'identical=======\n'
 				prev = 'blink'
 
-				# dmp = d.diff_match_patch()
-				# diffs = dmp.diff_main(code[-1], txt)
-				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
+				# d = dmp.diff_match_patch()
+				# diffs = d.diff_main(code[-1], txt)
+				f = open(path+'/%s/frame%d-segment%di.html' % (tag, fnum, snum), 'w')
 				# todo: move related files
 
 				# f.write('<meta http-equiv="refresh" content="1">')
-				# f.write(dmp.diff_prettyHtml(diffs))
+				# f.write(d.diff_prettyHtml(diffs))
 
 				# just code instead of diff
 				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
 				f.close()
 			else:
-				if len(code) > 4:
+				# if len(code) > 4:
 					# todo: print '\nreached buffer capacity'
-					code.pop(0)
+					# code.pop(0)
 				code.append(txt)
 
-				dmp = d.diff_match_patch()
-				diffs = dmp.diff_main(code[-2], code[-1])
-				dmp.diff_cleanupSemantic(diffs)
+				d = dmp.diff_match_patch()
+				# a = d.diff_linesToChars(code[-2], code[-1]) # check -2
+				# lineText1, lineText2 = a[0], a[1]
+				# lineArray = a[2]
+				diffs = d.diff_main(code[-2], code[-1], False) # diffs = d.diff_main(lineText1, lineText2, False)
+				# d.diff_charsToLines(diffs, lineArray);
+				d.diff_cleanupSemantic(diffs)
 				if dbug: print 'diffs:'
 				if dbug:
 					for x in diffs:
@@ -91,11 +95,11 @@ while True:
 				if dbug: print path+'/frame%d.html' % fnum
 
 				# f.write('<meta http-equiv="refresh" content="1">')
-				f.write(dmp.diff_prettyHtml(diffs))
+				f.write(d.diff_prettyHtml(diffs))
 				f.close()
 
-				#patches = dmp.patch_make(code[-2], diffs)
-				#if dbug: print dmp.patch_toText(patches)
+				#patches = d.patch_make(code[-2], diffs) # check -2
+				#if dbug: print d.patch_toText(patches)
 
 				if dbug: print 'code:',
 				if dbug: print code[-1].rstrip()
