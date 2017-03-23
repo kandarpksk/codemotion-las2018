@@ -1,32 +1,18 @@
-def process(image, output):
 	red = (0,0,255) #p!
 	lightgray = (150,150,150) #p!
 
 	debug = False
 
+	import sys
+	input = sys.argv[1]
+	output = sys.argv[1]+'-segment'
 	fraction = 1./10 # distance (as fraction of smaller dimension) to cluster within
 
 	import cv2
 	import numpy as np
+	from auxiliary import *
 
-	import itertools, operator
-	def minima(lol, f=operator.itemgetter(1)):
-		return list(next(itertools.groupby(sorted(lol, key=f), key=f))[1])
-
-	white = (255,255,255)
-	gray = (50,50,50)
-
-	import random as r
-	def randomColor():
-		return (r.randrange(255),r.randrange(255),r.randrange(255))
-
-	def d2(p1, p2):
-		return ((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
-
-	def flip(pair):
-		return (pair[1], pair[0])
-
-	img = image
+	img = cv2.imread(input)
 	demo = img.copy() if True else np.zeros(img.shape, np.uint8) # not a copy?
 	if debug: demo += 255
 	radius = min(img.shape[0], img.shape[1])*fraction
@@ -78,6 +64,7 @@ def process(image, output):
 	# step: heuristic clustering of points [o/p: clusters]
 	############################
 	def put(p, g, measure=d2):
+		global radius
 		if g != []:
 			added = False
 			index = -1
@@ -325,13 +312,10 @@ def process(image, output):
 		cv2.imwrite(output + ('2.jpg' if sep_y else '1.jpg'), img2)
 		img3 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], sep_x[0]:]), 2)
 		cv2.imwrite(output + ('3.jpg' if sep_y else '2.jpg'), img3)
-		return 3 if sep_y else 2
 	elif sep_y:
 		img2 = scale(addBorder(demo[0:sep_y[-1], 0:]), 2)
 		cv2.imwrite(output+'2.jpg', img2)
-		return 2#[img1, img2]
 	else:
 		cv2.imwrite(output+'1.jpg', scale(addBorder(demo), 2))
-		return 1#[scale(addBorder(demo), 2)]
 
 	# cv2.imwrite(output+'.jpg', demo)

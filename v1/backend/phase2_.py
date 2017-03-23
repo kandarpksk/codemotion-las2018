@@ -34,31 +34,27 @@ def process(frame, s, path):
 				text = parser.unescape(text)
 
 				if location != None:
-					if re.findall(r'\w+', text):
+					if re.findall(r'\w+|\{|\}|\(|\)|\[|\]', text):
 						res.append([int(location.group(0)), text])
 
 		# spacing adjustment
-
 		if len(res) == 0:
 			os.system("rm "+path+"/frame%d-segment%d.*" % (frame, i))
-
 		else:
 			os.system("rm "+path+"/frame%d-segment%d.hocr" % (frame, i))
 			base = min(res, key=operator.itemgetter(0))[0]
 
-			# yet to address case when 30,33,62 happens
-			temp = [r for r in res if r[0] > base*1.09] # when base = 0
-			if len(temp) == 0:
+			levels = [r for r in res if r[0] > base*1.3] # no equality, for when base = 0
+			if len(levels) == 0:
 				lines = ""
 				for r in res:
 					lines += r[1] + "\n"
 
-				# _dis[placed]
-				f = codecs.open(path+"/frame%d-segment%d.txt" % (frame, i), 'w', 'utf-8') # _check.txt
+				f = codecs.open(path+"/frame%d-segment%d.txt" % (frame, i), 'w', 'utf-8')
 				f.write(lines)
 
 			else:
-				tab = min(temp, key=operator.itemgetter(0))[0]-base
+				tab = min(levels, key=operator.itemgetter(0))[0]-base
 
 				res = [[int(round((r[0]-float(base))/tab)), r[1]] for r in res]
 				indented_lines = ""
@@ -69,6 +65,5 @@ def process(frame, s, path):
 					indented += r[1]
 					indented_lines += indented + "\n"
 
-				# _ind[ented]
 				f = codecs.open(path+"/frame%d-segment%d.txt" % (frame, i), 'w', 'utf-8')
 				f.write(indented_lines)
