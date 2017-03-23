@@ -27,7 +27,7 @@ def process(frame, s, path):
 				text = re.sub(r'<[^>]*>', '', line.strip())
 				text = re.sub(r'^\d+\b', '', text.strip()) # https://regex101.com
 				# fix special characters
-				text = unidecode(text).strip() # "untested"
+				text = unidecode(text).strip()
 				# text = text.replace(u'\u201c', '"').replace(u'\u201d', '"')
 				# text = text.replace(u'\u2018', '\'').replace(u'\u2019', '\'')
 				# decode HTML-safe sequences
@@ -44,7 +44,8 @@ def process(frame, s, path):
 			os.system("rm "+path+"/frame%d-segment%d.hocr" % (frame, i))
 			base = min(res, key=operator.itemgetter(0))[0]
 
-			levels = [r for r in res if r[0] > base*1.3] # no equality, for when base = 0
+			# no equality below, for case when base = 0
+			levels = [r for r in res if r[0] > base*1.3]
 			if len(levels) == 0:
 				lines = ""
 				for r in res:

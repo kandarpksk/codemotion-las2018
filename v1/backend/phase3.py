@@ -1,65 +1,83 @@
+debug = False
+
 import diff_match_patch as d
 import arrow_keys as kb
-import ocr, unidecode, re
+import ocr, unidecode, re, sys
 
-vnum, fnum, fps = 3, 1, 24
+vnum, fnum, fps = 3, 49, 24
 print 'starting with frame', fnum, '\n'
 
-code, prev = ['', '', '', '', ''], 'lo'
+path = '../public/extracts/video'+str(vnum)
+
+code, prev = [''], 'begin'
+read, th = True, 0
 while True:
-	#if prev == '': next = kb.get()
-	#if next == 'right' or next == 'down' or prev != '':
-		# read number of segments
-		try: file = open('../public/extracts/video%d/frame%d-segment1.txt' % (vnum, fnum))
-		except IOError: print 'no more files'; break
-		s = 3#int(file.read())
+	# read number of segments
+	try:
+		file = open(path+'/frame%d-segment1.txt' % fnum)
+		# if not read: print
+		print '\rframe%d, segment1' % fnum,
+		sys.stdout.flush()
+		read = True
+	except IOError:
+		if read and fnum > th:
+			print
+			th += 5000
+		print '\rno more files...     ',
+		sys.stdout.flush()
+		read = False
+	s = 3 # int(file.read())
+	file.close()
+
+	# todo: ignore entire windows, language detection
+
+	# read text from each segment
+	for snum in range(s):
+		try: file = open(path+'/frame%d-segment%d.txt' % (fnum, snum))
+		except IOError: continue
+
+		txt = file.read()
+		txt = txt.decode('ascii', 'ignore')
+		keywords = ocr.strict_check(txt)
+		tag = ''
+		if(len(keywords) > 0):
+			if debug: print 'check:', len(keywords)
+		else:
+			keywords = ocr.check_for_keywords(txt)
+			if(len(keywords) > 0):
+				tag = 'maybe'
+			else:
+				tag = 'unlikely'
 		file.close()
 
-		# read text from all segments
-		new_text = ''
-		for snum in range(s):
-			try: file = open('../public/extracts/video%d/frame%d-segment%d.txt' % (vnum, fnum, snum))
-			except IOError: continue
-			# distance text from separate segments
-			if new_text != '': new_text += '\n'
-			txt = file.read()
-			txt = txt.decode('ascii', 'ignore')
-			keywords = ocr.strict_check(txt)
-			if(len(keywords) > 0):
-				# print 'txt:', txt
-				print 'check:', len(keywords)
-				# print keywords
-				new_text += txt
-			else:
-				keywords = ocr.check_for_keywords(txt)
-				if(len(keywords) > 0):
-					new_text += '\n# maybe\n' + txt
-				else:
-					new_text += '\n# unlikely\n' + txt
-			file.close()
-
 		# show any text extracted
-		if new_text != '':
-			if new_text == code[4]:
-				print fnum, 'identical=======\n'
-				prev = 'id'
+		if txt != '':
+			if txt == code[-1]:
+				if debug: print fnum, 'identical=======\n'
+				prev = 'blink'
 
 				# dmp = d.diff_match_patch()
-				# diffs = dmp.diff_main(code[4], new_text)
-				f = open('../public/extracts/video%d/frame%d.html' % (vnum, fnum), 'w')
+				# diffs = dmp.diff_main(code[-1], txt)
+				f = open(path+'/frame%d-segment%d-%s.html' % (fnum, snum, tag), 'w')
+
 				# f.write('<meta http-equiv="refresh" content="1">')
 				# f.write(dmp.diff_prettyHtml(diffs))
-				f.write('<pre>' + new_text.replace('\n', '<br/>') + '</pre>') # code, not diff
+
+				# just code instead of diff
+				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
 				f.close()
 			else:
-				code.pop(0)
-				code.append(new_text)
+				if len(code) > 4:
+					print '\nreached buffer capacity'
+					code.pop(0)
+				code.append(txt)
 
 				dmp = d.diff_match_patch()
-				diffs = dmp.diff_main(code[3], code[4])
+				diffs = dmp.diff_main(code[-2], code[-1])
 				dmp.diff_cleanupSemantic(diffs)
-				print 'diffs:'
-				for x in diffs:
+				if debug: print 'diffs:'
+				if debug:
+					for x in diffs:
 					# if x[0] != 0:
 						for line in re.split('\n|\\n', x[1]) :
 							if x[0] == -1: print '-',
@@ -67,25 +85,24 @@ while True:
 							else: print '=',
 							print line.rstrip()
 
-				f = open('../public/extracts/video%d/frame%d.html' % (vnum, fnum), 'w')
-				print '../public/extracts/video%d/frame%d.html' % (vnum, fnum)
+				f = open(path+'/frame%d-segment%d-%s.html' % (fnum, snum, tag), 'w')
+				if debug: print path+'/frame%d.html' % fnum
+
 				# f.write('<meta http-equiv="refresh" content="1">')
 				f.write(dmp.diff_prettyHtml(diffs))
 				f.close()
 
-				#patches = dmp.patch_make(code[3], diffs)
-				#print dmp.patch_toText(patches)
+				#patches = dmp.patch_make(code[-2], diffs)
+				#if debug: print dmp.patch_toText(patches)
 
-				print 'code:',
-				print code[4].rstrip()
-				print '----------------'
+				if debug: print 'code:',
+				if debug: print code[-1].rstrip()
+				if debug: print '----------------'
 				prev = ''
 		else:
-			# if prev != 'bl':
-				# print fnum, 'empty'
-			prev = 'bl'
+			# if prev != 'blank':
+				# if debug: print fnum, 'empty'
+			prev = 'blank'
 
-		# go to next frame
-		fnum += fps
-
-	#else: print 'break'; break
+	# go to next frame
+	fnum += fps
