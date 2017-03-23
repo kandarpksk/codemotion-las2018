@@ -144,7 +144,7 @@ exports.code = function(req, res) {
 		else { /*'# '+count+' segment(s) at time '+req.params.time+'\n\n'+*/
 			var l = []
 			for (code_i in cs)
-				l.push(detect.contents('flnm', cs[code_i]))
+				l.push(detect.classify(cs[code_i]))
 			var language = []
 			for (lang_i in l)
 				language.push(codename[l[lang_i]])

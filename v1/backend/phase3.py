@@ -1,4 +1,4 @@
-debug = False
+dbug = False # new
 
 import diff_match_patch as d
 import arrow_keys as kb
@@ -41,7 +41,7 @@ while True:
 		keywords = ocr.strict_check(txt)
 		tag = ''
 		if(len(keywords) > 0):
-			if debug: print 'check:', len(keywords)
+			if dbug: print 'check:', len(keywords)
 		else:
 			keywords = ocr.check_for_keywords(txt)
 			if(len(keywords) > 0):
@@ -53,12 +53,13 @@ while True:
 		# show any text extracted
 		if txt != '':
 			if txt == code[-1]:
-				if debug: print fnum, 'identical=======\n'
+				if dbug: print fnum, 'identical=======\n'
 				prev = 'blink'
 
 				# dmp = d.diff_match_patch()
 				# diffs = dmp.diff_main(code[-1], txt)
-				f = open(path+'/frame%d-segment%d-%s.html' % (fnum, snum, tag), 'w')
+				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
+				# todo: move related files
 
 				# f.write('<meta http-equiv="refresh" content="1">')
 				# f.write(dmp.diff_prettyHtml(diffs))
@@ -68,15 +69,15 @@ while True:
 				f.close()
 			else:
 				if len(code) > 4:
-					print '\nreached buffer capacity'
+					# todo: print '\nreached buffer capacity'
 					code.pop(0)
 				code.append(txt)
 
 				dmp = d.diff_match_patch()
 				diffs = dmp.diff_main(code[-2], code[-1])
 				dmp.diff_cleanupSemantic(diffs)
-				if debug: print 'diffs:'
-				if debug:
+				if dbug: print 'diffs:'
+				if dbug:
 					for x in diffs:
 					# if x[0] != 0:
 						for line in re.split('\n|\\n', x[1]) :
@@ -85,23 +86,24 @@ while True:
 							else: print '=',
 							print line.rstrip()
 
-				f = open(path+'/frame%d-segment%d-%s.html' % (fnum, snum, tag), 'w')
-				if debug: print path+'/frame%d.html' % fnum
+				# move related files too
+				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
+				if dbug: print path+'/frame%d.html' % fnum
 
 				# f.write('<meta http-equiv="refresh" content="1">')
 				f.write(dmp.diff_prettyHtml(diffs))
 				f.close()
 
 				#patches = dmp.patch_make(code[-2], diffs)
-				#if debug: print dmp.patch_toText(patches)
+				#if dbug: print dmp.patch_toText(patches)
 
-				if debug: print 'code:',
-				if debug: print code[-1].rstrip()
-				if debug: print '----------------'
+				if dbug: print 'code:',
+				if dbug: print code[-1].rstrip()
+				if dbug: print '----------------'
 				prev = ''
 		else:
 			# if prev != 'blank':
-				# if debug: print fnum, 'empty'
+				# if dbug: print fnum, 'empty'
 			prev = 'blank'
 
 	# go to next frame
