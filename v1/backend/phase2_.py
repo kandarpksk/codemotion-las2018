@@ -2,6 +2,7 @@ def process(frame, s, path):
 	for i in range(1, s+1):
 		import os, re, cv2, operator, codecs
 		import HTMLParser
+		from unidecode import unidecode
 		parser = HTMLParser.HTMLParser()
 		unit_indent = "   "
 
@@ -12,7 +13,7 @@ def process(frame, s, path):
 
 		# hocr output conversion
 		res = [] # distance, code
-		with open(path+"/frame%d-segment%d.hocr" % (frame, i)) as hocr_output:
+		with codecs.open(path+"/frame%d-segment%d.hocr" % (frame, i), 'r', 'utf-8') as hocr_output:
 			for line in hocr_output:
 				# find x-coordinate of upper left corner
 				location = re.search(r'(?<=bbox ).+?(?=\s)', line)
@@ -24,20 +25,17 @@ def process(frame, s, path):
 
 				# ignore tags and extract code
 				text = re.sub(r'<[^>]*>', '', line.strip())
-				text = re.sub(r'^\d+\s*', '', text)
+				text = re.sub(r'^\d+\b', '', text.strip()) # https://regex101.com
 				# fix special characters
-				# todo: http://stackoverflow.com/questions/816285 # best-ascii-for-this-unicode
-				text = text.decode("utf8")
-				# dumb down smart quotes
-				text = text.replace(u'\u201c', '"').replace(u'\u201d', '"')
-				text = text.replace(u'\u2018', '\'').replace(u'\u2019', '\'')
+				text = unidecode(text).strip() # "untested"
+				# text = text.replace(u'\u201c', '"').replace(u'\u201d', '"')
+				# text = text.replace(u'\u2018', '\'').replace(u'\u2019', '\'')
 				# decode HTML-safe sequences
 				text = parser.unescape(text)
 
-				# sanity check for location and extract
-				is_text_empty = (text == re.search(r'\w*', line).group(0))
-				if location != None and not is_text_empty:
-					res.append([int(location.group(0)), text])
+				if location != None:
+					if re.findall(r'\w+', text):
+						res.append([int(location.group(0)), text])
 
 		# spacing adjustment
 
