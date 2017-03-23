@@ -74,21 +74,34 @@ while True:
 				code.append(txt)
 
 				d = dmp.diff_match_patch()
-				# a = d.diff_linesToChars(code[-2], code[-1]) # check -2
+				# a = d.diff_linesToWords(code[-2], code[-1]) # check -2
 				# lineText1, lineText2 = a[0], a[1]
 				# lineArray = a[2]
-				diffs = d.diff_main(code[-2], code[-1], False) # diffs = d.diff_main(lineText1, lineText2, False)
-				# d.diff_charsToLines(diffs, lineArray);
+				diffs = d.diff_main(code[-2], code[-1], False)
+				# diffs = d.diff_main(lineText1, lineText2, False)
+				# d.diff_charsToLines(diffs, lineArray) # works for words too
 				d.diff_cleanupSemantic(diffs)
-				if dbug: print 'diffs:'
-				if dbug:
+				if dbug or fnum == 4897: print '\ndiffs:\n'
+				if dbug or fnum == 4897:
+					l, total, change = 1, 0, 0
 					for x in diffs:
-					# if x[0] != 0:
-						for line in re.split('\n|\\n', x[1]) :
-							if x[0] == -1: print '-',
-							elif x[0] == 1: print '+',
-							else: print '=',
-							print line.rstrip()
+					# if x[0] != 0: # unchanged, iirc
+						lines = re.split('\n|\\n', x[1])
+						for part in lines:
+							if len(part)>1:
+								print l, len(part),
+								total += len(part)
+								if x[0] == -1:
+									print '-', part.rstrip(), '\t',
+									change += len(part)
+								elif x[0] == 1:
+									print '+', part.rstrip(), '\t',
+									change += len(part)
+								else: print '~',
+								# print part.rstrip(), '\t',
+								if part != lines[-1]: l += 1; print
+						# print
+					print str(int(round(change*100./total)))+'%'
 
 				# move related files too
 				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
