@@ -1,5 +1,5 @@
 import sys, cv2, math, numpy
-import phase1, phase2_
+import phase1, phase2
 
 if len(sys.argv) > 2:
 	print 'skipping to frame', sys.argv[2]
@@ -39,7 +39,7 @@ while success:
 		segments = phase1.process(image, path+'/'+'frame'+str(fnum)+'-segment')
 		print '\r%d:%02d extracting text... ' % (t_min, t_sec),
 		sys.stdout.flush()
-		phase2_.process(fnum, segments, path)
+		phase2.process(fnum, segments, path)
 
 		if ndiff > 7500: # show significant changes #improve
 			marked = image.copy()

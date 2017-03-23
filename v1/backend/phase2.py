@@ -11,7 +11,7 @@ def process(frame, s, path):
 		ocr_command = "tesseract " + image+' '+output + " config.txt 2>/dev/null"
 		os.system(ocr_command)
 
-		# hocr output conversion
+		# output (hocr) conversion
 		res = [] # distance, code
 		with codecs.open(path+"/frame%d-segment%d.hocr" % (frame, i), 'r', 'utf-8') as hocr_output:
 			for line in hocr_output:
