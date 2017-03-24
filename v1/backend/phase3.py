@@ -83,23 +83,33 @@ while True:
 				d.diff_cleanupSemantic(diffs)
 				if dbug or fnum == 4897: print '\ndiffs:\n'
 				if dbug or fnum == 4897:
-					l, total, change = 1, 0, 0
+					l, total, change = [[]], 0, 0
 					for x in diffs:
 					# if x[0] != 0: # unchanged, iirc
 						lines = re.split('\n|\\n', x[1])
 						for part in lines:
 							if len(part)>1:
-								print l, len(part),
+								print len(l),
 								total += len(part)
-								if x[0] == -1:
-									print '-', part.rstrip(), '\t',
-									change += len(part)
-								elif x[0] == 1:
+
+								if x[0] == 1:
 									print '+', part.rstrip(), '\t',
+									if l[-1][-1] == 'mod':
+										l[-1].pop() # big changes?
+									else: l[-1].append('new')
 									change += len(part)
-								else: print '~',
+								elif x[0] == -1:
+									print '-', part.rstrip(), '\t',
+									l[-1].append('mod')
+									change += len(part)
+								else:
+									l[-1].append('sim')
+									print '~',
 								# print part.rstrip(), '\t',
-								if part != lines[-1]: l += 1; print
+
+								if part != lines[-1]:
+									l.append([])
+									print list(set(l[-2]))
 						# print
 					print str(int(round(change*100./total)))+'%'
 
