@@ -1,21 +1,18 @@
-dbug = False # new
-
 import diff_match_patch as dmp
-import arrow_keys as kb
-import ocr, unidecode, re, sys
+import ocr, re, sys
 
 vnum, fnum, fps = 3, 49, 24
 print 'starting with frame', fnum, '\n'
 
 path = '../public/extracts/video'+str(vnum)
 
-code, prev = [''], 'begin'
+code = ['']
 read, th, inc = True, 0, 0
 while fnum < 216000:
-	# read number of segments
+	s = 3 # read number of segments
 	try:
 		file = open(path+'/frame%d-segment1.txt' % fnum)
-		# if not read: print
+		#if not read: print
 		sys.stdout.write("\r100%\033[K")
 		# previous count
 		print '\r%d: frame %d' % (len(code)-1, fnum),
@@ -30,32 +27,26 @@ while fnum < 216000:
 		print '\r%d: frame %d missing' % (len(code)-1, fnum),
 		sys.stdout.flush()
 		read = False
-	s = 3 # int(file.read())
+		#s = 0
 	file.close()
-
-	# todo: ignore entire windows, language detection
 
 	# read text from each segment
 	for snum in range(s):
-		# print snum,
 		try: file = open(path+'/frame%d-segment%d.txt' % (fnum, snum))
 		except: continue
-
 		txt = file.read()
+		file.close()
+
 		txt = txt.decode('ascii', 'ignore')
 		keywords = ocr.strict_check(txt)
 		tag = ''
-		if(len(keywords) > 0):
-			if dbug: print 'check:', len(keywords)
-		else:
+		if len(keywords) == 0:
 			keywords = ocr.check_for_keywords(txt)
 			if(len(keywords) > 0):
 				tag = 'maybe'
 			else:
 				tag = 'unlikely'
-		file.close()
 
-		# show any text extracted
 		if txt != '' and tag != 'unlikely':
 			if txt == code[-1] or txt in code:
 				f = open(path+'/%s/frame%d-segment%di.html' % (tag, fnum, snum), 'w')
@@ -64,18 +55,10 @@ while fnum < 216000:
 				f.close()
 			else:
 				d = dmp.diff_match_patch()
-				# a = d.diff_linesToWords(code[-2], code[-1]) # check -2
-				# lineText1, lineText2 = a[0], a[1]
-				# lineArray = a[2]
 				diffs = d.diff_main(code[-1], txt, False)
-				# diffs = d.diff_main(lineText1, lineText2, False)
-				# d.diff_charsToLines(diffs, lineArray) # works for words too
 				d.diff_cleanupSemantic(diffs)
-				# if dbug or fnum == 4897:
-					# print '\ndiffs:\n'
 				l, total, change = [[]], 0, 0
 				for x in diffs:
-				# if x[0] != 0: # unchanged (check again)
 					lines = re.split('\n|\\n', x[1])
 					for part in lines:
 						total += len(part)
@@ -114,27 +97,14 @@ while fnum < 216000:
 					# print '\n', txt
 					code.append(txt)
 
-				# move related files too
+				#move related files too
 				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
-				if dbug: print path+'/frame%d.html' % fnum
 
-				# f.write('<meta http-equiv="refresh" content="1">')
 				f.write(d.diff_prettyHtml(diffs))
 				f.close()
-
-				#patches = d.patch_make(code[-2], diffs) # check -2
-				#if dbug: print d.patch_toText(patches)
-
-				if dbug: print 'code:',
-				if dbug: print code[-1].rstrip()
-				if dbug: print '----------------'
-				prev = ''
-		else:
-			# if prev != 'blank':
-				# if dbug: print fnum, 'empty'
-			prev = 'blank'
 
 	# go to next frame
 	fnum += fps
 
+# but not identical
 print '\nframes with incremental changes:', inc

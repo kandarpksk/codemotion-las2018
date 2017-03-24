@@ -48,17 +48,18 @@ import re
 def loose_check(string):
 	# finds keywords (anywhere)
 	ws = [keyword for keyword in set(py_wlist + cpp_wlist) if keyword in string]
-	return flatten([[w for w in test_string.split() if k in w] for k in ws])
+	return flatten([[w for w in string.split() if k in w] for k in ws]) #test_string
 
 # regular (pun intended) check
 def check_for_keywords(string):
 	# find words (with keyword as prefix)
-	ws_re = re.compile(r'\b(' + '|'.join(set(py_wlist + cpp_wlist)) + r')([a-z]*)')
+	ws_re = re.compile(r'\b(' + '|'.join(set(py_wlist + cpp_wlist)) + r')([a-z]*)') # check groups
 	return [''.join(w) for w in ws_re.findall(string)]
 
 def strict_check(string):
 	# finds keywords (strictly)
-	return [word for word in set(py_wlist + cpp_wlist) if word in string.split()]
+	ws_re_strict = re.compile(r'\b(' + '|'.join(set(py_wlist + cpp_wlist)) + r')\b')
+	return [word for word in set(py_wlist + cpp_wlist) if word in ws_re_strict.findall(string)]
 
 # print loose_check(test_string)
 # print check_for_keywords(test_string)
