@@ -1,5 +1,5 @@
 import diff_match_patch as dmp
-import ocr, re, sys, numpy
+import ocr, re, sys, numpy, json
 
 vnum, fnum, fps = 3, 49, 24
 print 'starting with frame', fnum, '\n'
@@ -31,6 +31,9 @@ def compare(known, txt):
 					l.append([]) #print list(set(l[-2]))
 	return int(round(change*100./total)), d, diffs
 
+output_code = []
+output_start = [0]
+
 buffer = ['']
 change_measure, past_measure = [], []
 total_frames, unmatched_measure = 0, []
@@ -38,14 +41,14 @@ read, th, inc = True, 0, 0
 while fnum < 216000:
 	s = 3 # read number of segments
 	try:
-		file = open(path+'/frame%d-segment1.txt' % fnum)
+		file = open(path+'/main/frame%d-segment1.txt' % fnum)
 		#if not read: print
 		sys.stdout.write("\r100%\033[K")
 		# previous count
 		print '\r%d: frame %d' % (len(buffer)-1, fnum),
 		sys.stdout.flush()
 		read = True
-	except IOError:
+	except:# IOError:
 		if read and fnum > th:
 			print
 			th += 5000
@@ -59,7 +62,7 @@ while fnum < 216000:
 
 	# read text from each segment
 	for snum in range(s):
-		try: file = open(path+'/frame%d-segment%d.txt' % (fnum, snum))
+		try: file = open(path+'/main/frame%d-segment%d.txt' % (fnum, snum))
 		except: continue
 		total_frames += 1
 		txt = file.read()
@@ -67,7 +70,7 @@ while fnum < 216000:
 
 		txt = txt.decode('ascii', 'ignore')
 		keywords = ocr.strict_check(txt)
-		tag = ''
+		tag = 'main'
 		if len(keywords) == 0:
 			keywords = ocr.check_for_keywords(txt)
 			if(len(keywords) > 0):
@@ -77,7 +80,7 @@ while fnum < 216000:
 
 		if txt != '' and tag != 'unlikely':
 			if txt == buffer[-1] or txt in buffer:
-				f = open(path+'/%s/frame%d-segment%di.html' % (tag, fnum, snum), 'w')
+				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w') #i
 				# todo: move related files
 				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
 				f.close()
@@ -95,6 +98,8 @@ while fnum < 216000:
 					else:
 						unmatched_measure.append(pc)
 				if not merged:
+					output_code.append(buffer[-1])
+					output_start.append((fnum-1)/24)
 					buffer.append(txt)
 
 				# if len(buffer) > 4:
@@ -109,6 +114,7 @@ while fnum < 216000:
 
 	# go to next frame
 	fnum += fps
+output_code.append(txt)
 
 # but not identical
 print '\n\nframes with incremental changes:', inc
@@ -116,6 +122,28 @@ print 'average extent of edit (%):', round(numpy.mean(change_measure), 2)
 print 'average change on breaking (%):', round(numpy.mean(unmatched_measure), 2)
 print 'average depth of successful lookback:', round(numpy.mean(past_measure), 2)
 print 'total frames:', total_frames
+
+def eprint(t):
+	sys.stderr.write(t)
+
+eprint('{\n"start": [')
+for i in range(len(output_start)):
+	if i%10 == 0:
+		eprint('\n    ')
+	eprint(str(output_start[i])+', ')
+eprint('\n],\n')
+
+eprint('"code": [\n')
+for i in range(len(output_code)):
+	eprint('    ['+json.dumps(output_code[i])+'],\n')
+eprint('],\n')
+
+eprint('"l": [')
+for i in range(len(output_start)):
+	if i%5 == 0:
+		eprint('\n    ')
+	eprint('["Python"]'+', ')
+eprint('\n]\n}')
 
 # {
 # 	"start": [0],
