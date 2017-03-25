@@ -31,7 +31,9 @@ def compare(known, txt):
 					l.append([]) #print list(set(l[-2]))
 	return int(round(change*100./total)), d, diffs
 
-buffer, change_measure, total_frames, unmatched_measure = [''], [], 0, []
+buffer = ['']
+change_measure, past_measure = [], []
+total_frames, unmatched_measure = 0, []
 read, th, inc = True, 0, 0
 while fnum < 216000:
 	s = 3 # read number of segments
@@ -85,8 +87,9 @@ while fnum < 216000:
 					pc, d, diffs = compare(buffer[len(buffer)-i-1], txt)
 					if pc < 70:
 						change_measure.append(pc)
+						past_measure.append(i+1)
 						inc += 1
-						buffer[-1] = txt
+						buffer[-1] = txt # todo: account for scrolling
 						merged = True
 						break
 					else:
@@ -108,6 +111,14 @@ while fnum < 216000:
 	fnum += fps
 
 # but not identical
-print '\nframes with incremental changes:', inc
-print numpy.mean(change_measure), numpy.mean(unmatched_measure)
-print total_frames
+print '\n\nframes with incremental changes:', inc
+print 'average extent of edit (%):', round(numpy.mean(change_measure), 2)
+print 'average change on breaking (%):', round(numpy.mean(unmatched_measure), 2)
+print 'average depth of successful lookback:', round(numpy.mean(past_measure), 2)
+print 'total frames:', total_frames
+
+# {
+# 	"start": [0],
+# 	"code": [[""]],
+# 	"l": [["Python"]]
+# }
