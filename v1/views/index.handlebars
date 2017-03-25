@@ -32,7 +32,7 @@
 
 		{{#each segments}}
 		<div class="alert alert-info" role="alert" id="s{{ start }}-vo">
-			{{ voiceover }}
+			{{ @index }}: {{ voiceover }}
 		</div>
 
 		<div class="row transcript">
@@ -41,8 +41,8 @@
 				<span class="badge badge-pill badge-default">
 					<i class="material-icons fs">fullscreen</i>
 				</span>
-				<video preload="auto" id="s{{ start }}-video"> <!-- poster="images/loading.gif" -->
-					<source src="{{ ../url }}#t={{ start }}" type="video/mp4" />
+				<video preload="metadata" id="s{{ start }}-video"> <!-- poster="images/loading.gif" -->
+					<source src="{{ ../url }}" type="video/mp4" />
 					Your browser does not support HTML5 video.
 				</video>
 
@@ -59,7 +59,7 @@
 			<div class="col code-container">
 				{{#each code}}
 				<textarea style="display:none"
-						id="s{{ ../start }}l{{ @index }}-code" 
+						id="s{{ ../start }}l{{ @index }}-code"
 						data-language="{{ this.language }}">{{ this.text }}</textarea>
 				{{/each}}
 				<div class="editor" id="s{{ start }}-editor"
