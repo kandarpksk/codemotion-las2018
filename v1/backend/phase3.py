@@ -1,5 +1,5 @@
 import diff_match_patch as dmp
-import ocr, re, sys
+import ocr, re, sys, numpy
 
 vnum, fnum, fps = 3, 49, 24
 print 'starting with frame', fnum, '\n'
@@ -31,7 +31,7 @@ def compare(known, txt):
 					l.append([]) #print list(set(l[-2]))
 	return int(round(change*100./total)), d, diffs
 
-buffer = ['']
+buffer, change_measure, total_frames, unmatched_measure = [''], [], 0, []
 read, th, inc = True, 0, 0
 while fnum < 216000:
 	s = 3 # read number of segments
@@ -59,6 +59,7 @@ while fnum < 216000:
 	for snum in range(s):
 		try: file = open(path+'/frame%d-segment%d.txt' % (fnum, snum))
 		except: continue
+		total_frames += 1
 		txt = file.read()
 		file.close()
 
@@ -79,17 +80,23 @@ while fnum < 216000:
 				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
 				f.close()
 			else:
-				pc, d, diffs = compare(buffer[-1], txt)
+				merged = False
+				for i in range(min(len(buffer), 10)):
+					pc, d, diffs = compare(buffer[len(buffer)-i-1], txt)
+					if pc < 70:
+						change_measure.append(pc)
+						inc += 1
+						buffer[-1] = txt
+						merged = True
+						break
+					else:
+						unmatched_measure.append(pc)
+				if not merged:
+					buffer.append(txt)
 
 				# if len(buffer) > 4:
 					# todo: print '\nreached buffer capacity'
 					# buffer.pop(0)
-				if pc < 70:
-					inc += 1
-					buffer[-1] = txt
-				else:
-					# print '\n', txt
-					buffer.append(txt)
 
 				#move related files too
 				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
@@ -102,3 +109,5 @@ while fnum < 216000:
 
 # but not identical
 print '\nframes with incremental changes:', inc
+print numpy.mean(change_measure), numpy.mean(unmatched_measure)
+print total_frames
