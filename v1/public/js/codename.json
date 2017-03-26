@@ -11,6 +11,7 @@
 	"Bro" : "bro",
 	"C" : "c_cpp",
 	"C++" : "c_cpp",
+	"CPP" : "c_cpp",
 	"C9Search" : "c9search",
 	"Cirru" : "cirru",
 	"Clojure" : "clojure",

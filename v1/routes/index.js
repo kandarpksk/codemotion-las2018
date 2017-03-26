@@ -62,8 +62,8 @@ function initialize() {
 			fps: 24,
 			start: [0, 1606, 3600, 5400],
 			duration: 7980,
-			code: [['accumulated code', ''], [''], ['']], // \n
-			l: [['Text', 'Python'], ['Python'], ['C']]
+			code: [['accumulated code', ''], [''], [''], ['']], // \n
+			l: [['Text', 'Python'], ['Python'], ['C'], ['CPP']]
 		} // dummy
 	if (vnum != undefined)
 		metadata = require('../public/other/video'+vnum+'.json')
@@ -86,9 +86,9 @@ function initialize() {
 	finder = fi('public/extracts/video'+vnum+(vnum == 3 ? 'a' : '')) // temp
 	finder.on('file', function(file) {
 		if (file.search('segment') != -1) {
-			fs.readFile(file, 'utf8', function(err, data) {
+			fs.readFile(file, 'utf8', function(err, dat) {
 				var fnum = (parseInt(file.substring(file.search('frame')+5, file.search('-')))-1)/24
-				var words = data.match(/\b(\w+)\b/g)
+				var words = dat.match(/\b(\w+)\b/g)
 				for(i in words)
 					if (table[words[i]]) {
 						if(!table[words[i]].includes(fnum))
@@ -135,6 +135,7 @@ exports.code = function(req, res) {
 				count += 1
 				cs.push(content) //'-----------\n segment '+count+'\n-----------\n' + content
 			} catch(error) {
+				console.log('couldn\'t read frame '+frame+' segment '+i)
 				/* do nothing */
 			}
 		if(count == 0)

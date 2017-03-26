@@ -1,6 +1,8 @@
 import diff_match_patch as dmp
 import ocr, re, sys, numpy, json
 
+MIN_INTERVAL = 15
+
 vnum, fnum, fps = 3, 49, 24
 print 'starting with frame', fnum, '\n'
 
@@ -15,7 +17,7 @@ def compare(known, txt):
 		lines = re.split('\n|\\n', x[1])
 		for part in lines:
 			total += len(part)
-			if len(part)>1:
+			if len(part)>1: # ignore lookalikes
 				if x[0] == 1:
 					if l[-1] and l[-1][-1] == 'mod':
 						l[-1].pop() # big changes?
@@ -32,29 +34,30 @@ def compare(known, txt):
 	return int(round(change*100./total)), d, diffs
 
 output_code = []
-output_start = [0]
+output_time = [[0, 0]]
+# start and end
 
 buffer = ['']
 change_measure, past_measure = [], []
 total_frames, unmatched_measure = 0, []
-read, th, inc = True, 0, 0
+read, th, inc, upd = True, 0, 0, -1
 while fnum < 216000:
 	s = 3 # read number of segments
 	try:
 		file = open(path+'/main/frame%d-segment1.txt' % fnum)
 		#if not read: print
-		sys.stdout.write("\r100%\033[K")
+		# sys.stdout.write("\r100%\033[K")
 		# previous count
-		print '\r%d: frame %d' % (len(buffer)-1, fnum),
+		# print '\r%d: frame %d' % (len(buffer)-1, fnum),
 		sys.stdout.flush()
 		read = True
 	except:# IOError:
 		if read and fnum > th:
-			print
+			# print #
 			th += 5000
-		sys.stdout.write("\r100%\033[K")
+		# sys.stdout.write("\r100%\033[K")
 		# previous count
-		print '\r%d: frame %d missing' % (len(buffer)-1, fnum),
+		# print '\r%d: frame %d missing' % (len(buffer)-1, fnum),
 		sys.stdout.flush()
 		read = False
 		#s = 0 #maybe
@@ -79,7 +82,8 @@ while fnum < 216000:
 				tag = 'unlikely'
 
 		if txt != '' and tag != 'unlikely':
-			if txt in buffer:
+			if txt == buffer[-1]:
+				output_time[-1][1] = (fnum-1)/24 # update end time
 				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w') #i
 				# todo: move related files
 				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
@@ -89,18 +93,32 @@ while fnum < 216000:
 				merged = False
 				for i in range(min(len(buffer), 10)):
 					pc, d, diffs = compare(buffer[len(buffer)-i-1], txt)
-					if pc < 70:
+					if pc == 0:
+						past_measure.append(i+1)
+						output_time[len(buffer)-i-1][1] = (fnum-1)/24
+						buffer[len(buffer)-i-1] = txt # todo: account for scrolling
+						merged = True
+						break
+					elif pc < 70:
 						change_measure.append(pc)
 						past_measure.append(i+1)
 						inc += 1
+						# update end time
+						output_time[len(buffer)-i-1][1] = (fnum-1)/24
+						# if upd != len(buffer)-i-1:
+						print (fnum-1)/24, ': updated end time of interval', len(buffer)-i-1
+							# upd = len(buffer)-i-1
 						buffer[len(buffer)-i-1] = txt # todo: account for scrolling
+						if i != 0: # update output code?
+							print 'update output code'
 						merged = True
 						break
 					else:
 						unmatched_measure.append(pc)
 				if not merged:
-					output_code.append(buffer[-1])
-					output_start.append((fnum-1)/24)
+					output_code.append([buffer[-1], snum])
+					output_time.append([(fnum-1)/24, (fnum-1)/24])
+					print (fnum-1)/24, ': starting interval', len(buffer), '(segment', str(snum)+')'
 					buffer.append(txt)
 
 				# if len(buffer) > 4:
@@ -115,7 +133,8 @@ while fnum < 216000:
 
 	# go to next frame
 	fnum += fps
-output_code.append(txt)
+# todo: if not merged
+output_code.append([txt, -1])
 
 # but not identical
 print '\n\nframes with incremental changes:', inc
@@ -136,28 +155,42 @@ eprint( # width options (4 for 720p, 5 for 540p)
 "duration": 7980,\n'
 )
 
-mi = len(output_start)-1
+last = -1
+li = len(output_time)-1 # last interval index
 eprint('"start": [')
-for i in range(len(output_start)):
+for i in range(len(output_time)):
 	if i%10 == 0:
 		eprint('\n\t')
-	eprint(str(output_start[i])+', ')
-	# next = output_start[i+1] if i < mi else 1886
-	# eprint(str(next-output_start[i])+', ')
+	# eprint(str(output_time[i][0])+'/'+str(output_time[i][1])+', ')
+	# eprint(str(output_time[i][0])+', ')
+	next = output_time[i+1][0] if i < li else 1886
+	if last == -1 or output_time[i][0]-output_time[last][0] > MIN_INTERVAL:
+		eprint(str(output_time[i][0])+', ')
+		print str(output_time[i][0])+'/'+str(output_time[i][0]-output_time[last][0])
+		last = i
 
 eprint('\n],\n')
 
+last = -1
 eprint('"code": [\n')
 for i in range(len(output_code)):
-	eprint('\t['+json.dumps(output_code[i])+'], \n')
+	if last == -1 or output_time[i][0]-output_time[last][0] > MIN_INTERVAL:
+		eprint('\t['+json.dumps(output_code[i][0])+'], \n')
+		last = i
+	# else:
+	# 	eprint('\t,'+json.dumps(output_code[i][0])+'\n\n')
 
 eprint('],\n')
 
+last = -1
 eprint('"l": [')
-for i in range(len(output_start)):
-	if i%5 == 0:
+for i in range(len(output_time)):
+	if i%10 == 0:
 		eprint('\n\t')
-	eprint('["Python"]'+', ')
+	if last == -1 or output_time[i][0]-output_time[last][0] > MIN_INTERVAL:
+		eprint('["Python"]'+', ')
+		last = i
+		# todo
 
 eprint('\n]\n')
 
