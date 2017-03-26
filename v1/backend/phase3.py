@@ -68,7 +68,7 @@ while fnum < 216000:
 		txt = file.read()
 		file.close()
 
-		txt = txt.decode('ascii', 'ignore')
+		txt = txt.decode('ascii', 'ignore') # todo
 		keywords = ocr.strict_check(txt)
 		tag = 'main'
 		if len(keywords) == 0:
@@ -79,12 +79,13 @@ while fnum < 216000:
 				tag = 'unlikely'
 
 		if txt != '' and tag != 'unlikely':
-			if txt == buffer[-1] or txt in buffer:
+			if txt in buffer:
 				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w') #i
 				# todo: move related files
 				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
 				f.close()
 			else:
+			# if txt not in buffer:
 				merged = False
 				for i in range(min(len(buffer), 10)):
 					pc, d, diffs = compare(buffer[len(buffer)-i-1], txt)
@@ -92,7 +93,7 @@ while fnum < 216000:
 						change_measure.append(pc)
 						past_measure.append(i+1)
 						inc += 1
-						buffer[-1] = txt # todo: account for scrolling
+						buffer[len(buffer)-i-1] = txt # todo: account for scrolling
 						merged = True
 						break
 					else:
@@ -106,10 +107,10 @@ while fnum < 216000:
 					# todo: print '\nreached buffer capacity'
 					# buffer.pop(0)
 
-				#move related files too
+				# move related files too?
 				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
-
-				f.write(d.diff_prettyHtml(diffs))
+				if merged: f.write(d.diff_prettyHtml(diffs))
+				else: f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
 				f.close()
 
 	# go to next frame
@@ -126,27 +127,38 @@ print 'total frames:', total_frames
 def eprint(t):
 	sys.stderr.write(t)
 
-eprint('{\n"start": [')
+eprint('{\n')
+
+eprint( # width options (4 for 720p, 5 for 540p)
+'"name": "CS50 2016 - Week 8 - Python",\n\
+"width": 5,\n\
+"fps": 24,\n\
+"duration": 7980,\n'
+)
+
+mi = len(output_start)-1
+eprint('"start": [')
 for i in range(len(output_start)):
 	if i%10 == 0:
-		eprint('\n    ')
+		eprint('\n\t')
 	eprint(str(output_start[i])+', ')
+	# next = output_start[i+1] if i < mi else 1886
+	# eprint(str(next-output_start[i])+', ')
+
 eprint('\n],\n')
 
 eprint('"code": [\n')
 for i in range(len(output_code)):
-	eprint('    ['+json.dumps(output_code[i])+'],\n')
+	eprint('\t['+json.dumps(output_code[i])+'], \n')
+
 eprint('],\n')
 
 eprint('"l": [')
 for i in range(len(output_start)):
 	if i%5 == 0:
-		eprint('\n    ')
+		eprint('\n\t')
 	eprint('["Python"]'+', ')
-eprint('\n]\n}')
 
-# {
-# 	"start": [0],
-# 	"code": [[""]],
-# 	"l": [["Python"]]
-# }
+eprint('\n]\n')
+
+eprint('}')
