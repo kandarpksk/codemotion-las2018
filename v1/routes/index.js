@@ -83,7 +83,7 @@ function initialize() {
 				metadata.code[i], metadata.l[i], metadata.duration)
 
 	var fi = require('findit')
-	finder = fi('public/extracts/video'+vnum+(vnum == 3 ? 'a' : '')) // temp
+	finder = fi('public/extracts/video'+vnum+(vnum == 3 ? '/main' : '')) // temp
 	finder.on('file', function(file) {
 		if (file.search('segment') != -1) {
 			fs.readFile(file, 'utf8', function(err, dat) {
@@ -125,7 +125,7 @@ exports.code = function(req, res) {
 
 	var frame = (req.params.time * data.fps) + 1
 	try {
-		var base = 'public/extracts/video'+vnum+(vnum == 3 ? 'a' : '')+'/frame'+frame
+		var base = 'public/extracts/video'+vnum+(vnum == 3 ? '/main' : '')+'/frame'+frame
 		var segments = 3//parseInt(fs.readFileSync(base+'.txt', 'utf8'))
 
 		var cs = [], count = 0

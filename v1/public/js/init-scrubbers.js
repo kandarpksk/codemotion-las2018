@@ -75,7 +75,7 @@ function updateProgressWidth($progress, percent, time, duration) {
 	}
 
 	$progress.width((percent * 100) + '%')
-	
+
 	// show time elapsed
 	var t, limit = (duration < 3600) ? 0.13 : 0.10
 	if (duration > 3600)
@@ -95,5 +95,5 @@ function updateProgressWidth($progress, percent, time, duration) {
 }
 
 function updateVideoTime(video, percent) {
-	video.currentTime = percent * video.duration
+	video.currentTime = percent * video.duration // add offset
 }

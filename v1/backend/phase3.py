@@ -1,7 +1,7 @@
 import diff_match_patch as dmp
 import ocr, re, sys, numpy, json
 
-MIN_INTERVAL = 15
+MIN_INTERVAL = 30
 
 vnum, fnum, fps = 3, 49, 24
 print 'starting with frame', fnum, '\n'
