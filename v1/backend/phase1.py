@@ -314,29 +314,43 @@ def process(image, path, name, flag):
 	def removeLines():
 		return
 
+	def ignore(ii, scale=2, both=True):
+		w_pc = ii.shape[0]*100./(image.shape[0]*scale)
+		h_pc = ii.shape[1]*100./(image.shape[1]*scale)
+
+		both_big = w_pc > 80 and h_pc > 80
+		either_big = w_pc > 80 or h_pc > 80
+		too_big = either_big and (both_big if both else not both_big)
+
+		if too_big: return True
+		return False # ...are close to original dimensions, then
+
 	# crop into 3 or fewer segments
 	if sep_y:
 		# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
 		img1 = scale(addBorder(demo[sep_y[-1]:, 0:]), 2)
-		cv2.imwrite(path+'/'+name+'1.jpg', img1)
+		if flag: print img1.shape, image.shape, int(round(img1.shape[0]*50./image.shape[0], 2)), int(round(img1.shape[1]*50./image.shape[1], 2))
+		cv2.imwrite(path+'/'+(flag if ignore(img1) else '')+name+'1.jpg', img1)
 	if sep_x:
 		# cv2.line(demo, (sep_x[0],0), (sep_x[0],sep_y[0] if sep_y else lx_hy[1]), randomColor(), 2)
 		img2 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], 0:sep_x[0]]), 2)
-		cv2.imwrite(path+'/'+name + ('2.jpg' if sep_y else '1.jpg'), img2)
-		img3 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], sep_x[0]:]), 2)
-		cv2.imwrite(path+'/'+name + ('3.jpg' if sep_y else '2.jpg'), img3)
-		return 3 if sep_y else 2
+		if flag: print img2.shape, image.shape, int(round(img2.shape[0]*50./image.shape[0], 2)), int(round(img2.shape[1]*50./image.shape[1], 2)), '|',
+		cv2.imwrite(path+'/'+(flag if ignore(img2) else '')+name + ('2.jpg' if sep_y else '1.jpg'), img2)
+		# print 'check:', sep_y[-1] if sep_y else hx_hy[1], demo.shape[1] - sep_x[0]
+		if demo.shape[1]-sep_x[0] > 0.03*image.shape[1]:
+			img3 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], sep_x[0]:]), 2)
+			if flag: print img3.shape, image.shape, int(round(img3.shape[0]*50./image.shape[0], 2)), int(round(img3.shape[1]*50./image.shape[1], 2))
+			cv2.imwrite(path+'/'+(flag if ignore(img3) else '')+name + ('3.jpg' if sep_y else '2.jpg'), img3)
+			return 3 if sep_y else 2
+		return 2 if sep_y else 1
 	elif sep_y:
 		img2 = scale(addBorder(demo[0:sep_y[-1], 0:]), 2)
-		cv2.imwrite(path+'/'+name+'2.jpg', img2)
+		if flag: print img2.shape, image.shape, int(round(img2.shape[0]*50./image.shape[0], 2)), int(round(img2.shape[1]*50./image.shape[1], 2))
+		cv2.imwrite(path+'/'+(flag if ignore(img2) else '')+name+'2.jpg', img2)
 		return 2#[img1, img2]
 	else:
-		width = demo.shape[0]*100./img.shape[0] > 80
-		height = demo.shape[1]*100./img.shape[1] > 80
-		if width or height: # close to original dimensions
-			cv2.imwrite(path+'/'+flag+name+'1'+'.jpg', scale(addBorder(demo), 2))
-		else:
-			cv2.imwrite(path+'/'+name+'1'+'.jpg', scale(addBorder(demo), 2))
+		if flag: print int(round(demo.shape[0]*100./image.shape[0], 2)), int(round(demo.shape[1]*100./image.shape[1], 2))
+		cv2.imwrite(path+'/'+(flag if ignore(demo, 1, False) else '')+name+'1'+'.jpg', scale(addBorder(demo), 2))
 		return 1#[scale(addBorder(demo), 2)]
 
 	# cv2.imwrite(path+'/'+name+'.jpg', demo)

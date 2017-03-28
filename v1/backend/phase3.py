@@ -3,7 +3,8 @@ import ocr, re, sys, numpy, json
 
 MIN_INTERVAL = 30
 
-vnum, fnum, fps = 3, 49, 24
+vnum, fnum = int(sys.argv[1]), 1
+fps = [15.002999, 29.970030, 30, 23.976150, 30, 29.970030, 30.001780, 30, 29.970030, 29.970030, 30, 15, 23.976024, 30, 15, 30, 29.873960, 30, 15, 25.000918, 30][vnum-1]
 print 'starting with frame', fnum, '\n'
 
 path = '../public/extracts/video'+str(vnum)
@@ -44,7 +45,7 @@ read, th, inc, upd = True, 0, 0, -1
 while fnum < 216000:
 	s = 3 # read number of segments
 	try:
-		file = open(path+'/main/frame%d-segment1.txt' % fnum)
+		file = open(path+'/frame%d-segment1.txt' % fnum)
 		#if not read: print
 		# sys.stdout.write("\r100%\033[K")
 		# previous count
@@ -65,7 +66,7 @@ while fnum < 216000:
 
 	# read text from each segment
 	for snum in range(s):
-		try: file = open(path+'/main/frame%d-segment%d.txt' % (fnum, snum))
+		try: file = open(path+'/frame%d-segment%d.txt' % (fnum, snum))
 		except: continue
 		total_frames += 1
 		txt = file.read()
@@ -84,7 +85,7 @@ while fnum < 216000:
 		if txt != '' and tag != 'unlikely':
 			if txt == buffer[-1]:
 				output_time[-1][1] = (fnum-1)/24 # update end time
-				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w') #i
+				f = open(path+'/%s/frame%d-segment%d.txt' % (tag, fnum, snum), 'w') #i
 				# todo: move related files
 				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
 				f.close()
