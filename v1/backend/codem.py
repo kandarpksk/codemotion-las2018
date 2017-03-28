@@ -8,7 +8,13 @@ if len(sys.argv) < 2:
 	print 'err: need argument mentioning video number'
 	sys.exit()
 vnum = int(sys.argv[1])
-fps = 30. if vnum == 1 else 24. #60 #list
+
+###########
+big_windows = 'ignore/' if vnum == 1 else ''
+###########
+###########
+
+fps = 15. if vnum == 1 else 30. #60 #list
 video = cv2.VideoCapture('../public/videos/video'+str(vnum)+'.mp4')
 
 fnum = 0
@@ -23,7 +29,7 @@ while success:
 	t_min = int((fnum/fps)/60)
 	t_sec = int(math.floor((fnum/fps)%60)) #check
 
-	if fnum < int(sys.argv[2]) and fnum%7200 == 0:
+	if len(sys.argv) > 2 and fnum < int(sys.argv[2]) and fnum%7200 == 0:
 		print 'crossed frame', fnum # at time
 
 	if fnum%fps == 1 and (len(sys.argv) < 3 or fnum >= int(sys.argv[2])): # process one frame each second
@@ -31,13 +37,16 @@ while success:
 		imgray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
 		ndiff = cv2.countNonZero(imgray)
 
-		print '\r%d:%02d processing... ' % (t_min, t_sec), # (<ndiff> differences)
+		sys.stdout.write("\r100%\033[K")
+		print '\r%d:%02d processing...' % (t_min, t_sec), # (<ndiff> differences)
 		sys.stdout.flush()
 		path = '../public/extracts/video'+str(vnum)
-		print '\r%d:%02d finding segments... ' % (t_min, t_sec),
+		sys.stdout.write("\r100%\033[K")
+		print '\r%d:%02d finding segments...' % (t_min, t_sec),
 		sys.stdout.flush()
-		segments = phase1.process(image, path+'/'+'frame'+str(fnum)+'-segment')
-		print '\r%d:%02d extracting text... ' % (t_min, t_sec),
+		segments = phase1.process(image, path, 'frame'+str(fnum)+'-segment', big_windows)
+		sys.stdout.write("\r100%\033[K")
+		print '\r%d:%02d extracting text...' % (t_min, t_sec),
 		sys.stdout.flush()
 		phase2.process(fnum, segments, path)
 

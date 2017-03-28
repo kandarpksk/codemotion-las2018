@@ -1,4 +1,4 @@
-def process(image, output):
+def process(image, path, name, flag):
 	red = (0,0,255) #p!
 	lightgray = (150,150,150) #p!
 
@@ -318,20 +318,25 @@ def process(image, output):
 	if sep_y:
 		# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
 		img1 = scale(addBorder(demo[sep_y[-1]:, 0:]), 2)
-		cv2.imwrite(output+'1.jpg', img1)
+		cv2.imwrite(path+'/'+name+'1.jpg', img1)
 	if sep_x:
 		# cv2.line(demo, (sep_x[0],0), (sep_x[0],sep_y[0] if sep_y else lx_hy[1]), randomColor(), 2)
 		img2 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], 0:sep_x[0]]), 2)
-		cv2.imwrite(output + ('2.jpg' if sep_y else '1.jpg'), img2)
+		cv2.imwrite(path+'/'+name + ('2.jpg' if sep_y else '1.jpg'), img2)
 		img3 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], sep_x[0]:]), 2)
-		cv2.imwrite(output + ('3.jpg' if sep_y else '2.jpg'), img3)
+		cv2.imwrite(path+'/'+name + ('3.jpg' if sep_y else '2.jpg'), img3)
 		return 3 if sep_y else 2
 	elif sep_y:
 		img2 = scale(addBorder(demo[0:sep_y[-1], 0:]), 2)
-		cv2.imwrite(output+'2.jpg', img2)
+		cv2.imwrite(path+'/'+name+'2.jpg', img2)
 		return 2#[img1, img2]
 	else:
-		cv2.imwrite(output+'1.jpg', scale(addBorder(demo), 2))
+		width = demo.shape[0]*100./img.shape[0] > 80
+		height = demo.shape[1]*100./img.shape[1] > 80
+		if width or height: # close to original dimensions
+			cv2.imwrite(path+'/'+flag+name+'1'+'.jpg', scale(addBorder(demo), 2))
+		else:
+			cv2.imwrite(path+'/'+name+'1'+'.jpg', scale(addBorder(demo), 2))
 		return 1#[scale(addBorder(demo), 2)]
 
-	# cv2.imwrite(output+'.jpg', demo)
+	# cv2.imwrite(path+'/'+name+'.jpg', demo)
