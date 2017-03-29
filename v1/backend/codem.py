@@ -77,5 +77,5 @@ while success:
 	# end of while loop #todo
 
 print '\ndone'
-print '1:', time1
-print '2:', time2
+print '1:', round(time1, 2)
+print '2:', round(time2, 2)

@@ -22,5 +22,5 @@ old
 misc
 record
 src
-.json
+*.json
 
