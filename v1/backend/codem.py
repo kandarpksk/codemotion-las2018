@@ -61,7 +61,7 @@ while success:
 		start2 = time.time()
 		phase2.process(fnum, segments, path)
 		end2 = time.time()
-		time2 += end1 - start1
+		time2 += end2 - start2
 
 		if ndiff > 7500: # show significant changes #improve
 			marked = image.copy()

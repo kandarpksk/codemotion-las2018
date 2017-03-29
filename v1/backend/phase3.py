@@ -87,7 +87,8 @@ while fnum < 216000:
 				output_time[-1][1] = (fnum-1)/24 # update end time
 				f = open(path+'/%s/frame%d-segment%d.txt' % (tag, fnum, snum), 'w') #i
 				# todo: move related files
-				f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
+				# f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
+				f.write(txt)
 				f.close()
 			else:
 			# if txt not in buffer:
@@ -127,9 +128,10 @@ while fnum < 216000:
 					# buffer.pop(0)
 
 				# move related files too?
-				f = open(path+'/%s/frame%d-segment%d.html' % (tag, fnum, snum), 'w')
-				if merged: f.write(d.diff_prettyHtml(diffs))
-				else: f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
+				f = open(path+'/%s/frame%d-segment%d.txt' % (tag, fnum, snum), 'w')
+				# if merged: f.write(d.diff_prettyHtml(diffs))
+				# else: f.write('<pre>' + txt.replace('\n', '<br/>') + '</pre>')
+				f.write(txt)
 				f.close()
 
 	# go to next frame

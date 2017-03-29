@@ -325,29 +325,38 @@ def process(image, path, name, flag):
 		if too_big: return True
 		return False # ...are close to original dimensions, then
 
+	def check(a, b):
+		return 1 if (a > 0.03*image.shape[0] and b > 0.03*image.shape[1]) else 0
+
 	# crop into 3 or fewer segments
+	check1 = 0
 	if sep_y:
 		# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
-		img1 = scale(addBorder(demo[sep_y[-1]:, 0:]), 2)
-		if flag: print img1.shape, image.shape, int(round(img1.shape[0]*50./image.shape[0], 2)), int(round(img1.shape[1]*50./image.shape[1], 2))
-		cv2.imwrite(path+'/'+(flag if ignore(img1) else '')+name+'1.jpg', img1)
+		check1 = check(demo.shape[0]-sep_y[-1], demo.shape[1])
+		if check1:
+			img1 = scale(addBorder(demo[sep_y[-1]:, 0:]), 2)
+			if flag: print img1.shape, image.shape, int(round(img1.shape[0]*50./image.shape[0], 2)), int(round(img1.shape[1]*50./image.shape[1], 2))
+			cv2.imwrite(path+'/'+(flag if ignore(img1) else '')+name+'1.jpg', img1)
 	if sep_x:
 		# cv2.line(demo, (sep_x[0],0), (sep_x[0],sep_y[0] if sep_y else lx_hy[1]), randomColor(), 2)
-		img2 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], 0:sep_x[0]]), 2)
-		if flag: print img2.shape, image.shape, int(round(img2.shape[0]*50./image.shape[0], 2)), int(round(img2.shape[1]*50./image.shape[1], 2)), '|',
-		cv2.imwrite(path+'/'+(flag if ignore(img2) else '')+name + ('2.jpg' if sep_y else '1.jpg'), img2)
-		# print 'check:', sep_y[-1] if sep_y else hx_hy[1], demo.shape[1] - sep_x[0]
-		if demo.shape[1]-sep_x[0] > 0.03*image.shape[1]:
+		check2 = check(sep_y[-1] if sep_y else hx_hy[1], sep_x[0])
+		if check2:
+			img2 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], 0:]), 2)
+			if flag: print img2.shape, image.shape, int(round(img2.shape[0]*50./image.shape[0], 2)), int(round(img2.shape[1]*50./image.shape[1], 2)), '|',
+			cv2.imwrite(path+'/'+(flag if ignore(img2) else '')+name + ('2.jpg' if sep_y else '1.jpg'), img2)
+		check3 = check(sep_y[-1] if sep_y else hx_hy[1], demo.shape[1]-sep_x[0])
+		if check3:
 			img3 = scale(addBorder(demo[0:sep_y[-1] if sep_y else hx_hy[1], sep_x[0]:]), 2)
 			if flag: print img3.shape, image.shape, int(round(img3.shape[0]*50./image.shape[0], 2)), int(round(img3.shape[1]*50./image.shape[1], 2))
 			cv2.imwrite(path+'/'+(flag if ignore(img3) else '')+name + ('3.jpg' if sep_y else '2.jpg'), img3)
-			return 3 if sep_y else 2
-		return 2 if sep_y else 1
+		return (check1 if sep_y else 0)+check2+check3
 	elif sep_y:
-		img2 = scale(addBorder(demo[0:sep_y[-1], 0:]), 2)
-		if flag: print img2.shape, image.shape, int(round(img2.shape[0]*50./image.shape[0], 2)), int(round(img2.shape[1]*50./image.shape[1], 2))
-		cv2.imwrite(path+'/'+(flag if ignore(img2) else '')+name+'2.jpg', img2)
-		return 2#[img1, img2]
+		check2b = check(sep_y[-1], demo.shape[1])
+		if check2b:
+			img2 = scale(addBorder(demo[0:sep_y[-1], 0:]), 2)
+			if flag: print img2.shape, image.shape, int(round(img2.shape[0]*50./image.shape[0], 2)), int(round(img2.shape[1]*50./image.shape[1], 2))
+			cv2.imwrite(path+'/'+(flag if ignore(img2) else '')+name+'2.jpg', img2)
+		return check1+check2b#[img1, img2]
 	else:
 		if flag: print int(round(demo.shape[0]*100./image.shape[0], 2)), int(round(demo.shape[1]*100./image.shape[1], 2))
 		cv2.imwrite(path+'/'+(flag if ignore(demo, 1, False) else '')+name+'1'+'.jpg', scale(addBorder(demo), 2))
