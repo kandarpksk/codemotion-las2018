@@ -62,14 +62,14 @@ function initialize() {
 			fps: 24,
 			start: [0, 1606, 3600, 5400],
 			duration: 7980,
-			code: [['accumulated code', ''], [''], [''], ['']], // \n
-			l: [['Text', 'Python'], ['Python'], ['C'], ['CPP']]
+			code: [[''], [''], [''], ['']],
+			l: [['Text'], ['Python'], ['C'], ['CPP']]
 		} // dummy
 	if (vnum != undefined)
 		metadata = require('../public/other/video'+vnum+'.json')
 		// probably just ask to refresh here
 		// (as number of segments may differ)
-	vnum = (vnum) ? vnum : 3
+	vnum = (vnum) ? vnum : 4
 
 	readSubtitle('other/video'+vnum+'_sub.txt')
 	data.name = metadata.name
@@ -83,7 +83,7 @@ function initialize() {
 				metadata.code[i], metadata.l[i], metadata.duration)
 
 	var fi = require('findit')
-	finder = fi('public/extracts/video'+vnum+(vnum == 3 ? '/main' : '')) // temp
+	finder = fi('public/extracts/video'+vnum)
 	finder.on('file', function(file) {
 		if (file.search('segment') != -1) {
 			fs.readFile(file, 'utf8', function(err, dat) {
@@ -125,7 +125,7 @@ exports.code = function(req, res) {
 
 	var frame = (req.params.time * data.fps) + 1
 	try {
-		var base = 'public/extracts/video'+vnum+(vnum == 3 ? '/main' : '')+'/frame'+frame
+		var base = 'public/extracts/video'+vnum+'/main/frame'+frame
 		var segments = 3//parseInt(fs.readFileSync(base+'.txt', 'utf8'))
 
 		var cs = [], count = 0
@@ -135,7 +135,7 @@ exports.code = function(req, res) {
 				count += 1
 				cs.push(content) //'-----------\n segment '+count+'\n-----------\n' + content
 			} catch(error) {
-				console.log('couldn\'t read frame '+frame+' segment '+i)
+				//...console.log('couldn\'t read frame '+frame+' segment '+i)
 				/* do nothing */
 			}
 		if(count == 0)

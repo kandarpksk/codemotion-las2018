@@ -82,6 +82,10 @@ while fnum < 216000:
 			else:
 				tag = 'unlikely'
 
+		if txt != '' and tag == 'unlikely':
+			f = open(path+'/%s/frame%d-segment%d.txt' % (tag, fnum, snum), 'w')
+			f.write(txt)
+			f.close()
 		if txt != '' and tag != 'unlikely':
 			if txt == buffer[-1]:
 				output_time[-1][1] = (fnum-1)/24 # update end time

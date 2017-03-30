@@ -334,7 +334,7 @@ def process(image, path, name, flag):
 		# cv2.line(demo, (0,sep_y[0]), (hx_ly[0],sep_y[0]), randomColor(), 2)
 		check1 = check(demo.shape[0]-sep_y[-1], demo.shape[1])
 		if check1:
-			img1 = scale(addBorder(demo[sep_y[-1]:, 0:]), 2)
+			img1 = scale(addBorder(demo[sep_y[-1]:, 0:]), 2) # check up or down too!
 			if flag: print img1.shape, image.shape, int(round(img1.shape[0]*50./image.shape[0], 2)), int(round(img1.shape[1]*50./image.shape[1], 2))
 			cv2.imwrite(path+'/'+(flag if ignore(img1) else '')+name+'1.jpg', img1)
 	if sep_x:
