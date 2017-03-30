@@ -32,7 +32,7 @@
 
 		{{#each segments}}
 		<div class="alert alert-info" role="alert" id="s{{ start }}-vo">
-			{{ voiceover }}
+			{{ start }}:{{ finish }} {{ voiceover }}
 		</div>
 
 		<div class="row transcript">
@@ -41,9 +41,9 @@
 				<span class="badge badge-pill badge-default">
 					<i class="material-icons fs">fullscreen</i>
 				</span>
-				<video preload="auto" id="s{{ start }}-video">
+				<video preload="metadata" id="s{{ start }}-video">
 				<!-- poster="images/loading.gif" -->
-					<source src="{{ ../url }}#t={{ start }},{{ finish }}" type="video/mp4" />
+					<source src="{{ ../url }}" type="video/mp4" />
 					Your browser does not support HTML5 video.
 				</video>
 
@@ -76,7 +76,7 @@
 				</span>
 				{{/each}}
 				<br>
-				<span class="badge badge-default pills" id="ol{{ start }}" style="opacity: 0.5">
+				<span class="badge badge-default pills" id="oth" style="opacity: 0.5">
 					Other <!-- this is where sub-intervals are shown -->
 				</span>
 			</h5>

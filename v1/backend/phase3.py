@@ -1,7 +1,7 @@
 import diff_match_patch as dmp
 import ocr, re, sys, numpy, json
 
-MIN_INTERVAL = 10
+MIN_INTERVAL = 30
 
 vnum, fnum, fnumf = int(sys.argv[1]), 1, 1.
 fps = [15.002999, 29.970030, 30, 23.976150, 30, 29.970030, 30.001780, 30, 29.970030, 29.970030, 30, 15, 23.976024, 30, 15, 30, 29.873960, 30, 15, 25.000918, 30][vnum-1]
@@ -83,7 +83,7 @@ while fnum < 216000:
 				tag = 'unlikely'
 
 		if txt != '' and tag == 'unlikely':
-			f = open(path+'/%s/frame%d-segment%d.txt' % (tag, fnum, snum), 'w')
+			f = open(path+'/%s/frame%d-segment%d.txt' % (tag, fnum, snum), 'w') #i
 			f.write(txt)
 			f.close()
 		if txt != '' and tag != 'unlikely':
@@ -145,20 +145,59 @@ while fnum < 216000:
 output_code.append([txt, -1])
 
 # but not identical
-if change_measure: print round(sum(change_measure)/len(change_measure), 2)
-if unmatched_measure: print round(sum(unmatched_measure)/len(unmatched_measure), 2)
-if past_measure: print round(sum(past_measure)/len(past_measure), 3)
+print '\n\nframes with incremental changes:', inc
+if change_measure: print 'average extent of edit (%):', round(numpy.mean(change_measure), 2)
+if unmatched_measure: print 'average change on breaking (%):', round(numpy.mean(unmatched_measure), 2)
+if past_measure: print 'average depth of successful lookback:', round(numpy.mean(past_measure), 2)
 print len(buffer)-1
 print '...'
-print total_frames
+print 'total frames:', total_frames
 
 def eprint(t):
 	sys.stderr.write(t)
 
+eprint('{\n')
+
+# width options (4 for 720p, 5 for 540p)
+eprint('"name": "Ruby Essentials for Beginners (Part 01)",\n"width": 4,\n"fps": '+str(fps)+',\n"duration": 1715,\n')
+
 last = -1
+li = len(output_time)-1 # last interval index
+eprint('"start": [')
+for i in range(len(output_time)):
+	if i%10 == 0:
+		eprint('\n\t')
+	# eprint(str(output_time[i][0])+'/'+str(output_time[i][1])+', ')
+	# eprint(str(output_time[i][0])+', ')
+	#next = output_time[i+1][0] if i < li else 1886
+	if last == -1 or output_time[i][0]-output_time[last][0] > MIN_INTERVAL:
+		eprint(str(output_time[i][0])+', ')
+		#print str(output_time[i][0])+'/'+str(output_time[i][0]-output_time[last][0])
+		last = i
+
+eprint('\n],\n')
+
+last = -1
+eprint('"code": [\n')
 for i in range(len(output_code)):
 	if last == -1 or output_time[i][0]-output_time[last][0] > MIN_INTERVAL:
 		eprint('\t['+json.dumps(output_code[i][0])+'], \n')
 		last = i
 	# else:
 	# 	eprint('\t,'+json.dumps(output_code[i][0])+'\n\n')
+
+eprint('],\n')
+
+last = -1
+eprint('"l": [')
+for i in range(len(output_time)):
+	if i%10 == 0:
+		eprint('\n\t')
+	if last == -1 or output_time[i][0]-output_time[last][0] > MIN_INTERVAL:
+		eprint('["Python"]'+', ')
+		last = i
+		# todo
+
+eprint('\n]\n')
+
+eprint('}')

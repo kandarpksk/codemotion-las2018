@@ -37,6 +37,7 @@ function addSegment(start, end, text, l, duration) {
 		start: start,
 		begin: Math.round(start/duration*100),
 		end: Math.round(end/duration*100),
+		finish: end,
 		voiceover: (closestSubtitle(start)) ?
 				closestSubtitle(start) : nextSubtitle(start),
 		code: []
@@ -59,8 +60,8 @@ function initialize() {
 
 	var metadata = { name: 'CS50 2016 - Week 8 - Python',
 			width: 5,
-			fps: 24,
-			start: [0, 1606, 3600, 5400],
+			fps: 23.976150,
+			start: [2, 1606, 3600, 5400],
 			duration: 7980,
 			code: [[''], [''], [''], ['']],
 			l: [['Text'], ['Python'], ['C'], ['CPP']]
@@ -83,27 +84,52 @@ function initialize() {
 				metadata.code[i], metadata.l[i], metadata.duration)
 
 	var fi = require('findit')
+	var read = 0
+	var unread = 0
 	finder = fi('public/extracts/video'+vnum)
 	finder.on('file', function(file) {
 		if (file.search('segment') != -1) {
-			fs.readFile(file, 'utf8', function(err, dat) {
-				var fnum = (parseInt(file.substring(file.search('frame')+5, file.search('-')))-1)/24
-				var words = dat.match(/\b(\w+)\b/g)
-				for(i in words)
-					if (table[words[i]]) {
-						if(!table[words[i]].includes(fnum))
-							table[words[i]].push(fnum)
-					} else table[words[i]] = [fnum]
-			})
+			if (file.substring(file.search('segment')+9) == 'txt') {
+				fs.readFile(file, 'utf8', function(err, dat) {
+					var frame_number = parseInt(file.substring(file.search('frame')+5, file.search('-')))
+					var fnum = Math.round((frame_number-1)/data.fps)
+					// if (parseInt(file.substring(file.search('frame')+5, file.search('-'))) < 90000)
+						var words = []
+						try {
+							words = dat.match(/\b(\w+)\b/g)
+							read += 1
+						}
+						catch(err) {
+							//console.log('some issue with reading frame'+frame_number)
+							words = []
+							unread += 1
+						}
+						for(i in words) {
+							if (table[words[i]]) {
+								if(!table[words[i]].includes(fnum))
+									table[words[i]].push(fnum)
+							} else table[words[i]] = [fnum]
+						}
+				})
+			}
 		}
 	})
-	finder.on('end', function() { done = true })
+	finder.on('end', function() {
+		console.log('read: '+read+', unread: '+unread)
+		done = true
+	})
 }
 
 exports.view = function(req, res) {
 	vnum = req.query.vnum
 	initialize()
 	res.render('index', data)
+}
+
+exports.fast = function(req, res) {
+	vnum = req.query.vnum
+	initialize()
+	res.render('fast', data)
 }
 
 exports.transcript = function(req, res) {
@@ -123,25 +149,28 @@ exports.code = function(req, res) {
 	if(data.fps == 1)
 		initialize()
 
-	var frame = (req.params.time * data.fps) + 1
+	var frame = Math.round(req.params.time * data.fps) + 1
 	try {
 		var base = 'public/extracts/video'+vnum+'/main/frame'+frame
-		var segments = 3//parseInt(fs.readFileSync(base+'.txt', 'utf8'))
+		var segments = 3 // parseInt(fs.readFileSync(base+'.txt', 'utf8'))
 
 		var cs = [], count = 0
-		for (var i = 0; i <= segments; i++) //ensure not zero
+		for (var i = 1; i <= segments; i++) {
 			try {
 				var content = fs.readFileSync(base+'-segment'+i+'.txt', 'utf8')
 				count += 1
 				cs.push(content) //'-----------\n segment '+count+'\n-----------\n' + content
 			} catch(error) {
-				//...console.log('couldn\'t read frame '+frame+' segment '+i)
+				// if (i == 1) console.log('couldn\'t read frame '+frame+', segment '+i)
+				// console.log(__dirname+'/../public/extracts/video'+vnum+'/frame'+frame+'-segment'+i+'.txt')
 				/* do nothing */
 			}
-		if(count == 0)
+		}
+		if (count == 0) {
 			// todo: check out stackoverflow.com/questions/15903191
 			// how-to-automatically-pick-a-mode-for-ace-editor-given-a-file-extension
 			res.json( { code: ['# no code at this point'], language: [codename['Text']], l: ['Text'] } )
+		}
 		else { /*'# '+count+' segment(s) at time '+req.params.time+'\n\n'+*/
 			var l = []
 			for (code_i in cs)

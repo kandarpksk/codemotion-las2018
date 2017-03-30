@@ -1,0 +1,314 @@
+{
+"name": "CS50 2016 - Week 8 - Python",
+"width": 5,
+"fps": 23.97615,
+"duration": 7980,
+"start": [
+	0, 145, 334, 456, 
+	582, 
+	792, 
+	989, 1123, 
+	
+	1255, 1435, 
+	
+	1562, 
+	
+	1702, 
+	1824, 
+	
+	
+	
+	1946, 
+	2068, 
+	
+	2197, 
+	
+	
+	
+	2318, 
+	
+	2452, 
+	
+	
+	
+	
+	2573, 
+	
+	
+	
+	2711, 
+	
+	
+	2839, 
+	
+	2974, 
+	
+	
+	3095, 
+	
+	
+	
+	
+	3216, 
+	
+	3346, 
+	3476, 
+	
+	3598, 
+	3745, 
+	3920, 
+	
+	4042, 
+	4185, 
+	
+	
+	4308, 
+	
+	
+	4477, 
+	
+	4613, 
+	4737, 
+	4896, 
+	5022, 
+	
+	
+	
+	
+	
+	5144, 
+	5266, 
+	
+	
+	5396, 
+	
+	5518, 
+	
+	
+	5639, 
+	5760, 
+	
+	
+	5881, 
+	
+	6059, 6279, 
+	
+	6400, 
+	
+	6523, 
+	
+	
+	6647, 
+	6797, 6961, 
+	
+	
+	
+	
+	
+	
+	
+	
+	7082, 
+	
+	
+	7211, 
+	7349, 
+	
+	
+	
+	7473, 
+	
+	
+	7594, 
+	
+	7715, 
+	
+	7837
+	
+	
+],
+"code": [
+	[""], 
+	["def Iain():\n   'hello, world')\nif na-e n' nail: ':\n"], 
+	["in range(50):\nr1nt('he110, world\")\n"], 
+	["int i\n"], 
+	["If\"):\nmfiuubfl\nduny:\nIII-WM!\nin: \"Dr,\nMill--16f)\n"], 
+	["def main():\nprint(\"hello, world\")\n"], 
+	["bool\nfloat\nint\nStf'\n"], 
+	["'-~Ivnaupme fi- ' halos x . 'I m x .\n   . m' 1 #include <stdio.h> 1 def mainO:\n   . m' 2 2 prin11'(|\"hello, world\")|\n   . MW: 3 int mail'ICVOid)\n   I ML: 4 {\n   :3: 5 printf(\"hello, wor1d\\n\");\n   .mm.z 6 }\n"], 
+	["{\n   string s = get_string();\n   printf(\"he110, Xs\\n\", s);\n}\nmew x C\n$ python hello.py\n"], 
+	["#include <c550.h> 1 import c550\n#include <stdio.h> Z\n                              3 s - csSO.get_string()\nnt mainCvoid) o4 printcrhello, {}'.fornat(s)]\ni\n{\n   string 5 - get_string();\n   printf(\"he110, Xs\\n\", s);\n}\n"], 
+	["'- \"who-cc 5'\n   v - ml\n         . Mac\n         . cor-won\"\n         . mafia;\n         . ML:\n         . M2;\n         . mow}:\n         . any.\"\n         . noun\n         . MM\n         . W1\n         . xix\n         . in:\n         I log-tux\n         . overflow:\n         . mm:\n         . wwx\n         . mun:\n         . mun\n                                                   strings x .\n                                                #include <c550.h>\n                                                #include <stdio.h>\n                                             oonm-bw\n                                                i\n                                                {\n                                                   nt mainCvoid)\n                                                            string 5 - get_string();\n                                                            printf(\"he110, Xs\\n\", s);\n                                                                                                                                                         'I stringpy x.\n                                                                                                                                                                  s - input(\"nane: \")\n                                                                                                                                                                  print(\"he1'lo, {}\".fonnat(s))\n                                                                                                                                                                                                                                                                           ammo ou-uno\n"], 
+	[". ml;\n   .l. IIJIL lull: QC\" Lu. ID\n   int mainCvoid)\n   cam-ls\n   {\n   }\n   printf(\"%.55f\\n\", 1.0 / 10.0);\n            .I. pruu.\\ 114;.33r:\n               . I unnutu. I nu;\n"], 
+	["CSSOIDE Flie Eda Fund\n      _ ~.,.__._..._\n      . In\" H\"\n      . mg\n      . hoot:\n      . mafia-m\n      . 90mm:\n      C umx\n      . rm:\n      . menu\n      C sung-c\n      . swam:\n      . lmmx\n   ' - m2\n   ' - m:\n   ' - ya\n      - m5\n   ' - m\n      , - m\n      > I was\n      *- new\n      > - ween\n      ' I need\n                              Vbew Go Wmdmv Supper!\n"], 
+	[":3U'Bnngouuau\n   - \".mineo\nI mt user for y\nMW is '. at\")\n   - \".mtno\n   mumnWEhrwu\n   '0 plus 0 is Oflm. y. x + 1))\n   'O Ill-as O is {Tier-box. y. x - y>>\n   '0 til-as i} u D'Ju-Kx. y. x deg 30)\n         '0' S .om: Y. X I y),\n         f} and floored) is {}'.M. y. I ll y))\n         vided by {} is Ohm. y. I: I y>>\n   :5\n      s\n      i\n      J\n   i\n      a\n"], 
+	["   {\n      char- c - geLchar-O;\n      ich--'Y'Ilc--'y')\n      {\n            printf(\"yes\\n\");\n      }\n      else if (c -- 'N' II c -- 'n')\n      {\n            printf(\"no\\n\");\n      }\n      else\n      {\n            printf(\"er-ror\\n\");\n      }\n}\n"], 
+	["s w\n      {\n   DOV.\"\n            chore-M:\n            tf(c--'Y' II c--'y')\n            {\n                  Mntf('yes\\n'):\n            }\n            also if (c -- 'N' II c -- 'n')\n            I\n                  NMCnoW):\n"], 
+	["   int get_positive_int();\n   'nt mainCvoid)\n         int i - get_positive_int();\n         printf(\"$i is a positive integer\\n\", i);\n   }\n   int get_positive_int(void)\n   {\n         int n;\n         do\n         {\n               printf(\"n is \");\n               n - get.int();\n         }\nwould! x C\n"], 
+	["   #include <c550.h>\n   #include <stdio.h>\n   int get_positive_int();\n                                                         import c550\n                                                         def mainC):\n                                                               i - get_positive_int()\n                                                               print(\"{} is a positive integer\".format(i))\n                                                         def get_positive_int():\n   int main(void) 6\n{\n         int i - get_positive_i .8 \\\n         printf(\"%i is a positi\n   }\n"], 
+	["umhm\n            . .owwo-ou~-\n      printK'Si is a positi\n   m Mtfimtnfivoid)\n   flan-*H\n            Mutfi'n is \")3\n            n - mintO;\nSfififiilz'uKKBoe '\n"], 
+	["   if _nane_ -- \"_main_\":\nwith]\nsl\n   return n\n      n - c550.get_int()\n      if n >= 1:\n   main()\n      break\n"], 
+	["'- Admin\": fin ' W.\" O .\n   V. in!\n         . m\" 1 import c550\n         . m\" 2\n            mm 3 1'. - get_positive_int()\n         CW\" 4 print(\"{} is a positive integer\".fomat(i))\n         . mogul: 5\n         . WJ.'\n         . Mu, 6 def geLpos'lt'lvulntO:\n"], 
+	["for (int'l-O; 'l.<3; 14+)\n{\n   printf('cough\\n');\n"], 
+	["'-~Iwaauoe fi- ' cannot-Os * M14: K sumac X oougmc x . I \"NW-W x M'W x W x .\n   v..m.ldwc 2 run-unn-- whasv.u' 1 def (ring): ( ) H\n                        ' . . . -' 2 or in range 3 :\n         :m 3 van! cough(1nt n), 3 coughC) mm\n         a <<mu 4 , , 'd 4 may\n            \"'7?\" Z lnt mavam ) 5 def coughC): mo\n"], 
+	["I canal-0x MIX wow-2x 0000!!\" WK . 'I W\" \"\"9\"\" W\" W! W. .\n   . . ' 1 def main():\n   1nt maInCVOId) z cough(3)\n   { .3 snee e 3\n      cough(3); 4 z ( >\n      sneezeca); 5 def coughCn):\n   } . Inn\n                                    6 say( | )\n   void coughfint n)\n   {\n      say(\"cough\", n);\n   }\n   void sasttring word, int n)\n   {\n      for (int i - 0; i. < n; 114+)\n      {\n         .uu' .Ltf\"d--\\ _\" nun--'4' .\n"], 
+	["   mar-mmmmww\n   '--I---I 0' ' m \" .\n   ':: 1 #include <<350.!>>\n      . w 2 #include <<1111on\n      .m 3\n      Cum 4 int minCVOId)\n      .'l 5 '\n' \\ V .'u 6 string 3 - neutrino;\n                     'nt n - 0;\n                     C/ (s[n] l- '\\0')\n      :u--: 10 \"H;\n      Qua-n: 11 }\n      g.\" 12 printf('$'l\\n', n);\n      :-~ 13 1+\n      an\n   n.\"\n   b...\n   ,.-- ~11 - O\n      u.\"\n      -Iu- ' U\n      v.'\n      .'m\n"], 
+	["Save As\nFloname: ascne.py1\n'-~lmsoate\n'.w<l\n'-m\n'-m\n.-.C/.\n.-m_5\n'Im\nloom-p1\nFm: /\n---wm _--\n"], 
+	["- - \"IWW y- -- um...\" - -\n                  import sys\n   . MM: 2\n   .wlx '3 if lenCsys.argv) 2: ;\n   . ml: 4 printf]\n. I m ween.>> x Q\n"], 
+	["not!) x .\ns python argv1.py foo bar baz\nargv1.py\nfoo\nbar\nbaz\n$I\n"], 
+	["CSSOIDE File Ed! Find View Go \\Mndaw Suppm\n   'I-fl fi- ' arm-w x .\n   :2 1 iuport sys\n      p.\" 2\n      ...... 3 for s in sys.argv:\n      'i'fl*' for c in s:\n      ' - nun .\n      _ 5 pf'lfltCC)\n      - w G nri m\n"], 
+	["vim #-\np-ms\n.-m\nr.\"\n'Isoaa\n.-mC/d\n.-m\n   .870\"\n   .mlw\n   Inn--Dy\n   .m-W\n   .mI-w\n   .WM\n   .axwv\n   {may\n   .m-w\nu-mfl\n'-m4\nn...\"\n               ' map-\".71..\n                  import c550\n               Z\n                  print(\"s: \", end-\"\")\n                  s - c550.get_string()\n                  printC't: \", ends\")\n               7t-d\n"], 
+	["   printQMifferent\")\nmu x O\nS python comparell\n"], 
+	["mummmmmww\n   t... g.\n                              ' any, I .\n                                    import 69\n                                    printC's: '. GIL\")\n                                    s - c350. neutrino\n                                 S if s -- Nun:\n                                 NO\n                                                f'\n                                                   p\n                                                      U\n                                    t - Lowlmliuo\n                                    printC's: {Flor-ads>>\n                                    printC't: O'.fonnt(t))\n                              130mg.)\n                                 _v I .\n                           S python copy1.py\n                                 and:\n                                 Audi\n                           <<HUM\n"], 
+	["   w x.-\nflHndude 61111on\n   void Mint (1, int b);\n   int minCvoid)\n   {\n         int x - 1;\n         int y I Z;\n.0 printf(\"x is Xi\\n\", x);\n.1 printh'y is xiv\", y);\n.2 printf(\"Swapping. . .\\n\");\n         swapCX. y);\n.4 printh' Swapped . \\n\");\n         printf(\"x is $i\\n\", x);\n.6 printh'y is %i\\n\", y);\n.7 }\n.8\n.9 void want a, 'lnt b)\nm I'\n               o 9*\n"], 
+	["$ python noswap.py\nx is 1\ny is 2\nSwapping...\nSwapped.\nx is 1\ny is 2\n"], 
+	["x - 1\ny - 2\nprintC'x is {}\".fomat(x))\nprint(\"y is {}\".fomat(y))\nprint(\"Swapping. . . \")\ntnp - x\nx - y\ny - tw\nprint(\"Swapped.\")\nprint(\"x is {}\".fomat(x))\nprint(\"y is {}\".fomat(y))\n"], 
+	["CSSOIDE File Ed! Flnd View Go Window Suppon\n   , - m;\n   r - M3\n   v - In\" 1\n      . mull-W\n      . cowl-w\n      . \"mm-w\n      . may\n      I all>>\n      . mm\n      . m1.\"\n      . m\n      . Ina-9v\n   . - has\n   I W\n   C \"I'm-w\n   . mar\n   I am>>\n   'I may\n   . auto-w\n            g. I W\" O .\n"], 
+	["      \"tum. W)\n   for m tn sud-Its:\n      \"'0 is in mat-w...\" nag-tan>>\n'GKBBB'o-u\n"], 
+	["   W1! )1\ns python str\nTraceback (most recer\n   File \"struct50.py\",\n      from student impc\nImportError: No modul\ns\n"], 
+	["                        L u'um acuuenr. lWUI'L atuuenc\n   . WRLD'I 3\n   Q My. 4 students - El\n   I mm 5 for i in range(3):\n   <I wall-W 6\n   :m'; 7 print(\"name: \", end:=\"\")\n   . m1.\" 8 none - csSO.get_str-mg()\n   . may 9\n   -l WW 10 printC'dor'm: \", ends\")\n. w .\n   . m.>> 11 dorm - c550.get-str1ng()\n   . thingy 12 ,\na mm 013 students.append($tuden'dQ-Ia|e, don>>\n. HIM-w 14\n'3 \"'2\" 15 for student in students:\n.asan -, - .1..r~ - . ,~ .. , .1.\n. WM\" wank\" x .\n"], 
+	[".i7 or 'sfiud'e'nfl:\n"], 
+	["   printC'nane: \", end-\"'9\n   nae - cssomeumnoo\n   print('dom: \", end-\"'9\n   dorl - csSO.oct_strtng()\n   shadents.mud(swdmt(nue, don>>\nfile - open('students.csv', 'u')\nwriter - csv tat-(file)\n            n sealants:\n      .1 taro-((swdentmue, sfiflmtdon>>\n   e e\nmi x O\n"], 
+	["CSSOIDE File Ed! Fund View 60 Window Suppon\n   '-Ms&2\n   '-m:dn3\n   v-mcu\n            g. I may - sumsty x I\n                     .I.J\n      . WM\" 14 students .appendCStudentCnme, dorm>>\n      . m\", 15\n      a may 16 file - open(\"students.csv\", \"w\")\n      '- MW 17 writer s csv.writer(file)\n      :m'; 18 for student in students:\n            ' 19 writer.writerowCCstudentmane, student.dorm))\n      . m1.\"\n      . My. 20 file.close()\n      . map-w\n   ' - necks\n   I arm--w\n   . min-w\n   . arm.\"\n   . win\n   .wvlw\n   .- w...\n"], 
+	["C'I WHO.\nclass Dictionary:\n.2\n"], 
+	["class Dictionary:\n   def _tniL_(self):\n   <<1mm; - setO\n   def checkCulf, word):\n   return \"EUR1.1er in \"If.\"\nOONGMSSWNH\n   def loadCulf, dictionary):\n   file - opencd'lctlmry, 'r')\n   for line in file:\n.12 selfmordsmddsa'lmmstrtx'm'>>\na. r n\n\"1/ I .\n"], 
+	["(lm fill.)\n. dub\n\\ and>>\n(um, .mtlo\n"], 
+	["   request\n   HYYK'CL (11\n      response\n   Controller mm as; x...'\n      you w\ndemand// data \\\\\nModel\nJ'rzL-xu u'rb t-u I .\n"], 
+	["I and W\nsulfimwontont-type'. 'tcxt/hul')\nmam\nI III-Ito m\n\"Influx-Immune, world'. 'utfl'>>\n"], 
+	["                     i send response status code\n                     ulf.W200)\n                     I sand Mrs\n                     u'lf. \"Content-type\". \"text/hut\")\n                           .u-lm-huo, world', mew>>\n   ' mftg... server\n   q t - 8080\n   an. or.\" - (\"0.0.0.0'. port)\n' . d - Mutant-m. WWI-flu)\nie'. C/\n                  $0M?\n"], 
+	["unnumnummw\n'7.\" .v I ' m I C\nman up I wrue message\n\"\" 17 ulf.wftle.rtu(bym('heuo, world\", 'utfs'>>\n\"\" 18 return\nVI an 19\n.g- 20 l configure server\n'3'- 21 port - 8080\n::: 22 mm: - (\"0.0.0.0', port)\n.._, 23 W - Marni-m. WWO?)\nDina Z4\n'I-II 25 I run server I\nf\" 26 w.mfotwo\n"], 
+	["hL'Hn. \"nrld\n   Back\n   RQ'OJG\n   Save As. .\n   P! n:,.\n   Casi .\n   Iransvatc to Eng'ish\n   Vie-.W'agc Source\n   Inspect\n"], 
+	["\" ulna-:0 fig\n-Mfldwmwufirm. mum-Eb\nluv-HM.)\n.o\n'~.mu('/')\nQC! til-0:\ny nun \"Junk-('indchul')\n* \".mfl'lng'lmr'. MW)\n   . nua'] -- \" '- \".Wdou'] -- \":\n   W'failuremtll')\n   \"M'sucmth-I')\n"], 
+	["   --q------'_v\n         Pm flak inert Flask. Mutt. name-wan. w. m. IthI'\n         q>> - Flam--nan.)\n      S MJ'OVM'I')\n         6\" two:\n                  return radar-JQIM'tndexmt-l')\n         \".mM'lrogister' . aim-PM)\n         M Munro:\n                                    . 'nua'] -- \" or wtlord'dom'] -- \":\nm Jam'fa'lluremtll')\n                              rm_tq1C/h('succm.hul')\n   'OOV\n   '5'\n"], 
+	["Yuu 1mm pnmdc mu! mmc and durm'\n"], 
+	["canon F. in find You\n   I\n"], 
+	["--~\" hon-n.-\n   a. _- I \"at 4.1' w\".\n   1mmmmm,wm.mmmJ-r\n   z\n   Sup-M\n   ' 4\n   | Shaun-(7')\n   I if into:\n      nu! www.mm\n"], 
+	["- '--- ...-- x -\n   d11>Cart<lh1>\n   {X for item in cart S}\n      {{ itaIE'quanttty'] }} = {{ iteIIE'naIe'] }}\n      <br/>\n   {S endfor S}\n   C/>\n      <<I href-\"{{ ur1_for('store') }}\">Cont'lnue shoppingdo.\n   </p>\n   {5 endblock X}\n"], 
+	["   '.svC/lu\n   v-m\n      .mmu\n      .W\n      .mm\n      Ina-mum\n   '-nedd\n   >Imuz\n   .-m\n   'Imum\n   'Imus\n   . mil-LUV\n   . WM\n>I um\n. Mn\n                           .. '--rr\"-----\\ . , ..._-..___ h __. , . -_. J,\n                              def storeO:\n                                    if requestmethod -- \"POST\":\n                                          for item in [\"foo\", \"bar\", \"baz\"]:\n                                                if item not in session:\n                                                      sessionEitem] - fintCrequest.form[item])\n                                                else:\n                                                      session[item] +- intCrequest.form[item])\n                                          return redirect(ur1_for(\"cart\"))\n                                    return render_tenplate(\"store.html\")\n                              9app.route(\"/cart\")\n                              def cartO:\n                                    cart'= El\n"], 
+	["c.-- n. I- an w- . an. m\n.7\" 'n_ q--m- 0\n\"\" manna-u - tmw.mnctm)\n      Leanne-o <<- mcma-ctu-J)\n- a\n      return MincKwaa-('cart'n\n      rem \".muuC'stot-emul')\n      also\n   << 16'\n   '7 \".m'Icar-t')\n   'M <<no:\n      can: - E]\n      for tu- in ['foo' 'bor\" 'haz :\n      an.\n      fijfihfl'flfiJfll\" . Wt)\n   [a\n"]
+],
+"l": [
+	["Python"], ["Python"], ["Python"], ["Python"], 
+	["Python"], 
+	["Python"], 
+	["Python"], ["Python"], 
+	
+	["Python"], ["Python"], 
+	
+	["Python"], 
+	
+	["Python"], 
+	["Python"], 
+	
+	
+	
+	["Python"], 
+	["Python"], 
+	
+	["Python"], 
+	
+	
+	
+	["Python"], 
+	
+	["Python"], 
+	
+	
+	
+	
+	["Python"], 
+	
+	
+	
+	["Python"], 
+	
+	
+	["Python"], 
+	
+	["Python"], 
+	
+	
+	["Python"], 
+	
+	
+	
+	
+	["Python"], 
+	
+	["Python"], 
+	["Python"], 
+	
+	["Python"], 
+	["Python"], 
+	["Python"], 
+	
+	["Python"], 
+	["Python"], 
+	
+	
+	["Python"], 
+	
+	
+	["Python"], 
+	
+	["Python"], 
+	["Python"], 
+	["Python"], 
+	["Python"], 
+	
+	
+	
+	
+	
+	["Python"], 
+	["Python"], 
+	
+	
+	["Python"], 
+	
+	["Python"], 
+	
+	
+	["Python"], 
+	["Python"], 
+	
+	
+	["Python"], 
+	
+	["Python"], ["Python"], 
+	
+	["Python"], 
+	
+	["Python"], 
+	
+	
+	["Python"], 
+	["Python"], ["Python"], 
+	
+	
+	
+	
+	
+	
+	
+	
+	["Python"], 
+	
+	
+	["Python"], 
+	["Python"], 
+	
+	
+	
+	["Python"], 
+	
+	
+	["Python"], 
+	
+	["Python"], 
+	
+	["Python"]
+	
+	
+]
+}

@@ -34,13 +34,17 @@ function videoTimeUpdater(e) {
 				var pills = $('#'+editor_id).parent().parent().find('.pills')
 				if (pills.html() != resp.l[cc] && changed) {
 					// temporarily add (and then hide) other languages
-					if (resp.l[cc] != 'Shell')
-						{}//console.log(resp.l[cc])
+					var found = false
 					pills.each(function() {
-						if ($(this).html().trim() == resp.l[cc])
+						if ($(this).html().trim() == resp.l[cc]) {
+							found = true
 							$(this).addClass('badge-info')
-						else $(this).removeClass('badge-info')
+						}
+						else // restoring usual state
+							$(this).removeClass('badge-info')
 					})
+					if (!found)
+						$('#ol'+editor_id.substring(1, editor_id.search('-'))).html(resp.l[cc])
 					// pills.fadeOut(video.paused ? 50 : 300, function() {
 					// 	$(this).text(resp.l[cc]).fadeIn(video.paused ? 50 : 300)
 					// })
