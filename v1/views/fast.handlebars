@@ -10,16 +10,16 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link href="css/main.css" rel="stylesheet">
 </head>
-<body>
+<body style="margin-left: 5px">
 	<div class="container">
 		<br>
 		<br>
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-9">
 				<h1>{{ name }}</h1>
 			</div>
-			<div class="input-group col-md-4" id="custom-search-input">
-				<input type="text" class="form-control input-lg" placeholder="Look for code fragments" />
+			<div class="input-group col-md-3" id="custom-search-input">
+				<input type="text" class="form-control input-lg" placeholder="Search" />
 				<span class="input-group-btn">
 					<button class="btn btn-info btn-lg" type="button" onclick="showResults()">
 						<i class="material-icons" data-toggle="tooltip" data-placement="left" title="results shown below">search</i>
@@ -28,19 +28,14 @@
 			</div>
 		</div>
 		<br>
-		<br>
 
 		{{#each segments}}
-		<div class="alert alert-info" role="alert" id="s{{ start }}-vo">
-			{{ start }}:{{ finish }} {{ voiceover }}
-		</div>
-
 		<div class="row transcript">
 			<div class="col-sm-{{ ../width }} video-container">
 				<!-- http://codepen.io/ollieRogers/pen/lfeLc -->
-				<span class="badge badge-pill badge-default">
+				<!-- <span class="badge badge-pill badge-default">
 					<i class="material-icons fs">fullscreen</i>
-				</span>
+				</span> -->
 				<video preload="metadata" id="s{{ start }}-video">
 				<!-- poster="images/loading.gif" -->
 					<source src="{{ ../url }}" type="video/mp4" />
@@ -68,17 +63,17 @@
 				<!-- convention; trim innerhtml -->
 			</div>
 			<h5 id="lf"> <!-- todo: check proper way to use css -->
-				{{#each code}}
+				<!-- {{#each code}}
 				{{#if @index}} <br> {{/if}}
 				<span class="badge badge-default pills" onclick="showCode(event, this)"
 						data-s-index="{{ ../start }}" data-l-index="{{ @index }}">
 					{{ this.l }}
 				</span>
 				{{/each}}
-				<br>
-				<span class="badge badge-default pills" id="oth" style="opacity: 0.5">
-					Other <!-- this is where sub-intervals are shown -->
-				</span>
+				<br> -->
+				<span class="badge badge-default pills" id="ol{{ start }}" style="opacity: 0.1">
+					Other
+				</span> <!-- this is where sub-intervals are shown -->
 			</h5>
 			<!-- <div class="pills">
 				<ul class="nav nav-pills">
@@ -95,6 +90,9 @@
 			</div> -->
 		</div>
 
+		<div id="s{{ start }}-vo">
+			{{ start }}:{{ finish }} {{ voiceover }}
+		</div>
 		{{/each}}
 		<br>
 	</div>
@@ -146,17 +144,16 @@
 			video = $('#s'+{{ start }}+'-video')[0]
 			video.addEventListener('error',
 				function() { alert('video: out of buffer') })
-			// video.currentTime = {{start }}
-			fs_button = $(video.parentNode).find('.fs')[0]
-			fs_button.addEventListener('click', function() {
-				var video = $('#s'+{{ start }}+'-video')[0]
-				if (video.requestFullscreen)
-					video.requestFullscreen()
-				else if (video.mozRequestFullScreen)
-					video.mozRequestFullScreen()
-				else if (video.webkitRequestFullscreen)
-					video.webkitRequestFullscreen()
-			})
+			// fs_button = $(video.parentNode).find('.fs')[0]
+			// fs_button.addEventListener('click', function() {
+			// 	var video = $('#s'+{{ start }}+'-video')[0]
+			// 	if (video.requestFullscreen)
+			// 		video.requestFullscreen()
+			// 	else if (video.mozRequestFullScreen)
+			// 		video.mozRequestFullScreen()
+			// 	else if (video.webkitRequestFullscreen)
+			// 		video.webkitRequestFullscreen()
+			// })
 			{{/each}}
 
 			$('.video-container video').click(toggle)
@@ -165,14 +162,16 @@
 		function toggle(v = null) {
 			var th = $(this).is('video') ? this : v
 			if (th.paused) {
-				$(th.parentNode.parentNode).find('.pills').animate({'opacity': 0.3})
+				if ($(th.parentNode.parentNode).find('.pills').html().trim() != 'Other')
+					$(th.parentNode.parentNode).find('.pills').animate({'opacity': 0.3})
 				refreshIntervalId = setInterval(showScript, 200)
 				th.play()
 				lastVideo = th
 			} else {
 				th.pause()
 				clearInterval(refreshIntervalId)
-				$(th.parentNode.parentNode).find('.pills').animate({'opacity': 0.7})
+				if ($(th.parentNode.parentNode).find('.pills').html().trim() != 'Other')
+					$(th.parentNode.parentNode).find('.pills').animate({'opacity': 0.7})
 				lastVideo = th
 				// $('.pills').show()
 			}

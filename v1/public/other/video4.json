@@ -1,30 +1,30 @@
 {
 "name": "CS50 2016 - Week 8 - Python",
-"width": 5,
+"width": 8,
 "fps": 23.97615,
 "duration": 7980,
 "start": [
 	0,
 	2711,
-	2839, 
-	2974, 
-	3095, 
-	3216, 
-	3346, 
+	2839,
+	2974,
+	3095,
+	3216,
+	3346,
 	3476
 ],
 "code": [
 	[""],
-	["   if _nane_ -- \"_main_\":\nwith]\nsl\n   return n\n      n - c550.get_int()\n      if n >= 1:\n   main()\n      break\n"], 
-	["'- Admin\": fin ' W.\" O .\n   V. in!\n         . m\" 1 import c550\n         . m\" 2\n            mm 3 1'. - get_positive_int()\n         CW\" 4 print(\"{} is a positive integer\".fomat(i))\n         . mogul: 5\n         . WJ.'\n         . Mu, 6 def geLpos'lt'lvulntO:\n"], 
-	["for (int'l-O; 'l.<3; 14+)\n{\n   printf('cough\\n');\n"], 
-	["'-~Iwaauoe fi- ' cannot-Os * M14: K sumac X oougmc x . I \"NW-W x M'W x W x .\n   v..m.ldwc 2 run-unn-- whasv.u' 1 def (ring): ( ) H\n                        ' . . . -' 2 or in range 3 :\n         :m 3 van! cough(1nt n), 3 coughC) mm\n         a <<mu 4 , , 'd 4 may\n            \"'7?\" Z lnt mavam ) 5 def coughC): mo\n"], 
-	["I canal-0x MIX wow-2x 0000!!\" WK . 'I W\" \"\"9\"\" W\" W! W. .\n   . . ' 1 def main():\n   1nt maInCVOId) z cough(3)\n   { .3 snee e 3\n      cough(3); 4 z ( >\n      sneezeca); 5 def coughCn):\n   } . Inn\n                                    6 say( | )\n   void coughfint n)\n   {\n      say(\"cough\", n);\n   }\n   void sasttring word, int n)\n   {\n      for (int i - 0; i. < n; 114+)\n      {\n         .uu' .Ltf\"d--\\ _\" nun--'4' .\n"], 
-	["   mar-mmmmww\n   '--I---I 0' ' m \" .\n   ':: 1 #include <<350.!>>\n      . w 2 #include <<1111on\n      .m 3\n      Cum 4 int minCVOId)\n      .'l 5 '\n' \\ V .'u 6 string 3 - neutrino;\n                     'nt n - 0;\n                     C/ (s[n] l- '\\0')\n      :u--: 10 \"H;\n      Qua-n: 11 }\n      g.\" 12 printf('$'l\\n', n);\n      :-~ 13 1+\n      an\n   n.\"\n   b...\n   ,.-- ~11 - O\n      u.\"\n      -Iu- ' U\n      v.'\n      .'m\n"], 
+	["   if _nane_ -- \"_main_\":\nwith]\nsl\n   return n\n      n - c550.get_int()\n      if n >= 1:\n   main()\n      break\n"],
+	["'- Admin\": fin ' W.\" O .\n   V. in!\n         . m\" 1 import c550\n         . m\" 2\n            mm 3 1'. - get_positive_int()\n         CW\" 4 print(\"{} is a positive integer\".fomat(i))\n         . mogul: 5\n         . WJ.'\n         . Mu, 6 def geLpos'lt'lvulntO:\n"],
+	["for (int'l-O; 'l.<3; 14+)\n{\n   printf('cough\\n');\n"],
+	["'-~Iwaauoe fi- ' cannot-Os * M14: K sumac X oougmc x . I \"NW-W x M'W x W x .\n   v..m.ldwc 2 run-unn-- whasv.u' 1 def (ring): ( ) H\n                        ' . . . -' 2 or in range 3 :\n         :m 3 van! cough(1nt n), 3 coughC) mm\n         a <<mu 4 , , 'd 4 may\n            \"'7?\" Z lnt mavam ) 5 def coughC): mo\n"],
+	["I canal-0x MIX wow-2x 0000!!\" WK . 'I W\" \"\"9\"\" W\" W! W. .\n   . . ' 1 def main():\n   1nt maInCVOId) z cough(3)\n   { .3 snee e 3\n      cough(3); 4 z ( >\n      sneezeca); 5 def coughCn):\n   } . Inn\n                                    6 say( | )\n   void coughfint n)\n   {\n      say(\"cough\", n);\n   }\n   void sasttring word, int n)\n   {\n      for (int i - 0; i. < n; 114+)\n      {\n         .uu' .Ltf\"d--\\ _\" nun--'4' .\n"],
+	["   mar-mmmmww\n   '--I---I 0' ' m \" .\n   ':: 1 #include <<350.!>>\n      . w 2 #include <<1111on\n      .m 3\n      Cum 4 int minCVOId)\n      .'l 5 '\n' \\ V .'u 6 string 3 - neutrino;\n                     'nt n - 0;\n                     C/ (s[n] l- '\\0')\n      :u--: 10 \"H;\n      Qua-n: 11 }\n      g.\" 12 printf('$'l\\n', n);\n      :-~ 13 1+\n      an\n   n.\"\n   b...\n   ,.-- ~11 - O\n      u.\"\n      -Iu- ' U\n      v.'\n      .'m\n"],
 	["Save As\nFloname: ascne.py1\n'-~lmsoate\n'.w<l\n'-m\n'-m\n.-.C/.\n.-m_5\n'Im\nloom-p1\nFm: /\n---wm _--\n"]
 ],
 "l": [
-	["Python"], ["Python"], ["Python"], ["Python"], 
+	["Python"], ["Python"], ["Python"], ["Python"],
 	["Python"], ["Python"], ["Python"], ["Python"]
 ]
 }
