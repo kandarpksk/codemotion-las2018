@@ -162,6 +162,7 @@
 		function toggle(v = null) {
 			var th = $(this).is('video') ? this : v
 			if (th.paused) {
+				$('video').each(function() { this.pause() })
 				$(th.parentNode.parentNode).find('.pills').animate({'opacity': 0.3})
 				refreshIntervalId = setInterval(showScript, 200)
 				th.play()
