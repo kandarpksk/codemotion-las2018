@@ -3,7 +3,7 @@ import ocr, re, sys, numpy, json
 
 MIN_INTERVAL = 30
 
-vnum, fnum, fnumf = int(sys.argv[1]), 1, 1.
+vnum, fnum, fnumf = int(sys.argv[1]), 1, 1. #4321
 fps = [15.002999, 29.970030, 30, 23.976150, 30, 29.970030, 30.001780, 30, 29.970030, 29.970030, 30, 15, 23.976024, 30, 15, 30, 29.873960, 30, 15, 25.000918, 30][vnum-1]
 #... print 'starting with frame', fnum, '\n'
 
@@ -14,24 +14,38 @@ def compare(known, txt):
 	diffs = d.diff_main(known, txt, False)
 	d.diff_cleanupSemantic(diffs)
 	l, total, change = [[]], 0, 0
+	count, more = 0, 0
 	for x in diffs:
 		lines = re.split('\n|\\n', x[1])
-		for part in lines:
+		more = 1 if len(lines) > 1 else 0
+		for p in range(len(lines)):
+			part = lines[p]
 			total += len(part)
+			# is this too aggressive?!
 			if len(part)>1: # ignore lookalikes
 				if x[0] == 1:
-					if l[-1] and l[-1][-1] == 'mod':
+					print '+', part.rstrip(),
+					if l[-1] and l[-1][-1] == 'rem':
 						l[-1].pop() # big changes?
-					else: l[-1].append('new')
+					else: l[-1].append('add')
 					change += len(part)
 				elif x[0] == -1:
-					l[-1].append('mod')
+					print '-', part.rstrip(),
+					l[-1].append('rem')
 					change += len(part)
 				else:
-					l[-1].append('sim')
+					print '~', part.rstrip(),
+					l[-1].append('exc')
 
-				if part != lines[-1]:
-					l.append([]) #print list(set(l[-2]))
+				if p != len(lines)-1:
+					l.append([])
+					print list(set(l[-2])),
+					if 'rem' in l[-2] and 'exc' not in l[-2] and 'add' not in l[-2]: count = count-1
+					if 'add' in l[-2] and 'exc' not in l[-2] and 'rem' not in l[-2]: count += 1
+			if p != len(lines)-1: print
+	# if 'exc' not in l[-1] and 'rem' not in l[-1]:
+			# count += more
+	print 'newlines', count
 	return int(round(change*100./total)), d, diffs
 
 output_code = []
@@ -98,11 +112,12 @@ while fnum < 216000:
 			# if txt not in buffer:
 				merged = False
 				for i in range(min(len(buffer), 10)):
+					print '<' + str(i+1) + '>'
 					pc, d, diffs = compare(buffer[len(buffer)-i-1], txt)
 					if pc == 0:
 						past_measure.append(i+1)
 						output_time[len(buffer)-i-1][1] = (fnum-1)/24
-						buffer[len(buffer)-i-1] = txt # todo: account for scrolling
+						buffer[len(buffer)-i-1] = txt
 						merged = True
 						break
 					elif pc < 70:
@@ -114,6 +129,10 @@ while fnum < 216000:
 						# if upd != len(buffer)-i-1:
 						#... print (fnum-1)/24, ': updated end time of interval', len(buffer)-i-1
 							# upd = len(buffer)-i-1
+						print '\nnow'
+						# print buffer[len(buffer)-i-1]
+						# print 'old'
+						print txt
 						buffer[len(buffer)-i-1] = txt # todo: account for scrolling
 						# if i != 0: # update output code?
 							# print 'update output code'
