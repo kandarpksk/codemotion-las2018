@@ -50,6 +50,7 @@ while success:
 		print '\r%d:%02d finding segments...' % (t_min, t_sec),
 		sys.stdout.flush()
 		start1 = time.time()
+		# cv2.imwrite(path+'/frame'+str(fnum)+'.jpg', image)
 		segments = phase1.process(image, path, 'frame'+str(fnum)+'-segment', big_windows)
 		end1 = time.time()
 		time1 += end1 - start1
