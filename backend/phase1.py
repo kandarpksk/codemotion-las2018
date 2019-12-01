@@ -36,19 +36,20 @@ def process(image, path, name, flag):
 	#############################
 	edgy = cv2.Canny(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 50, 20, apertureSize = 3)
 	# cv2.imwrite('step1.jpg', edgy) #p!
-	minLineLength, maxLineGap = 100, 10
-	lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength, maxLineGap)
-	# print 'lines'
-	# for line in lines[0]:
-	# 	print line,
-	# print
-
+	
 	def drawPoint((x,y), color=white, thickness=4, image=demo):
 		cv2.circle(image, (x,y), thickness, color, -1, 8)
 		# cv2.circle(image, (x,y), radius, color, 0, 8) # "locator"
 
 	# step: find (end points of) less tilted horizontal or vertical lines [o/p: points]
 	##############################################
+	minLineLength, maxLineGap = 100, 10
+	lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength, maxLineGap)
+	# print 'lines'
+	# for line in lines[0]:
+	# 	print line,
+	# print
+	
 	points = []
 	def slope(p1, p2, axis='x'):
 		if axis == 'x':
