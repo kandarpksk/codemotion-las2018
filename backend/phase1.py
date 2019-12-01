@@ -32,7 +32,7 @@ def process(image, path, name, flag):
 	radius = min(img.shape[0], img.shape[1])*fraction
 	corners = [(0,0), (0,img.shape[0]), (img.shape[1],0), (img.shape[1],img.shape[0])]
 
-	# step: detect lines in frame [o/p: lines] | third parameter (of canny) 150
+	# step: detect edges in frame [o/p: lines] | third parameter (of canny) 150
 	#############################
 	edgy = cv2.Canny(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 50, 20, apertureSize = 3)
 	# cv2.imwrite('step1.jpg', edgy) #p!
@@ -43,10 +43,9 @@ def process(image, path, name, flag):
 
 	# step: find (end points of) less tilted horizontal or vertical lines [o/p: points]
 	##############################################
-	minLineLength, maxLineGap = 100, 10
-	lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength, maxLineGap)
+	lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength=100, maxLineGap=20)
 	# print 'lines'
-	# for line in lines[0]:
+	# for line in lines:
 	# 	print line,
 	# print
 	
@@ -60,16 +59,17 @@ def process(image, path, name, flag):
 		not_perpendicular = (p1[0]-p2[0] if axis == 'x' else p1[1]-p2[1])
 		return not_perpendicular and abs(slope(p1, p2, axis)) < np.sin(theta*np.pi/180)
 	if lines is not None:
-		for x1,y1,x2,y2 in lines[0]:
-			# later: slightly more relaxed angle acceptable?
-			along_y = abs(y1-y2) > 0.2*img.shape[0] and smallSlope((x1,y1), (x2,y2), 'y', 11)
-			along_x = abs(x1-x2) > 0.2*img.shape[1] and smallSlope((x1,y1), (x2,y2), 'x')
-			if along_x or along_y:
-				points.extend([(x1,y1), (x2,y2)])
-				# cv2.line(demo, (x1,y1), (x2,y2), white, 5) # draw an outline for clarity
-				# cv2.line(demo, (x1,y1), (x2,y2), red, 2) #p!
-				if debug:
-					cv2.line(demo, (x1,y1), (x2,y2), randomColor(), 2)
+		for l in lines:
+			for x1,y1,x2,y2 in l:
+				# later: slightly more relaxed angle acceptable?
+				along_y = abs(y1-y2) > 0.2*img.shape[0] and smallSlope((x1,y1), (x2,y2), 'y', 11)
+				along_x = abs(x1-x2) > 0.2*img.shape[1] and smallSlope((x1,y1), (x2,y2), 'x')
+				if along_x or along_y:
+					points.extend([(x1,y1), (x2,y2)])
+					# cv2.line(demo, (x1,y1), (x2,y2), white, 5) # draw an outline for clarity
+					# cv2.line(demo, (x1,y1), (x2,y2), red, 2) #p!
+					if debug:
+						cv2.line(demo, (x1,y1), (x2,y2), randomColor(), 2)
 	# also include corners of entire image
 	# for p in corners:
 		# drawPoint(p, white, 5)
