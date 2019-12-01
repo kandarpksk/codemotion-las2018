@@ -43,7 +43,8 @@ def process(image, path, name, flag):
 
 	# step: find (end points of) less tilted horizontal or vertical lines [o/p: points]
 	##############################################
-	lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, minLineLength=100, maxLineGap=20)
+	arg5, arg6 = 100, 10
+	lines = cv2.HoughLinesP(edgy, 1, np.pi/180, 100, arg5, arg6)
 	# print 'lines'
 	# for line in lines:
 	# 	print line,
